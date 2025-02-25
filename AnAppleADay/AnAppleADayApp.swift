@@ -10,27 +10,44 @@ import SwiftUI
 @main
 struct AnAppleADayApp: App {
     
-    @StateObject private var mode = EnvironmentMode(
-        dismissWindow: { id in print("Dismissing window: \(id)")},
-        openWindow: { id in print("Opening window: \(id)") },
-        openImmersiveSpace: { id in print("Opening immersive space") },
-        dismissImmersiveSpace: { print("Dismissing immersive space") }
-    )
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
+    @Environment(\.openImmersiveSpace) private var openImmersiveSpace
+    @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
-    fileprivate var modeID: String {
-        return mode.mode.windowId
-    }
-        
+    @State private var mode: Mode = .welcome
+    
     var body: some Scene {
-        
-        WindowGroup(id: modeID) {
+        WindowGroup(id: WindowIDs.welcomeWindowID) {
             WelcomeView()
-                .environmentObject(mode)
+                .environment(\.setMode, setMode)
         }
+        .defaultSize(.init(width: 0.3, height: 0.2), in: .meters)
         
-        WindowGroup(id: modeID) {
+        WindowGroup(id: WindowIDs.importDicomsWindowID) {
             ImportDicomViews()
-                .environmentObject(mode)
+                .environment(\.setMode, setMode)
         }
+        .defaultSize(.init(width: 0.3, height: 0.2), in: .meters)
+    }
+    
+    /// A helper function that handles the state changes of the app.
+    ///
+    /// The function will populated as needed in the future versions.
+    /// it is `imperative` to put the task to sleep whenever there is a context switch.
+    ///
+    /// - Parameter newMode: is the next mode after interacting within the app
+    @MainActor private func setMode(_ newMode: Mode) async {
+        
+        let oldMode = mode
+        guard newMode != oldMode else { return }
+        mode = newMode
+        
+        openWindow(id: newMode.windowId)
+        try? await Task.sleep(for: .seconds(0.001))
+        dismissWindow(id: oldMode.windowId)
     }
 }
+
+
+

@@ -10,19 +10,18 @@ import RealityKit
 import RealityKitContent
 
 struct WelcomeView: View {
-    
-    @EnvironmentObject private var mode: EnvironmentMode
-    
+        
+    @Environment(\.setMode) private var setMode
+
     var body: some View {
         VStack {
             Text("Welcome!")
-            
+                .font(.title2)
             Button {
-                Task { await mode.setMode(.importDicoms) }
+                Task { await setMode(.importDicoms) }
             } label: {
                 Text("go import")
             }
-            
         }
         .padding()
     }

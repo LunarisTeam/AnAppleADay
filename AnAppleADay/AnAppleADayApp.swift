@@ -15,14 +15,9 @@ struct AnAppleADayApp: App {
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
-    @State private var mode: Mode = .welcome
+    @State private var mode: Mode = .importDicoms
     
     var body: some Scene {
-        WindowGroup(id: WindowIDs.welcomeWindowID) {
-            WelcomeView()
-                .environment(\.setMode, setMode)
-        }
-        .defaultSize(.init(width: 0.3, height: 0.2), in: .meters)
         
         WindowGroup(id: WindowIDs.importDicomsWindowID) {
             ImportDicomViews()
@@ -36,6 +31,9 @@ struct AnAppleADayApp: App {
     /// The function will populated as needed in the future versions.
     /// it is `imperative` to put the task to sleep whenever there is a context switch.
     ///
+    /// Call this function whenever you want to open a new window.
+    /// However, first define an id in `WindowIDs`, then the associated case in `ModeEnum`
+    ///
     /// - Parameter newMode: is the next mode after interacting within the app
     @MainActor private func setMode(_ newMode: Mode) async {
         
@@ -44,7 +42,7 @@ struct AnAppleADayApp: App {
         mode = newMode
         
         openWindow(id: newMode.windowId)
-        try? await Task.sleep(for: .seconds(0.001))
+        try? await Task.sleep(for: .seconds(0.01))
         dismissWindow(id: oldMode.windowId)
     }
 }

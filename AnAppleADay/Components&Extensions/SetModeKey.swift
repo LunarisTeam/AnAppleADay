@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A struct used to extend `@Environment`.
 /// Defualt value can be `nonisolated(unsafe)` since it's protected in `setMode` through the `MainActor`
 /// This is also ready for eventual switch to`Swift6`
 struct SetModeKey: EnvironmentKey {

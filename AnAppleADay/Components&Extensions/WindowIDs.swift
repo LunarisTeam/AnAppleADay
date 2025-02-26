@@ -7,7 +7,7 @@
 
 import Foundation
 
+/// Window ids that will be contained to call the views
 struct WindowIDs {
-    static let welcomeWindowID: String = "Welcome"
     static let importDicomsWindowID: String = "ImportDicoms"
 }

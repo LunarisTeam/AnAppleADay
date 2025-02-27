@@ -20,10 +20,22 @@ struct AnAppleADayApp: App {
     var body: some Scene {
         
         WindowGroup(id: WindowIDs.importDicomsWindowID) {
-            ImportDicomViews()
-                .environment(\.setMode, setMode)
+            ZStack {
+                Color("BackgroundColor")
+                ImportDicomView()
+            }
+            .environment(\.setMode, setMode)
         }
-        .defaultSize(.init(width: 0.3, height: 0.2), in: .meters)
+        
+        WindowGroup(id: WindowIDs.generateModelWindowID) {
+            ZStack {
+                Color("BackgroundColor")
+                /// This is Alessandro's
+//                GenerateModelView()
+                EmptyView()
+            }
+            .environment(\.setMode, setMode)
+        }
     }
     
     /// A helper function that handles the state changes of the app.

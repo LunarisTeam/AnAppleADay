@@ -11,12 +11,14 @@ extension View {
     
     /// Conditionally transforms the view.
     ///
-    /// Use this method to apply a transformation to the view only if the specified condition is true.
-    /// If the condition is false, the original view is returned unchanged.
+    /// If the condition is `false`, the view remains unchanged.
+    ///
+    /// This function is very useful for normal 2D views. However, use carefully on `RealityView`.
+    /// The way `@ViewBuilder` functions work, is because they rebuild the view everytime.
     ///
     /// ### Example Usage:
-    /// ```swift
-    /// someView.conditionalModifier(showDoneButton) { view in
+    /// ```
+    /// someView.if(showDoneButton) { view in
     ///     view.overlay(alignment: .bottom) {
     ///         Button {
     ///             counter += 1
@@ -28,9 +30,9 @@ extension View {
     /// }
     /// ```
     /// - Parameters:
-    ///   - condition: A Boolean value that determines whether the transformation should be applied.
-    ///   - transform: A closure that transforms the view content when the condition is `true`.
-    /// - Returns: A modified view if the condition is met; otherwise, the original view.
+    ///   - condition: The condition that must be met for the transformation to be applied.
+    ///   - transform: A closure that takes the current view as input and returns a modified view.
+    /// - Returns: The transformed view if `condition` is `true`, the original otherwise.
     @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
         if condition { transform(self) } else { self }
     }

@@ -7,9 +7,14 @@
 
 import SwiftUI
 
-/// A struct used to extend `@Environment`.
-/// Defualt value can be `nonisolated(unsafe)` since it's protected in `setMode` through the `MainActor`
-/// This is also ready for eventual switch to`Swift6`
+/// An environment key for handling mode changes within the application.
+///
+/// `SetModeKey` defines a function type that accepts a `Mode` and performs asynchronous operations
+/// to update the application's state. This key extends the SwiftUI environment, allowing views to
+/// trigger mode transitions by calling the provided function.
+///
+/// The default value is a no-operation closure marked as `nonisolated(unsafe)` since its proper use
+/// is ensured by invoking it on the `MainActor`. The setup anticipates a possible migration to Swift 6 strict concurrency.
 struct SetModeKey: EnvironmentKey {
     nonisolated(unsafe) static let defaultValue: Value = { _ in }
     typealias Value = (Mode) async -> Void

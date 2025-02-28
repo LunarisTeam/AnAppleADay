@@ -14,7 +14,7 @@ struct AnAppleADayApp: App {
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
-    
+        
     /// Represents the current operational mode of the application.
     ///
     /// The mode determines which view is presented and which window is active. Its initial value
@@ -23,23 +23,24 @@ struct AnAppleADayApp: App {
     
     var body: some Scene {
         
-        WindowGroup(id: WindowIDs.importDicomsWindowID) {
-            ZStack {
-                Color("BackgroundColor")
-                ImportDicomView()
+        Group {
+            WindowGroup(id: WindowIDs.importDicomsWindowID) {
+                ZStack {
+                    Color("BackgroundColor")
+                    ImportDicomView()
+                }
             }
-            .environment(\.setMode, setMode)
-        }
-        
-        WindowGroup(id: WindowIDs.generateModelWindowID) {
-            ZStack {
-                Color("BackgroundColor")
-                /// This is Alessandro's (?)
-                //                GenerateModelView()
-                EmptyView()
+            
+            WindowGroup(id: WindowIDs.generateModelWindowID) {
+                ZStack {
+                    Color("BackgroundColor")
+                    /// This is Alessandro's (?)
+                    //GenerateModelView()
+                    EmptyView()
+                }
             }
-            .environment(\.setMode, setMode)
         }
+        .environment(\.setMode, setMode)
     }
     
     /// Manages transitions between application modes by orchestrating the opening and dismissal of windows and immersive spaces.
@@ -57,7 +58,7 @@ struct AnAppleADayApp: App {
     /// 2. Pause briefly.
     /// 3. Optionally, dismiss the previously active immersive space.
     ///
-    /// Whenever an immersive space must be closed, the flow must can be whatever.
+    /// Whenever an immersive space must be closed, the flow can be whatever (as per date).
     /// ```
     /// - Parameter newMode: The new mode to transition to.
     @MainActor private func setMode(_ newMode: Mode) async {
@@ -65,15 +66,22 @@ struct AnAppleADayApp: App {
         guard newMode != oldMode else { return }
         mode = newMode
         
-        openWindow(id: newMode.windowId)
+        print("")
+        print("oldMode: \(oldMode), newMode: \(newMode)")
         
-        //the "try" is in a do-catch to avoid skipping for concurrency issues.
+        openWindow(id: newMode.windowId)
+        print("Opening \(newMode.windowId)")
+        
+        //The do-catch is to avoid skipping the await for concurrency issues.
+        //Increase the sleep if it doesn't work.
         do {
-            try await Task.sleep(for: .seconds(0.01))
+            try await Task.sleep(for: .seconds(0.05))
+            print("I waited")
         } catch {
             print(error.localizedDescription)
         }
         dismissWindow(id: oldMode.windowId)
+        print("Dismissing \(oldMode.windowId)")
 
         
     }

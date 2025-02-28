@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "FrontLayer.png",
       "idiom" : "vision",
       "scale" : "2x"
     }

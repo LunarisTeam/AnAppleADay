@@ -9,10 +9,12 @@
 /// Therefore, the associated WindowGroup/Immersive space will be called.
 @MainActor enum Mode: Equatable {
     case importDicoms
+    case generate
     
     var windowId: String {
         switch self {
         case .importDicoms: return WindowIDs.importDicomsWindowID
+        case .generate: return WindowIDs.generateModelWindowID
         }
     }
 }

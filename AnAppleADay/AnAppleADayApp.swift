@@ -14,36 +14,76 @@ struct AnAppleADayApp: App {
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
-    
+        
+    /// Represents the current operational mode of the application.
+    ///
+    /// The mode determines which view is presented and which window is active. Its initial value
+    /// is set to `.importDicoms`.
     @State private var mode: Mode = .importDicoms
     
     var body: some Scene {
         
-        WindowGroup(id: WindowIDs.importDicomsWindowID) {
-            ImportDicomViews()
-                .environment(\.setMode, setMode)
+        Group {
+            WindowGroup(id: WindowIDs.importDicomsWindowID) {
+                ZStack {
+                    Color("BackgroundColor")
+                    ImportDicomView()
+                }
+            }
+            
+            WindowGroup(id: WindowIDs.generateModelWindowID) {
+                ZStack {
+                    Color("BackgroundColor")
+                    /// This is Alessandro's (?)
+                    //GenerateModelView()
+                    EmptyView()
+                }
+            }
         }
-        .defaultSize(.init(width: 0.3, height: 0.2), in: .meters)
+        .environment(\.setMode, setMode)
     }
     
-    /// A helper function that handles the state changes of the app.
+    /// Manages transitions between application modes by orchestrating the opening and dismissal of windows and immersive spaces.
     ///
-    /// The function will populated as needed in the future versions.
-    /// it is `imperative` to put the task to sleep whenever there is a context switch.
+    /// Each transition incorporates a brief pause to mitigate potential race conditions and concurrency issues on visionOS.
+    /// The function must therefore adhere to the following guidelines:
+    /// ```
+    /// When opening a new window, follow this sequence:
+    /// 1. Open the window.
+    /// 2. Pause briefly to mitigate race conditions.
+    /// 3. Optionally, dismiss any window if necessary.
     ///
-    /// Call this function whenever you want to open a new window.
-    /// However, first define an id in `WindowIDs`, then the associated case in `ModeEnum`
+    /// When opening an immersive space, use the same sequence:
+    /// 1. Open the immersive space.
+    /// 2. Pause briefly.
+    /// 3. Optionally, dismiss the previously active immersive space.
     ///
-    /// - Parameter newMode: is the next mode after interacting within the app
+    /// Whenever an immersive space must be closed, the flow can be whatever (as per date).
+    /// ```
+    /// - Parameter newMode: The new mode to transition to.
     @MainActor private func setMode(_ newMode: Mode) async {
-        
         let oldMode = mode
         guard newMode != oldMode else { return }
         mode = newMode
         
+        print("")
+        print("oldMode: \(oldMode), newMode: \(newMode)")
+        
         openWindow(id: newMode.windowId)
-        try? await Task.sleep(for: .seconds(0.01))
+        print("Opening \(newMode.windowId)")
+        
+        //The do-catch is to avoid skipping the await for concurrency issues.
+        //Increase the sleep if it doesn't work.
+        do {
+            try await Task.sleep(for: .seconds(0.05))
+            print("I waited")
+        } catch {
+            print(error.localizedDescription)
+        }
         dismissWindow(id: oldMode.windowId)
+        print("Dismissing \(oldMode.windowId)")
+
+        
     }
 }
 

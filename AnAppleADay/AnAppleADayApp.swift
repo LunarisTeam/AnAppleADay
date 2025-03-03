@@ -26,17 +26,18 @@ struct AnAppleADayApp: App {
         Group {
             WindowGroup(id: WindowIDs.importDicomsWindowID) {
                 ZStack {
-                    Color("BackgroundColor")
+                    Color("backgroundColor")
+                        .opacity(0.3)
                     ImportDicomView()
                 }
+                
             }
             
             WindowGroup(id: WindowIDs.generateModelWindowID) {
                 ZStack {
-                    Color("BackgroundColor")
-                    /// This is Alessandro's (?)
-                    //GenerateModelView()
-                    EmptyView()
+                    Color("backgroundColor")
+                        .opacity(0.3)
+                    GenerateModelView()
                 }
             }
         }

@@ -38,7 +38,7 @@ struct TutorialComponent: View {
 #Preview {
     HStack(spacing: 20) {
         TutorialComponent(
-            imageName: "DICOM",
+            imageName: "dicomIcon",
             bodyText: "First, you import the DICOM files"
         )
         TutorialComponent(

@@ -29,7 +29,11 @@ struct ImportDicomView: View {
             
             HStack(spacing: 15) {
                 Button {
+                    #if DEBUG
+                    Task { await setMode(.generate) }
+                    #else
                     showingFilePicker = true
+                    #endif
                 } label: {
                     HStack {
                         Text("Import 3D Model")

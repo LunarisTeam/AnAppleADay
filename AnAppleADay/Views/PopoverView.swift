@@ -17,7 +17,7 @@ struct PopoverView: View {
                 .font(.title2)
             HStack(spacing: 20) {
                 TutorialComponent(
-                    imageName: "DICOM",
+                    imageName: "dicomIcon",
                     bodyText: "First, you import the DICOM files"
                 )
                 TutorialComponent(

@@ -8,11 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		2ED79E0C2D6DD74B005B4948 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 2ED79E0B2D6DD74B005B4948 /* RealityKitContent */; };
+		B48553CE2D75C5960088E164 /* Placeholder.usdz in Resources */ = {isa = PBXBuildFile; fileRef = B48553CD2D75C5960088E164 /* Placeholder.usdz */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2ED79E062D6DD74B005B4948 /* AnAppleADay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnAppleADay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ED79E0A2D6DD74B005B4948 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
+		B48553CD2D75C5960088E164 /* Placeholder.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = Placeholder.usdz; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,6 +56,7 @@
 				2ED79E082D6DD74B005B4948 /* AnAppleADay */,
 				2ED79E092D6DD74B005B4948 /* Packages */,
 				2ED79E072D6DD74B005B4948 /* Products */,
+				B48553CD2D75C5960088E164 /* Placeholder.usdz */,
 			);
 			sourceTree = "<group>";
 		};
@@ -138,6 +141,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B48553CE2D75C5960088E164 /* Placeholder.usdz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,7 +166,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AnAppleADay/Preview Content\"";
-				DEVELOPMENT_TEAM = WLW428B75Y;
+				DEVELOPMENT_TEAM = 8FW56V9S55;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
@@ -174,7 +178,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.lunarisTeam.AnAppleADay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
-				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
@@ -189,7 +192,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AnAppleADay/Preview Content\"";
-				DEVELOPMENT_TEAM = WLW428B75Y;
+				DEVELOPMENT_TEAM = 8FW56V9S55;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
@@ -201,7 +204,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.lunarisTeam.AnAppleADay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
-				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;

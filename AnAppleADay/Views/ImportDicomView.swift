@@ -12,7 +12,6 @@ struct ImportDicomView: View {
     
     @Environment(\.setMode) private var setMode
     
-    @State private var filesURL: [URL] = []
     @State private var showingFilePicker = false
     @State private var showInfo = false
     
@@ -29,11 +28,8 @@ struct ImportDicomView: View {
             
             HStack(spacing: 15) {
                 Button {
-                    #if DEBUG
-                    Task { await setMode(.generate) }
-                    #else
+                   
                     showingFilePicker = true
-                    #endif
                 } label: {
                     HStack {
                         Text("Import DICOM dataset")
@@ -44,15 +40,22 @@ struct ImportDicomView: View {
                 
                 .fileImporter(
                     isPresented: $showingFilePicker,
-                    allowedContentTypes: [UTType.data],
-                    allowsMultipleSelection: true
+                    allowedContentTypes: [UTType.folder],
+                    allowsMultipleSelection: false
                 ) { result in
-                    do {
-                        let selectedFiles = try result.get()
-                        filesURL.append(contentsOf: selectedFiles)
-                    } catch {
-                        print("Could not select the files: \(error.localizedDescription)")
+
+                    guard let urls = try? result.get() else {
+                        return
                     }
+                    
+                    if let directoryURL = urls.first {
+                        Task { @MainActor in
+                            await setMode(.generate, directoryURL)
+                        }
+                        
+                    }
+
+                        
                 }
                 
                 Button {
@@ -69,15 +72,6 @@ struct ImportDicomView: View {
             Spacer()
             
         }
-        .onChange(of: filesURL) { oldValue, newValue in
-            if !newValue.isEmpty {
-                Task { await setMode(.generate) }
-            }
-        }
         .padding()
     }
-}
-
-#Preview(windowStyle: .automatic) {
-    ImportDicomView()
 }

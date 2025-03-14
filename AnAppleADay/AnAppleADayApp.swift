@@ -62,7 +62,7 @@ struct AnAppleADayApp: App {
     /// Whenever an immersive space must be closed, the flow can be whatever (as per date).
     /// ```
     /// - Parameter newMode: The new mode to transition to.
-    @MainActor private func setMode(_ newMode: Mode) async {
+    @MainActor private func setMode(_ newMode: Mode, url: URL?) async {
         let oldMode = mode
         guard newMode != oldMode else { return }
         mode = newMode

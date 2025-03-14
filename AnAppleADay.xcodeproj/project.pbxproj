@@ -24,7 +24,7 @@
 			);
 			target = 2ED79E052D6DD74B005B4948 /* AnAppleADay */;
 		};
-		E3EB972F2D843DC00016327A /* Exceptions for "vtk" folder in "AnAppleADay" target */ = {
+		7FC261EC2D84411700E77A3A /* Exceptions for "vtk" folder in "AnAppleADay" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"lib/libvtkcgns-9.4.a",
@@ -165,7 +165,7 @@
 		E3EB96A82D843D810016327A /* vtk */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E3EB972F2D843DC00016327A /* Exceptions for "vtk" folder in "AnAppleADay" target */,
+				7FC261EC2D84411700E77A3A /* Exceptions for "vtk" folder in "AnAppleADay" target */,
 			);
 			path = vtk;
 			sourceTree = "<group>";
@@ -191,6 +191,7 @@
 				2ED79E082D6DD74B005B4948 /* AnAppleADay */,
 				E3EB812D2D843CE70016327A /* Dependencies */,
 				2ED79E092D6DD74B005B4948 /* Packages */,
+				7FC261722D84411700E77A3A /* Frameworks */,
 				2ED79E072D6DD74B005B4948 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -209,6 +210,13 @@
 				2ED79E0A2D6DD74B005B4948 /* RealityKitContent */,
 			);
 			path = Packages;
+			sourceTree = "<group>";
+		};
+		7FC261722D84411700E77A3A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E3EB812D2D843CE70016327A /* Dependencies */ = {
@@ -308,7 +316,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 4X56JBA2R7;
+				DEVELOPMENT_TEAM = 8Z4W25U7W4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Dependencies/vtk/include/vtk-9.4";
@@ -341,7 +349,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 4X56JBA2R7;
+				DEVELOPMENT_TEAM = 8Z4W25U7W4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Dependencies/vtk/include/vtk-9.4";

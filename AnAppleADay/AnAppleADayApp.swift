@@ -14,7 +14,7 @@ struct AnAppleADayApp: App {
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
-        
+    
     /// Represents the current operational mode of the application.
     ///
     /// The mode determines which view is presented and which window is active. Its initial value
@@ -33,13 +33,29 @@ struct AnAppleADayApp: App {
                 
             }
             
-            WindowGroup(id: WindowIDs.generateModelWindowID) {
-                ZStack {
-                    Color("backgroundColor")
-                        .opacity(0.3)
-                    GenerateModelView()
+            WindowGroup(id: WindowIDs.generateModelWindowID, for: URL?.self) { url in
+                
+                if let firstUnwrap = url.wrappedValue, let secondUnwrap = firstUnwrap {
+                    ZStack {
+                        Color("backgroundColor")
+                            .opacity(0.3)
+                        GenerateModelView(directoryURL: secondUnwrap)
+                        
+                    }
                 }
+                
+                
             }
+            
+            WindowGroup(id: WindowIDs.model3DVolumeWindowID, for: URL?.self) { url in
+                
+                if let firstUnwrap = url.wrappedValue, let secondUnwrap = firstUnwrap {
+                    ModelView(directoryURL: secondUnwrap)
+                }
+                
+                
+            }.windowStyle(.volumetric)
+            
         }
         .environment(\.setMode, setMode)
     }
@@ -62,7 +78,7 @@ struct AnAppleADayApp: App {
     /// Whenever an immersive space must be closed, the flow can be whatever (as per date).
     /// ```
     /// - Parameter newMode: The new mode to transition to.
-    @MainActor private func setMode(_ newMode: Mode) async {
+    @MainActor private func setMode(_ newMode: Mode, url: URL?) async {
         let oldMode = mode
         guard newMode != oldMode else { return }
         mode = newMode
@@ -70,21 +86,24 @@ struct AnAppleADayApp: App {
         print("")
         print("oldMode: \(oldMode), newMode: \(newMode)")
         
-        openWindow(id: newMode.windowId)
-        print("Opening \(newMode.windowId)")
+        if newMode.acceptsURL{
+            openWindow(id: newMode.windowId, value: url)
+        }else{
+            openWindow(id: newMode.windowId)
+        }
+        
+        
         
         //The do-catch is to avoid skipping the await for concurrency issues.
         //Increase the sleep if it doesn't work.
-        do {
-            try await Task.sleep(for: .seconds(0.05))
-            print("I waited")
-        } catch {
-            print(error.localizedDescription)
-        }
-        dismissWindow(id: oldMode.windowId)
-        print("Dismissing \(oldMode.windowId)")
-
         
+        try? await Task.sleep(for: .seconds(0.05))
+        
+        if oldMode.acceptsURL{
+            dismissWindow(id: oldMode.windowId, value: url)
+        }else{
+            dismissWindow(id: oldMode.windowId)
+        }
     }
 }
 

@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct GenerateModelView: View {
+    
+    let directoryURL: URL
+    
+    @State var fileCounter: Int? = nil
+    @State var directoryName: String = "Loading..."
+    
+    @Environment(\.setMode) private var setMode
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 10) {
@@ -31,33 +39,59 @@ struct GenerateModelView: View {
                         .frame(width: 100, height: 100)
                         .foregroundColor(.white.opacity(0.8))
                     
-                    Text("CTDCMfile1.dcm")
+                    Text(directoryName)
                         .font(.system(size: 24, weight: .medium))
                         .foregroundColor(.white)
+                    
+                    if let count = fileCounter {
+                        Text("\(count) slices")
+                            .font(.system(size: 20))
+                            .foregroundColor(.white.opacity(0.7))
+                    }
 
-                    Text("79 layers")
-                        .font(.system(size: 20))
-                        .foregroundColor(.white.opacity(0.7))
+                   
                 }
                 .padding(.top, 12)
                 
-                NavigationLink(destination: ProgressModelView()) {
+                Button {
+                    Task {@MainActor in
+                        await setMode(.model3DVolume, directoryURL)
+                    }
+                } label: {
                     Text("Generate Model")
                         .font(.system(size: 24, weight: .medium))
                         .foregroundColor(.white)
                         .padding(.horizontal, 40)
                         .padding(.vertical, 16)
-                        
-                }
-                .padding(.top, 32)
+                }.padding(.top, 32)
+
+                
             }
             .padding(40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
+        }.task {
+            try? loadFileURLs()
         }
     }
+    
+    func loadFileURLs() throws {
+        
+        self.directoryName = directoryURL.lastPathComponent
+        
+        let fileURLs = try FileManager.default.contentsOfDirectory(
+            at: directoryURL,
+            includingPropertiesForKeys: nil)
+        
+        let filteredURLs = fileURLs.filter {
+            ($0.pathExtension == "dcm" ||
+             $0.pathExtension.isEmpty) &&
+            $0.lastPathComponent != ".DS_Store"
+            
+        }
+        self.fileCounter = filteredURLs.count
+    }
+    
 }
 
-#Preview(windowStyle: .automatic) {
-    GenerateModelView()
-}
+

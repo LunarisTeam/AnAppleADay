@@ -34,20 +34,3 @@ struct TutorialComponent: View {
         .frame(width: 192, height: 213)
     }
 }
-
-#Preview {
-    HStack(spacing: 20) {
-        TutorialComponent(
-            imageName: "dicomIcon",
-            bodyText: "First, you import the DICOM files"
-        )
-        TutorialComponent(
-            imageName: "Sphere",
-            bodyText: "Then, generate the 3D Model"
-        )
-        TutorialComponent(
-            imageName: "Window",
-            bodyText: "You add the 2D X-ray imaging"
-        )
-    }
-}

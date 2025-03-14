@@ -40,6 +40,3 @@ struct PopoverView: View {
     }
 }
 
-#Preview {
-    PopoverView(showInfo: .constant(true))
-}

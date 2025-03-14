@@ -191,7 +191,6 @@
 				2ED79E082D6DD74B005B4948 /* AnAppleADay */,
 				E3EB812D2D843CE70016327A /* Dependencies */,
 				2ED79E092D6DD74B005B4948 /* Packages */,
-				E3EB96B52D843DBF0016327A /* Frameworks */,
 				2ED79E072D6DD74B005B4948 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -218,13 +217,6 @@
 				E3EB96A82D843D810016327A /* vtk */,
 			);
 			path = Dependencies;
-			sourceTree = "<group>";
-		};
-		E3EB96B52D843DBF0016327A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

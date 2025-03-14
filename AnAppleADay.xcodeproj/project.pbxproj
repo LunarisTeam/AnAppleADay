@@ -13,6 +13,7 @@
 /* Begin PBXFileReference section */
 		2ED79E062D6DD74B005B4948 /* AnAppleADay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnAppleADay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ED79E0A2D6DD74B005B4948 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
+		E3EB97392D843EB50016327A /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Bridging-Header.h"; path = "AnAppleADay/Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -20,6 +21,133 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+			);
+			target = 2ED79E052D6DD74B005B4948 /* AnAppleADay */;
+		};
+		7FC261EC2D84411700E77A3A /* Exceptions for "vtk" folder in "AnAppleADay" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"lib/libvtkcgns-9.4.a",
+				"lib/libvtkChartsCore-9.4.a",
+				"lib/libvtkCommonColor-9.4.a",
+				"lib/libvtkCommonComputationalGeometry-9.4.a",
+				"lib/libvtkCommonCore-9.4.a",
+				"lib/libvtkCommonDataModel-9.4.a",
+				"lib/libvtkCommonExecutionModel-9.4.a",
+				"lib/libvtkCommonMath-9.4.a",
+				"lib/libvtkCommonMisc-9.4.a",
+				"lib/libvtkCommonSystem-9.4.a",
+				"lib/libvtkCommonTransforms-9.4.a",
+				"lib/libvtkDICOMParser-9.4.a",
+				"lib/libvtkDomainsChemistry-9.4.a",
+				"lib/libvtkdoubleconversion-9.4.a",
+				"lib/libvtkexodusII-9.4.a",
+				"lib/libvtkexpat-9.4.a",
+				"lib/libvtkFiltersAMR-9.4.a",
+				"lib/libvtkFiltersCellGrid-9.4.a",
+				"lib/libvtkFiltersCore-9.4.a",
+				"lib/libvtkFiltersExtraction-9.4.a",
+				"lib/libvtkFiltersFlowPaths-9.4.a",
+				"lib/libvtkFiltersGeneral-9.4.a",
+				"lib/libvtkFiltersGeneric-9.4.a",
+				"lib/libvtkFiltersGeometry-9.4.a",
+				"lib/libvtkFiltersGeometryPreview-9.4.a",
+				"lib/libvtkFiltersHybrid-9.4.a",
+				"lib/libvtkFiltersHyperTree-9.4.a",
+				"lib/libvtkFiltersImaging-9.4.a",
+				"lib/libvtkFiltersModeling-9.4.a",
+				"lib/libvtkFiltersParallel-9.4.a",
+				"lib/libvtkFiltersParallelImaging-9.4.a",
+				"lib/libvtkFiltersPoints-9.4.a",
+				"lib/libvtkFiltersProgrammable-9.4.a",
+				"lib/libvtkFiltersReduction-9.4.a",
+				"lib/libvtkFiltersSelection-9.4.a",
+				"lib/libvtkFiltersSMP-9.4.a",
+				"lib/libvtkFiltersSources-9.4.a",
+				"lib/libvtkFiltersStatistics-9.4.a",
+				"lib/libvtkFiltersTemporal-9.4.a",
+				"lib/libvtkFiltersTensor-9.4.a",
+				"lib/libvtkFiltersTexture-9.4.a",
+				"lib/libvtkFiltersTopology-9.4.a",
+				"lib/libvtkFiltersVerdict-9.4.a",
+				"lib/libvtkfmt-9.4.a",
+				"lib/libvtkfreetype-9.4.a",
+				"lib/libvtkhdf5_hl-9.4.a",
+				"lib/libvtkhdf5-9.4.a",
+				"lib/libvtkImagingColor-9.4.a",
+				"lib/libvtkImagingCore-9.4.a",
+				"lib/libvtkImagingFourier-9.4.a",
+				"lib/libvtkImagingGeneral-9.4.a",
+				"lib/libvtkImagingHybrid-9.4.a",
+				"lib/libvtkImagingMath-9.4.a",
+				"lib/libvtkImagingMorphological-9.4.a",
+				"lib/libvtkImagingSources-9.4.a",
+				"lib/libvtkImagingStatistics-9.4.a",
+				"lib/libvtkImagingStencil-9.4.a",
+				"lib/libvtkInfovisCore-9.4.a",
+				"lib/libvtkInfovisLayout-9.4.a",
+				"lib/libvtkIOAMR-9.4.a",
+				"lib/libvtkIOAsynchronous-9.4.a",
+				"lib/libvtkIOCellGrid-9.4.a",
+				"lib/libvtkIOCGNSReader-9.4.a",
+				"lib/libvtkIOChemistry-9.4.a",
+				"lib/libvtkIOCityGML-9.4.a",
+				"lib/libvtkIOCONVERGECFD-9.4.a",
+				"lib/libvtkIOCore-9.4.a",
+				"lib/libvtkIOEngys-9.4.a",
+				"lib/libvtkIOEnSight-9.4.a",
+				"lib/libvtkIOERF-9.4.a",
+				"lib/libvtkIOExodus-9.4.a",
+				"lib/libvtkIOExport-9.4.a",
+				"lib/libvtkIOFLUENTCFF-9.4.a",
+				"lib/libvtkIOGeometry-9.4.a",
+				"lib/libvtkIOHDF-9.4.a",
+				"lib/libvtkIOImage-9.4.a",
+				"lib/libvtkIOImport-9.4.a",
+				"lib/libvtkIOIOSS-9.4.a",
+				"lib/libvtkIOLANLX3D-9.4.a",
+				"lib/libvtkIOLegacy-9.4.a",
+				"lib/libvtkIOLSDyna-9.4.a",
+				"lib/libvtkIOMINC-9.4.a",
+				"lib/libvtkIOMotionFX-9.4.a",
+				"lib/libvtkIOMovie-9.4.a",
+				"lib/libvtkIONetCDF-9.4.a",
+				"lib/libvtkIOOggTheora-9.4.a",
+				"lib/libvtkIOParallel-9.4.a",
+				"lib/libvtkIOParallelXML-9.4.a",
+				"lib/libvtkIOPLY-9.4.a",
+				"lib/libvtkIOSegY-9.4.a",
+				"lib/libvtkioss-9.4.a",
+				"lib/libvtkIOTecplotTable-9.4.a",
+				"lib/libvtkIOVeraOut-9.4.a",
+				"lib/libvtkIOVideo-9.4.a",
+				"lib/libvtkIOXML-9.4.a",
+				"lib/libvtkIOXMLParser-9.4.a",
+				"lib/libvtkjpeg-9.4.a",
+				"lib/libvtkjsoncpp-9.4.a",
+				"lib/libvtkkissfft-9.4.a",
+				"lib/libvtkloguru-9.4.a",
+				"lib/libvtklz4-9.4.a",
+				"lib/libvtklzma-9.4.a",
+				"lib/libvtkmetaio-9.4.a",
+				"lib/libvtknetcdf-9.4.a",
+				"lib/libvtkogg-9.4.a",
+				"lib/libvtkParallelCore-9.4.a",
+				"lib/libvtkParallelDIY-9.4.a",
+				"lib/libvtkpng-9.4.a",
+				"lib/libvtkpugixml-9.4.a",
+				"lib/libvtkRenderingContext2D-9.4.a",
+				"lib/libvtkRenderingCore-9.4.a",
+				"lib/libvtkRenderingFreeType-9.4.a",
+				"lib/libvtkRenderingSceneGraph-9.4.a",
+				"lib/libvtkRenderingVtkJS-9.4.a",
+				"lib/libvtksys-9.4.a",
+				"lib/libvtktheora-9.4.a",
+				"lib/libvtktiff-9.4.a",
+				"lib/libvtktoken-9.4.a",
+				"lib/libvtkverdict-9.4.a",
+				"lib/libvtkWrappingTools-9.4.a",
+				"lib/libvtkzlib-9.4.a",
 			);
 			target = 2ED79E052D6DD74B005B4948 /* AnAppleADay */;
 		};
@@ -32,6 +160,14 @@
 				2ED79E172D6DD74C005B4948 /* Exceptions for "AnAppleADay" folder in "AnAppleADay" target */,
 			);
 			path = AnAppleADay;
+			sourceTree = "<group>";
+		};
+		E3EB96A82D843D810016327A /* vtk */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7FC261EC2D84411700E77A3A /* Exceptions for "vtk" folder in "AnAppleADay" target */,
+			);
+			path = vtk;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -51,8 +187,11 @@
 		2ED79DFD2D6DD74B005B4948 = {
 			isa = PBXGroup;
 			children = (
+				E3EB97392D843EB50016327A /* Bridging-Header.h */,
 				2ED79E082D6DD74B005B4948 /* AnAppleADay */,
+				E3EB812D2D843CE70016327A /* Dependencies */,
 				2ED79E092D6DD74B005B4948 /* Packages */,
+				7FC261722D84411700E77A3A /* Frameworks */,
 				2ED79E072D6DD74B005B4948 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +210,21 @@
 				2ED79E0A2D6DD74B005B4948 /* RealityKitContent */,
 			);
 			path = Packages;
+			sourceTree = "<group>";
+		};
+		7FC261722D84411700E77A3A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E3EB812D2D843CE70016327A /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				E3EB96A82D843D810016327A /* vtk */,
+			);
+			path = Dependencies;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -161,22 +315,29 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"AnAppleADay/Preview Content\"";
-				DEVELOPMENT_TEAM = 8FW56V9S55;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 8Z4W25U7W4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Dependencies/vtk/include/vtk-9.4";
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/vtk/lib",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lunarisTeam.AnAppleADay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AnAppleADay/Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Debug;
 		};
@@ -187,22 +348,29 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"AnAppleADay/Preview Content\"";
-				DEVELOPMENT_TEAM = 8FW56V9S55;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 8Z4W25U7W4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Dependencies/vtk/include/vtk-9.4";
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/vtk/lib",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lunarisTeam.AnAppleADay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AnAppleADay/Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Release;
 		};

@@ -39,7 +39,8 @@ struct AnAppleADayApp: App {
                     ZStack {
                         Color("backgroundColor")
                             .opacity(0.3)
-                        GenerateModelView()
+                        GenerateModelView(directoryURL: secondUnwrap)
+                            
                     }
                 }
                 
@@ -93,9 +94,6 @@ struct AnAppleADayApp: App {
         }else{
             dismissWindow(id: oldMode.windowId)
         }
-        
-        
-        
     }
 }
 

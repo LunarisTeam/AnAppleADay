@@ -13,26 +13,26 @@ struct PopoverView: View {
     
     var body: some View {
         VStack(spacing: 35) {
-            Text("How does it work?")
+            Text("Intrart structure")
                 .font(.title2)
             HStack(spacing: 20) {
                 TutorialComponent(
                     imageName: "dicomIcon",
-                    bodyText: "First, you import the DICOM files"
+                    bodyText: "First, import the DICOM Files"
                 )
                 TutorialComponent(
                     imageName: "Sphere",
-                    bodyText: "Then, generate the 3D Model"
+                    bodyText: "Second, generate the 3D Model"
                 )
                 TutorialComponent(
                     imageName: "Window",
-                    bodyText: "You add the 2D X-ray imaging"
+                    bodyText: "Third, connect the 2D X-ray Imaging"
                 )
             }
             Button {
                 showInfo = false
             } label: {
-                Text("Got it!")
+                Text("Proceed")
             }
         }
         .frame(width: 800, height: 420)

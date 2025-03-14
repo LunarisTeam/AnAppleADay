@@ -40,12 +40,22 @@ struct AnAppleADayApp: App {
                         Color("backgroundColor")
                             .opacity(0.3)
                         GenerateModelView(directoryURL: secondUnwrap)
-                            
+                        
                     }
                 }
                 
                 
             }
+            
+            WindowGroup(id: WindowIDs.model3DVolumeWindowID, for: URL?.self) { url in
+                
+                if let firstUnwrap = url.wrappedValue, let secondUnwrap = firstUnwrap {
+                    ModelView(directoryURL: secondUnwrap)
+                }
+                
+                
+            }.windowStyle(.volumetric)
+            
         }
         .environment(\.setMode, setMode)
     }

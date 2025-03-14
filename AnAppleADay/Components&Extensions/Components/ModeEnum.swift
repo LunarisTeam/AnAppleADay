@@ -10,11 +10,13 @@
 @MainActor enum Mode: Equatable {
     case importDicoms
     case generate
+    case model3DVolume
     
     var windowId: String {
         switch self {
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
+        case .model3DVolume: return WindowIDs.model3DVolumeWindowID
         }
     }
     
@@ -22,6 +24,7 @@
         switch self {
         case .importDicoms: return false
         case .generate: return true
+        case .model3DVolume: return true
         }
     }
     

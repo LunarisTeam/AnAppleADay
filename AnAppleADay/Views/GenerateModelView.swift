@@ -14,6 +14,8 @@ struct GenerateModelView: View {
     @State var fileCounter: Int? = nil
     @State var directoryName: String = "Loading..."
     
+    @Environment(\.setMode) private var setMode
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 10) {
@@ -51,15 +53,19 @@ struct GenerateModelView: View {
                 }
                 .padding(.top, 12)
                 
-                NavigationLink(destination: ProgressModelView()) {
+                Button {
+                    Task {@MainActor in
+                        await setMode(.model3DVolume, directoryURL)
+                    }
+                } label: {
                     Text("Generate Model")
                         .font(.system(size: 24, weight: .medium))
                         .foregroundColor(.white)
                         .padding(.horizontal, 40)
                         .padding(.vertical, 16)
-                        
-                }
-                .padding(.top, 32)
+                }.padding(.top, 32)
+
+                
             }
             .padding(40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

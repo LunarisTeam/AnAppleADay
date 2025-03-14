@@ -14,7 +14,7 @@ struct AnAppleADayApp: App {
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
-        
+    
     /// Represents the current operational mode of the application.
     ///
     /// The mode determines which view is presented and which window is active. Its initial value
@@ -33,12 +33,17 @@ struct AnAppleADayApp: App {
                 
             }
             
-            WindowGroup(id: WindowIDs.generateModelWindowID) {
-                ZStack {
-                    Color("backgroundColor")
-                        .opacity(0.3)
-                    GenerateModelView()
+            WindowGroup(id: WindowIDs.generateModelWindowID, for: URL?.self) { url in
+                
+                if let firstUnwrap = url.wrappedValue, let secondUnwrap = firstUnwrap {
+                    ZStack {
+                        Color("backgroundColor")
+                            .opacity(0.3)
+                        GenerateModelView()
+                    }
                 }
+                
+                
             }
         }
         .environment(\.setMode, setMode)
@@ -70,20 +75,26 @@ struct AnAppleADayApp: App {
         print("")
         print("oldMode: \(oldMode), newMode: \(newMode)")
         
-        openWindow(id: newMode.windowId)
-        print("Opening \(newMode.windowId)")
+        if newMode.acceptsURL{
+            openWindow(id: newMode.windowId, value: url)
+        }else{
+            openWindow(id: newMode.windowId)
+        }
+        
+        
         
         //The do-catch is to avoid skipping the await for concurrency issues.
         //Increase the sleep if it doesn't work.
-        do {
-            try await Task.sleep(for: .seconds(0.05))
-            print("I waited")
-        } catch {
-            print(error.localizedDescription)
+        
+        try? await Task.sleep(for: .seconds(0.05))
+        
+        if oldMode.acceptsURL{
+            dismissWindow(id: oldMode.windowId, value: url)
+        }else{
+            dismissWindow(id: oldMode.windowId)
         }
-        dismissWindow(id: oldMode.windowId)
-        print("Dismissing \(oldMode.windowId)")
-
+        
+        
         
     }
 }

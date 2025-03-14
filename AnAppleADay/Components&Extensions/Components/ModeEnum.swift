@@ -17,4 +17,12 @@
         case .generate: return WindowIDs.generateModelWindowID
         }
     }
+    
+    var acceptsURL: Bool {
+        switch self {
+        case .importDicoms: return false
+        case .generate: return true
+        }
+    }
+    
 }

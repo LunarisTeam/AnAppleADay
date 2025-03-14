@@ -57,7 +57,3 @@ struct GenerateModelView: View {
         }
     }
 }
-
-#Preview(windowStyle: .automatic) {
-    GenerateModelView()
-}

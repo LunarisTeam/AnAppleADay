@@ -16,19 +16,20 @@ struct ProgressModelView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
+            VStack(spacing: 18) {
                 Image("Sphere")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 140, height: 140)
+                    .frame(width: 200, height: 200)
                 ProgressView(value: progress, total: 1.0)
                     .progressViewStyle(.linear)
                     .tint(.white)
-                    .frame(width: 300)
+                    .frame(width: 400)
                 Text("Generating the 3D Model")
-                    .font(.title2)
+                    .font(.system(size: 55, weight: .bold))
                     .foregroundColor(.white)
                 Text("Wait until your 3D Model is Generated")
+                    .font(.system(size: 35, weight: .medium))
                     .foregroundColor(.white.opacity(0.9))
             }
             .padding()
@@ -44,6 +45,8 @@ struct ProgressModelView: View {
                 VisualizeModelView()
             }
         }
+        .ignoresSafeArea()
+        .navigationBarBackButtonHidden()
     }
 }
 

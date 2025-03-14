@@ -36,7 +36,7 @@ struct ImportDicomView: View {
                     #endif
                 } label: {
                     HStack {
-                        Text("Import 3D Model")
+                        Text("Import DICOM dataset")
                         Image(systemName: "plus")
                     }
                     .frame(height: 55)

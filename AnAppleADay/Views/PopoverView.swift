@@ -10,33 +10,52 @@ import SwiftUI
 struct PopoverView: View {
     
     @Binding var showInfo: Bool
+    @State private var stepCounter: Int = 1
+    @State private var displayedStep: Int = 1
     
     var body: some View {
-        VStack(spacing: 35) {
-            Text("Intrart structure")
-                .font(.title2)
-            HStack(spacing: 20) {
-                TutorialComponent(
-                    imageName: "dicomIcon",
-                    bodyText: "First, import the DICOM Files"
-                )
-                TutorialComponent(
-                    imageName: "Sphere",
-                    bodyText: "Second, generate the 3D Model"
-                )
-                TutorialComponent(
-                    imageName: "Window",
-                    bodyText: "Third, connect the 2D X-ray Imaging"
-                )
+        VStack {
+            TabView(selection: $stepCounter) {
+                TutorialComponent(stepNumber: 1).tag(1)
+                TutorialComponent(stepNumber: 2).tag(2)
+                TutorialComponent(stepNumber: 3).tag(3)
             }
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .indexViewStyle(.page(backgroundDisplayMode: .never))
+        }
+        .overlay(alignment: .topTrailing) {
             Button {
                 showInfo = false
             } label: {
-                Text("Proceed")
+                Image(systemName: "xmark")
+                    .imageScale(.large)
+            }
+            .buttonBorderShape(.circle)
+        }
+        .overlay(alignment: .bottomTrailing) {
+            Button {
+                if stepCounter < 3 {
+                    withAnimation(.easeInOut(duration: 2)) {
+                        stepCounter += 1
+                    }
+                }
+            } label: {
+                Text("Next")
             }
         }
-        .frame(width: 800, height: 420)
+        
+        .overlay(alignment: .bottomLeading) {
+            if stepCounter > 1 {
+                Text("Previous")
+                    .padding(EdgeInsets(top: 0, leading: 15, bottom: 8, trailing: 0))
+                    .onTapGesture {
+                        withAnimation(.easeInOut(duration: 2)) {
+                            stepCounter -= 1
+                        }
+                    }
+            }
+        }
+        .frame(width: 600, height: 500)
         .padding()
     }
 }
-

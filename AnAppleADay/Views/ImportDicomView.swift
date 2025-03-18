@@ -65,7 +65,7 @@ struct ImportDicomView: View {
                 }
                 .buttonBorderShape(.circle)
                 .popover(isPresented: $showInfo, attachmentAnchor: .point(.init(x: -2.2, y: 1.45))) {
-                    PopoverView(showInfo: $showInfo)
+                    InfoView(showInfo: $showInfo)
                         .background(Color("backgroundColor").opacity(0.3))
                 }
             }

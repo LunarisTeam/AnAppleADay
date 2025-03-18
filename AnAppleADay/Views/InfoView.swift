@@ -7,9 +7,12 @@
 
 import SwiftUI
 
-struct PopoverView: View {
+struct InfoView: View {
+    
+    @Environment(OnboardingParameters.self) private var onboarding
     
     @Binding var showInfo: Bool
+    
     @State private var stepCounter: Int = 1
     @State private var displayedStep: Int = 1
     
@@ -31,16 +34,24 @@ struct PopoverView: View {
                     .imageScale(.large)
             }
             .buttonBorderShape(.circle)
+            .opacity(onboarding.completed ? 1 : 0)
         }
+        
         .overlay(alignment: .bottomTrailing) {
             Button {
                 if stepCounter < 3 {
-                    withAnimation(.easeInOut(duration: 2)) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
                         stepCounter += 1
+                    }
+                    
+                } else {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        onboarding.saveCompletionValue()
+                        showInfo = false
                     }
                 }
             } label: {
-                Text("Next")
+                Text(stepCounter == 3 ? "Proceed" : "Next")
             }
         }
         
@@ -49,7 +60,7 @@ struct PopoverView: View {
                 Text("Previous")
                     .padding(EdgeInsets(top: 0, leading: 15, bottom: 8, trailing: 0))
                     .onTapGesture {
-                        withAnimation(.easeInOut(duration: 2)) {
+                        withAnimation(.easeInOut(duration: 0.25)) {
                             stepCounter -= 1
                         }
                     }

@@ -21,6 +21,8 @@ struct AnAppleADayApp: App {
     /// is set to `.importDicoms`.
     @State private var mode: Mode = .importDicoms
     
+    @State private var onboarding: OnboardingParameters = .init()
+    
     var body: some Scene {
         
         Group {
@@ -28,10 +30,15 @@ struct AnAppleADayApp: App {
                 ZStack {
                     Color("backgroundColor")
                         .opacity(0.3)
-                    ImportDicomView()
+                    if onboarding.completed {
+                        ImportDicomView()
+                    } else {
+                        InfoView(showInfo: .constant(true))
+                   }
                 }
-                
             }
+            
+            .environment(onboarding)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: URL?.self) { url in
                 
@@ -40,21 +47,16 @@ struct AnAppleADayApp: App {
                         Color("backgroundColor")
                             .opacity(0.3)
                         GenerateModelView(directoryURL: secondUnwrap)
-                        
                     }
                 }
-                
-                
             }
             
             WindowGroup(id: WindowIDs.model3DVolumeWindowID, for: URL?.self) { url in
-                
                 if let firstUnwrap = url.wrappedValue, let secondUnwrap = firstUnwrap {
                     ModelView(directoryURL: secondUnwrap)
                 }
-                
-                
-            }.windowStyle(.volumetric)
+            }
+            .windowStyle(.volumetric)
             
         }
         .environment(\.setMode, setMode)

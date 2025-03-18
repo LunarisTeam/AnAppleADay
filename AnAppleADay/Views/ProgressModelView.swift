@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProgressModelView: View {
     
-    @State private var progress: CGFloat = 0.0
     @State private var navigateToVisualize = false
     @State private var currentStep: Int = 0
     
@@ -29,11 +28,10 @@ struct ProgressModelView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 200)
-                
-                ProgressView(value: progress, total: 1.0)
-                    .progressViewStyle(.linear)
-                    .tint(.white)
-                    .frame(width: 400)
+                    .overlay{
+                        ProgressView()
+                            .scaleEffect(2.0)
+                    }
                 
                 Text("Generating the 3D Model")
                     .font(.system(size: 55, weight: .bold))
@@ -44,14 +42,6 @@ struct ProgressModelView: View {
                     .foregroundColor(.white.opacity(0.9))
             }
             .padding()
-            .onReceive(Timer.publish(every: updateInterval, on: .main, in: .common).autoconnect()) { _ in
-                if currentStep < totalSteps {
-                    currentStep += 1
-                    progress = CGFloat(currentStep) / CGFloat(totalSteps)
-                } else {
-                    navigateToVisualize = true
-                }
-            }
             .padding(32)
         }
         .frame(width: 900, height: 500)

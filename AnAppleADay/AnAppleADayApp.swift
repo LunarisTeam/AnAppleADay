@@ -26,6 +26,8 @@ struct AnAppleADayApp: App {
     var body: some Scene {
         
         Group {
+            
+            /// This will be adjusted in the design area, therefore I will leave it like this 
             WindowGroup(id: WindowIDs.importDicomsWindowID) {
                 ZStack {
                     Color("backgroundColor")
@@ -37,7 +39,6 @@ struct AnAppleADayApp: App {
                    }
                 }
             }
-            
             .environment(onboarding)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: URL?.self) { url in

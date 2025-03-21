@@ -9,28 +9,60 @@ import SwiftUI
 
 struct TutorialComponent: View {
     
-    let imageName: String
-    let bodyText: String
+    let stepNumber: Int
+    
+    var imageName: String {
+        switch stepNumber {
+        case 1: return "dicomIcon"
+        case 2: return "Sphere"
+        case 3: return "Window"
+        default: return "unexpected"
+        }
+    }
+    
+    var bodyText: String {
+        switch stepNumber {
+        case 1: return "Import the dicom dataset form your local folder into the system"
+        case 2: return "The system will generate a 3D model from the imported DICOM dataset"
+        case 3: return "The system allows connection to a fluoroscope for real-time streaming of live 2D X-ray images"
+        default: return "unexpected"
+        }
+    }
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 50)
-                .fill(.thinMaterial)
-//                .foregroundStyle(Color("BackgroundColor"))
-                .frame(width: 192, height: 213)
+        
+        VStack {
+            Text("Step \(stepNumber)").font(.title3)
             
-            VStack(spacing: 15) {
-                Image(imageName).resizable()
-                    .if(imageName == "Window") {
-                        $0.frame(width: 130, height: 75)
+            Spacer()
+            
+            Image(imageName).resizable()
+                
+            //This is a fix until design side doesn't provide the correct asset
+                .if(imageName == "dicomIcon") {
+                    $0.offset(x: -20)
+                }
+                .if(imageName == "Window") {
+                    $0.background {
+                        Image(systemName: "app.connected.to.app.below.fill").resizable()
+                            .frame(width: 45, height: 55)
+                            .foregroundStyle(.green)
+                            .offset(x: 15, y: 95)
                     }
-                    .frame(width: 75, height: 75)
-                Text(bodyText)
-                    .frame(width: 140)
-                    .multilineTextAlignment(.center)
-            }
-            .padding()
+                }
+                .if(imageName == "Window") {
+                    $0.frame(width: 230, height: 150)
+                }
+                .frame(width: 200, height: 200)
+            
+            Spacer()
+            
+            Text(bodyText)
+                .frame(width: stepNumber == 3 ? 220 : 200)
+                .multilineTextAlignment(.center)
+                .fontWeight(.medium)
+            Spacer()
         }
-        .frame(width: 192, height: 213)
+        .padding()
     }
 }

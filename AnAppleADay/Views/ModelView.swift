@@ -20,11 +20,13 @@ struct ModelView: View {
         
         RealityView { _ in
             
-            Task {
+            Task.detached(priority: .utility) {
                 do {
-                    modelEntity = try await bootstrap()
+                    let modelEntity = try await bootstrap()
                     
-                } catch { self.error = error }
+                    await MainActor.run { self.modelEntity = modelEntity }
+                    
+                } catch { await MainActor.run { self.error = error } }
             }
             
         } update: { content in
@@ -53,7 +55,7 @@ struct ModelView: View {
             withName: directoryURL.lastPathComponent,
             threshold: 300.0
         )
-        
+
         return try await Entity(contentsOf: dicom3DURL)
     }
 }

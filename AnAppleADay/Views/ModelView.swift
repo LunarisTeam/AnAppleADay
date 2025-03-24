@@ -11,7 +11,7 @@ import RealityKit
 
 struct ModelView: View {
             
-    let directoryURL: URL
+    let dataSet: DicomDataSet
     
     @State private var error: Error? = nil
     @State private var modelEntity: Entity? = nil
@@ -56,20 +56,16 @@ struct ModelView: View {
         let visualizationToolkit: VisualizationToolkit = try .init()
         
         let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
-            fromDirectory: directoryURL,
-            withName: directoryURL.lastPathComponent,
+            fromDirectory: dataSet.url,
+            withName: dataSet.name,
             threshold: 300.0
         )
 
         let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
         
-        var redPBRMaterial = PhysicallyBasedMaterial()
+        var material = SimpleMaterial(color: .white, isMetallic: false)
 
-        redPBRMaterial.baseColor = .init(tint: .white)
-        redPBRMaterial.roughness = 0.5
-        redPBRMaterial.metallic = 0.0
-
-        modelEntity.model?.materials = [redPBRMaterial]
+        modelEntity.model?.materials = [material]
         
         return modelEntity
     }

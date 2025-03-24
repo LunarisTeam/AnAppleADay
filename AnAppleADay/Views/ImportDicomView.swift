@@ -14,10 +14,14 @@ struct ImportDicomView: View {
     
     @State private var showingFilePicker = false
     @State private var showInfo = false
+    @State private var error: Error? = nil
     
     var body: some View {
+        
         VStack {
+        
             Spacer()
+            
             VStack(spacing: 50) {
                 Image("Logo").resizable()
                     .frame(width: 150, height: 150)
@@ -60,33 +64,25 @@ struct ImportDicomView: View {
             
         }
         .padding()
+        .alert("Error", isPresented: .constant(error != nil)) {
+            Button("OK") { error = nil }
+        } message: { Text(error?.localizedDescription ?? "Unavailable error description") }
     }
     
     func handleFileImport(_ result: Result<[URL], any Error>) {
      
         guard let urls = try? result.get() else { return }
         
-        if let directoryURL = urls.first,
-           let cacheDirectory = FileManager.default.urls(
-               for: .cachesDirectory,
-               in: .userDomainMask
-           ).first {
+        if let directoryURL = urls.first {
             
             do {
-                
-                try directoryURL.whileAccessingSecurityScopedResource {
-                    
-                    try FileManager.default.copyItem(
-                        at: directoryURL,
-                        to: cacheDirectory.appendingPathComponent(directoryURL.lastPathComponent)
-                    )
-                }
+                let dataSet = try DicomDataSet.createNew(originURL: directoryURL)
                 
                 Task { @MainActor in
-                    await setMode(.generate, cacheDirectory.appendingPathComponent(directoryURL.lastPathComponent))
+                    await setMode(.generate, dataSet)
                 }
                 
-            } catch { print(error) }
+            } catch { self.error = error }
         }
     }
 }

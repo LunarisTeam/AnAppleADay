@@ -20,7 +20,7 @@
         }
     }
     
-    var acceptsURL: Bool {
+    var acceptsDataSet: Bool {
         switch self {
         case .importDicoms: return false
         case .generate: return true

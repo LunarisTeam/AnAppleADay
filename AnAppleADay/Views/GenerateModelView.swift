@@ -9,10 +9,7 @@ import SwiftUI
 
 struct GenerateModelView: View {
     
-    let directoryURL: URL
-    
-    @State var fileCounter: Int? = nil
-    @State var directoryName: String = "Loading..."
+    let dataSet: DicomDataSet
     
     @Environment(\.setMode) private var setMode
     
@@ -24,7 +21,7 @@ struct GenerateModelView: View {
                     .font(.system(size: 45, weight: .bold))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.white)
-            
+                
                 Text("A 3D model will be generated from your imported\nDICOM dataset")
                     .font(.system(size: 32, weight: .medium))
                     .foregroundColor(.white.opacity(0.9))
@@ -39,23 +36,19 @@ struct GenerateModelView: View {
                         .frame(width: 100, height: 100)
                         .foregroundColor(.white.opacity(0.8))
                     
-                    Text(directoryName)
+                    Text(dataSet.name)
                         .font(.system(size: 24, weight: .medium))
                         .foregroundColor(.white)
                     
-                    if let count = fileCounter {
-                        Text("\(count) slices")
-                            .font(.system(size: 20))
-                            .foregroundColor(.white.opacity(0.7))
-                    }
-
-                   
+                    Text("\(dataSet.sliceCount) slices")
+                        .font(.system(size: 20))
+                        .foregroundColor(.white.opacity(0.7))
                 }
                 .padding(.top, 12)
                 
                 Button {
                     Task {@MainActor in
-                        await setMode(.model3DVolume, directoryURL)
+                        await setMode(.model3DVolume, dataSet)
                     }
                 } label: {
                     Text("Generate Model")
@@ -64,39 +57,12 @@ struct GenerateModelView: View {
                         .padding(.horizontal, 40)
                         .padding(.vertical, 16)
                 }.padding(.top, 32)
-
-                
             }
             .padding(40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-        }.task {
-            try? loadFileURLs()
         }
     }
-    
-    func loadFileURLs() throws {
-        
-        self.directoryName = directoryURL.lastPathComponent
-        
-        let fileURLs: [URL] = try directoryURL.whileAccessingSecurityScopedResource {
-            
-            return try FileManager.default.contentsOfDirectory(
-                at: directoryURL,
-                includingPropertiesForKeys: nil
-            )
-        }
-            
-        let filteredURLs = fileURLs.filter {
-            ($0.pathExtension == "dcm" ||
-             $0.pathExtension.isEmpty) &&
-            $0.lastPathComponent != ".DS_Store"
-            
-        }
-        
-        self.fileCounter = filteredURLs.count
-    }
-    
 }
 
 

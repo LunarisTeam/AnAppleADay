@@ -57,19 +57,15 @@ struct ModelView: View {
         
         let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
             fromDirectory: dataSet.url,
-            withName: dataSet.url.lastPathComponent,
+            withName: dataSet.name,
             threshold: 300.0
         )
 
         let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
         
-        var redPBRMaterial = PhysicallyBasedMaterial()
+        var material = SimpleMaterial(color: .white, isMetallic: false)
 
-        redPBRMaterial.baseColor = .init(tint: .white)
-        redPBRMaterial.roughness = 0.5
-        redPBRMaterial.metallic = 0.0
-
-        modelEntity.model?.materials = [redPBRMaterial]
+        modelEntity.model?.materials = [material]
         
         return modelEntity
     }

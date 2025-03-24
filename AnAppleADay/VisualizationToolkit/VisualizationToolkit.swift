@@ -108,7 +108,7 @@ struct VisualizationToolkit {
         if let cachedURL = try? getNamedUSDFromCache(fileName) {
             return cachedURL
         }
-        
+            
         guard let vtkOutput = vtkWrapper.generate3DModel(
             fromDICOMDirectory: directoryURL.path(percentEncoded: false),
             fileName: fileName,
@@ -116,7 +116,7 @@ struct VisualizationToolkit {
         ) else {
             throw Error.failedToGenerateModel
         }
-        
+            
         return try convertToUSD(vtkOutput)
     }
     

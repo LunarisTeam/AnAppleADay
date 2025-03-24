@@ -11,7 +11,7 @@ import RealityKit
 
 struct ModelView: View {
             
-    let directoryURL: URL
+    let dataSet: DicomDataSet
     
     @State private var error: Error? = nil
     @State private var modelEntity: Entity? = nil
@@ -35,6 +35,11 @@ struct ModelView: View {
                                 
                 modelEntity.transform.scale = [0.0015, 0.0015, 0.0015]
                 
+                modelEntity.transform.rotation = .init(
+                    angle: -.pi*1.5,
+                    axis: [1, 0, 0]
+                )
+                
                 content.add(modelEntity)
             }
         }
@@ -51,11 +56,17 @@ struct ModelView: View {
         let visualizationToolkit: VisualizationToolkit = try .init()
         
         let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
-            fromDirectory: directoryURL,
-            withName: directoryURL.lastPathComponent,
+            fromDirectory: dataSet.url,
+            withName: dataSet.name,
             threshold: 300.0
         )
 
-        return try await Entity(contentsOf: dicom3DURL)
+        let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
+        
+        modelEntity.model?.materials = [
+            SimpleMaterial(color: .white, isMetallic: false)
+        ]
+        
+        return modelEntity
     }
 }

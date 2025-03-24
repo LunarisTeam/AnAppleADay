@@ -37,25 +37,13 @@ struct ImportDicomView: View {
                     }
                     .frame(height: 55)
                 }
-                
                 .fileImporter(
                     isPresented: $showingFilePicker,
                     allowedContentTypes: [UTType.folder],
-                    allowsMultipleSelection: false
-                ) { result in
-
-                    guard let urls = try? result.get() else {
-                        return
-                    }
+                    allowsMultipleSelection: false,
+                    onCompletion: handleFileImport
+                )
                     
-                    if let directoryURL = urls.first {
-                        
-                        Task { @MainActor in
-                            await setMode(.generate, directoryURL)
-                        }
-                    }
-                }
-                
                 Button {
                     showInfo = true
                 } label: {
@@ -72,5 +60,33 @@ struct ImportDicomView: View {
             
         }
         .padding()
+    }
+    
+    func handleFileImport(_ result: Result<[URL], any Error>) {
+     
+        guard let urls = try? result.get() else { return }
+        
+        if let directoryURL = urls.first,
+           let cacheDirectory = FileManager.default.urls(
+               for: .cachesDirectory,
+               in: .userDomainMask
+           ).first {
+            
+            do {
+                
+                try directoryURL.whileAccessingSecurityScopedResource {
+                    
+                    try FileManager.default.copyItem(
+                        at: directoryURL,
+                        to: cacheDirectory.appendingPathComponent(directoryURL.lastPathComponent)
+                    )
+                }
+                
+                Task { @MainActor in
+                    await setMode(.generate, cacheDirectory.appendingPathComponent(directoryURL.lastPathComponent))
+                }
+                
+            } catch { print(error) }
+        }
     }
 }

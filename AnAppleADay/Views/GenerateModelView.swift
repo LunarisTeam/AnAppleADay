@@ -79,16 +79,21 @@ struct GenerateModelView: View {
         
         self.directoryName = directoryURL.lastPathComponent
         
-        let fileURLs = try FileManager.default.contentsOfDirectory(
-            at: directoryURL,
-            includingPropertiesForKeys: nil)
-        
+        let fileURLs: [URL] = try directoryURL.whileAccessingSecurityScopedResource {
+            
+            return try FileManager.default.contentsOfDirectory(
+                at: directoryURL,
+                includingPropertiesForKeys: nil
+            )
+        }
+            
         let filteredURLs = fileURLs.filter {
             ($0.pathExtension == "dcm" ||
              $0.pathExtension.isEmpty) &&
             $0.lastPathComponent != ".DS_Store"
             
         }
+        
         self.fileCounter = filteredURLs.count
     }
     

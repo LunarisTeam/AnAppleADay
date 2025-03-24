@@ -40,22 +40,19 @@ struct VisualizationToolkit {
     private func convertToUSD(_ objFilePath: String) throws -> URL {
         
         let objFileURL: URL = .init(fileURLWithPath: objFilePath)
-                
-        return try objFileURL.whileAccessingSecurityScopedResource {
+        
+        let mdlAsset: MDLAsset = .init(url: objFileURL)
+        
+        let destinationURL = objFileURL
+            .deletingPathExtension()
+            .appendingPathExtension("usd")
+        
+        do {
+            try mdlAsset.export(to: destinationURL)
             
-            let mdlAsset: MDLAsset = .init(url: objFileURL)
-            
-            let destinationURL = objFileURL
-                .deletingPathExtension()
-                .appendingPathExtension("usd")
-            
-            do {
-                try mdlAsset.export(to: destinationURL)
-                
-            } catch { throw Error.conversionToUSDFailed }
-            
-            return destinationURL
-        }
+        } catch { throw Error.conversionToUSDFailed }
+        
+        return destinationURL
     }
     
     /// Retrieves a USD file from the cache and verifies its validity.
@@ -108,11 +105,11 @@ struct VisualizationToolkit {
         threshold: Double
     ) throws -> URL {
         
-        return try directoryURL.whileAccessingSecurityScopedResource {
-            
-            if let cachedURL = try? getNamedUSDFromCache(fileName) {
-                return cachedURL
-            }
+        if let cachedURL = try? getNamedUSDFromCache(fileName) {
+            return cachedURL
+        }
+        
+        let outputPath: String = try directoryURL.whileAccessingSecurityScopedResource {
             
             guard let vtkOutput = vtkWrapper.generate3DModel(
                 fromDICOMDirectory: directoryURL.path(percentEncoded: false),
@@ -122,8 +119,10 @@ struct VisualizationToolkit {
                 throw Error.failedToGenerateModel
             }
             
-            return try convertToUSD(vtkOutput)
+            return vtkOutput
         }
+        
+        return try convertToUSD(outputPath)
     }
     
     // MARK: - Initialization

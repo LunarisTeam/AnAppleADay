@@ -40,19 +40,22 @@ struct VisualizationToolkit {
     private func convertToUSD(_ objFilePath: String) throws -> URL {
         
         let objFileURL: URL = .init(fileURLWithPath: objFilePath)
-        
-        let mdlAsset: MDLAsset = .init(url: objFileURL)
-        
-        let destinationURL = objFileURL
-            .deletingPathExtension()
-            .appendingPathExtension("usd")
-        
-        do {
-            try mdlAsset.export(to: destinationURL)
+                
+        return try objFileURL.whileAccessingSecurityScopedResource {
             
-        } catch { throw Error.conversionToUSDFailed }
-        
-        return destinationURL
+            let mdlAsset: MDLAsset = .init(url: objFileURL)
+            
+            let destinationURL = objFileURL
+                .deletingPathExtension()
+                .appendingPathExtension("usd")
+            
+            do {
+                try mdlAsset.export(to: destinationURL)
+                
+            } catch { throw Error.conversionToUSDFailed }
+            
+            return destinationURL
+        }
     }
     
     /// Retrieves a USD file from the cache and verifies its validity.
@@ -105,19 +108,22 @@ struct VisualizationToolkit {
         threshold: Double
     ) throws -> URL {
         
-        if let cachedURL = try? getNamedUSDFromCache(fileName) {
-            return cachedURL
+        return try directoryURL.whileAccessingSecurityScopedResource {
+            
+            if let cachedURL = try? getNamedUSDFromCache(fileName) {
+                return cachedURL
+            }
+            
+            guard let vtkOutput = vtkWrapper.generate3DModel(
+                fromDICOMDirectory: directoryURL.path(percentEncoded: false),
+                fileName: fileName,
+                threshold: threshold
+            ) else {
+                throw Error.failedToGenerateModel
+            }
+            
+            return try convertToUSD(vtkOutput)
         }
-        
-        guard let vtkOutput = vtkWrapper.generate3DModel(
-            fromDICOMDirectory: directoryURL.path(percentEncoded: false),
-            fileName: fileName,
-            threshold: threshold
-        ) else {
-            throw Error.failedToGenerateModel
-        }
-        
-        return try convertToUSD(vtkOutput)
     }
     
     // MARK: - Initialization

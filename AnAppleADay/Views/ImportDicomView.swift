@@ -49,13 +49,11 @@ struct ImportDicomView: View {
                     }
                     
                     if let directoryURL = urls.first {
+                        
                         Task { @MainActor in
                             await setMode(.generate, directoryURL)
                         }
-                        
                     }
-
-                        
                 }
                 
                 Button {

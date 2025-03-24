@@ -35,6 +35,11 @@ struct ModelView: View {
                                 
                 modelEntity.transform.scale = [0.0015, 0.0015, 0.0015]
                 
+                modelEntity.transform.rotation = .init(
+                    angle: -.pi*1.5,
+                    axis: [1, 0, 0]
+                )
+                
                 content.add(modelEntity)
             }
         }
@@ -56,6 +61,16 @@ struct ModelView: View {
             threshold: 300.0
         )
 
-        return try await Entity(contentsOf: dicom3DURL)
+        let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
+        
+        var redPBRMaterial = PhysicallyBasedMaterial()
+
+        redPBRMaterial.baseColor = .init(tint: .white)
+        redPBRMaterial.roughness = 0.5
+        redPBRMaterial.metallic = 0.0
+
+        modelEntity.model?.materials = [redPBRMaterial]
+        
+        return modelEntity
     }
 }

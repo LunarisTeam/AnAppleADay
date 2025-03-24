@@ -69,20 +69,28 @@ struct ImportDicomView: View {
         } message: { Text(error?.localizedDescription ?? "Unavailable error description") }
     }
     
+    /// Handles the result of the file import operation from the file picker.
+    ///
+    /// This function is triggered when the user selects a folder using the `.fileImporter` modifier.
+    /// It attempts to create a `DicomDataSet` from the selected directory and transitions
+    /// the app into the `.generate` mode by calling the injected `setMode` environment function.
+    ///
+    /// If an error occurs during dataset creation, it is stored in the `error` state variable
+    /// and displayed through an alert in the UI.
+    ///
+    /// - Parameter result: The result of the file import, containing either a list of URLs or an error.
     func handleFileImport(_ result: Result<[URL], any Error>) {
-     
-        guard let urls = try? result.get() else { return }
         
-        if let directoryURL = urls.first {
+        guard let urls = try? result.get(),
+              let directoryURL = urls.first else { return }
+        
+        do {
+            let dataSet = try DicomDataSet.createNew(originURL: directoryURL)
             
-            do {
-                let dataSet = try DicomDataSet.createNew(originURL: directoryURL)
-                
-                Task { @MainActor in
-                    await setMode(.generate, dataSet)
-                }
-                
-            } catch { self.error = error }
-        }
+            Task { @MainActor in
+                await setMode(.generate, dataSet)
+            }
+            
+        } catch { self.error = error }
     }
 }

@@ -63,9 +63,9 @@ struct ModelView: View {
 
         let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
         
-        var material = SimpleMaterial(color: .white, isMetallic: false)
-
-        modelEntity.model?.materials = [material]
+        modelEntity.model?.materials = [
+            SimpleMaterial(color: .white, isMetallic: false)
+        ]
         
         return modelEntity
     }

@@ -26,6 +26,13 @@
 #import <vtkMarchingCubes.h>
 #import <vtkPolyData.h>
 
+// Femur box isolation
+#import <vtkBox.h>
+#import <vtkExtractPolyDataGeometry.h>
+#import <vtkCleanPolyData.h>
+#import <vtkTransform.h>
+#import <vtkTransformPolyDataFilter.h>
+
 #pragma clang diagnostic pop
 
 @implementation VTKWrapper
@@ -75,8 +82,43 @@
         // 3) Retrieve the resulting 3D model (polydata).
         vtkSmartPointer<vtkPolyData> polyData = mc->GetOutput();
         
-        // 4) Export the polydata using the common export method.
-        return [self exportPolyData:polyData withFileName:fileName];
+        // 4) Trim the model to only include the right femur.
+        // Define the bounds for the right femur.
+        double rightFemurBounds[6] = { 0, 150, 50, 175, 500, 625 }; // Adjust these values as needed
+        
+        // Create an implicit box using the specified bounds.
+        vtkSmartPointer<vtkBox> femurBox = vtkSmartPointer<vtkBox>::New();
+        femurBox->SetBounds(rightFemurBounds);
+        
+        // Extract the geometry within the box.
+        vtkSmartPointer<vtkExtractPolyDataGeometry> extractFemur = vtkSmartPointer<vtkExtractPolyDataGeometry>::New();
+        extractFemur->SetInputData(polyData);
+        extractFemur->SetImplicitFunction(femurBox);
+        extractFemur->Update();
+        
+        vtkSmartPointer<vtkPolyData> trimmedPolyData = extractFemur->GetOutput();
+        
+        // Optionally, clean the trimmed polydata.
+        vtkSmartPointer<vtkCleanPolyData> cleanFemur = vtkSmartPointer<vtkCleanPolyData>::New();
+        cleanFemur->SetInputData(trimmedPolyData);
+        cleanFemur->Update();
+        vtkSmartPointer<vtkPolyData> finalFemurPolyData = cleanFemur->GetOutput();
+        
+        // 5) Translate the trimmed model so that its bounding box minimum is at (0,0,0).
+        double bounds[6];
+        finalFemurPolyData->GetBounds(bounds); // bounds[0]=xMin, bounds[2]=yMin, bounds[4]=zMin
+        
+        vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+        transform->Translate(-bounds[0], -bounds[2], -bounds[4]);
+        
+        vtkSmartPointer<vtkTransformPolyDataFilter> transformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+        transformFilter->SetInputData(finalFemurPolyData);
+        transformFilter->SetTransform(transform);
+        transformFilter->Update();
+        vtkSmartPointer<vtkPolyData> shiftedFemurPolyData = transformFilter->GetOutput();
+        
+        // 6) Export the trimmed and shifted polydata using the common export method.
+        return [self exportPolyData:shiftedFemurPolyData withFileName:fileName];
         
     } @catch (NSException *exception) {
         NSLog(@"❌ Error generating 3D model from DICOM: %@", exception);

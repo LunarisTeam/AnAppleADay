@@ -33,7 +33,7 @@ struct ModelView: View {
             
             if let modelEntity {
                                 
-                modelEntity.transform.scale = [0.0015, 0.0015, 0.0015]
+                modelEntity.transform.scale = [0.003, 0.003, 0.003]
                 
                 modelEntity.transform.rotation = .init(
                     angle: -.pi*1.5,

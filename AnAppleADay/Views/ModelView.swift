@@ -92,8 +92,7 @@ struct ModelView: View {
         let visualizationToolkit: VisualizationToolkit = try .init()
         
         let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
-            fromDirectory: dataSet.url,
-            withName: dataSet.name + "-\(threshold)",
+            dataSet: dataSet,
             threshold: threshold,
             boxBounds: box,
             translationBounds: translation

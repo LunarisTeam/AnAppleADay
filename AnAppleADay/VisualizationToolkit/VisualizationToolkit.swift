@@ -99,13 +99,19 @@ struct VisualizationToolkit {
     ///   - directoryURL: The file URL to the directory containing the DICOM files.
     ///   - fileName: The base file name (without extension) to use for the output model.
     ///   - threshold: The isosurface threshold value (e.g., in Hounsfield units for CT data).
+    ///   - boxBounds: An optional array of 6 double values representing the bounding box in the form
+    ///                  [xmin, xmax, ymin, ymax, zmin, zmax] used to trim the model. Must be not nil to trim.
+    ///   - translationBounds: An optional array of 3 double values representing the translation vector
+    ///                        [tx, ty, tz] that shifts the trimmed model so its minimum is at (0,0,0). Must be not nil to apply translation.
     /// - Returns: The file URL of the generated USD model.
     /// - Throws: `DcmVisionError.failedToGenerateModel` if VTKWrapper fails to generate the PLY;
     ///           `DcmVisionError.conversionToUSDFailed` if the conversion to USD fails.
     func generateDICOM(
         fromDirectory directoryURL: URL,
         withName fileName: String,
-        threshold: Double
+        threshold: Double,
+        boxBounds: [Double]? = nil,
+        translationBounds: [Double]? = nil
     ) throws -> URL {
         
         if let cachedURL = try? getNamedUSDFromCache(fileName) {
@@ -115,7 +121,9 @@ struct VisualizationToolkit {
         guard let vtkOutput = vtkWrapper.generate3DModel(
             fromDICOMDirectory: directoryURL.path(percentEncoded: false),
             fileName: fileName,
-            threshold: threshold
+            threshold: threshold,
+            boxBounds: boxBounds,
+            translationBounds: translationBounds
         ) else {
             throw Error.failedToGenerateModel
         }

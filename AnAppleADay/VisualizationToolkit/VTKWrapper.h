@@ -42,20 +42,32 @@
 - (BOOL)isVTKFunctional;
 
 /// @brief Reads a directory of DICOM files, reconstructs a 3D surface using Marching Cubes,
-///        and exports the resulting model as a ModelIO-supported file format.
+/// optionally trims and translates it, and exports the resulting model.
 ///
-/// This method uses @c vtkDICOMImageReader to load a series of DICOM slices from
-/// the specified directory. It then applies a Marching Cubes filter at the provided
-/// threshold value to extract an isosurface. The result is saved to @c cachePath.
+/// This method uses @c vtkDICOMImageReader to load a series of DICOM slices from the specified directory.
+/// It then applies a Marching Cubes filter at the provided threshold value to extract an isosurface.
+/// If valid bounds are provided (i.e. both @p boxBounds and @p translationBounds are non-NULL), the
+/// extracted model is trimmed to the region defined by @p boxBounds using a bounding box filter and then
+/// translated so that its minimum coordinate aligns with (0,0,0) using @p translationBounds.
+/// Finally, the resulting (trimmed and/or shifted) polydata is exported using a common export method.
 ///
-/// @param dicomDir The filesystem path to a directory containing DICOM files.
+/// If either @p boxBounds or @p translationBounds is NULL, the model is exported untrimmed.
+///
+/// @param dicomDir The filesystem path to the directory containing DICOM files.
 /// @param fileName The base file name (without extension) for the output file.
-/// @param threshold The isosurface threshold used by Marching Cubes. Typically
-///        a Hounsfield Unit for CT data.
-/// @return The full filesystem path to the generated model, or nil on failure.
+/// @param threshold The isosurface threshold used by Marching Cubes (typically in Hounsfield units).
+/// @param boxBounds A pointer to an array of 6 double values representing the bounding box in the form
+///                  [xmin, xmax, ymin, ymax, zmin, zmax] used to trim the model. Must be non-NULL to trim.
+/// @param translationBounds A pointer to an array of 3 double values representing the translation vector
+///                          [tx, ty, tz] that shifts the trimmed model so its minimum is at (0,0,0).
+///                          Must be non-NULL to apply translation.
+///
+/// @return The full filesystem path to the generated model file, or nil if an error occurs.
 - (NSString *)generate3DModelFromDICOMDirectory:(NSString *)dicomDir
                                        fileName:(NSString *)fileName
-                                      threshold:(double)threshold;
+                                      threshold:(double)threshold
+                                      boxBounds:(const double [])boxBounds
+                              translationBounds:(const double [])translationBounds;
 
 /// @brief Initializes a new instance of VTKWrapper with a specific output directory.
 ///

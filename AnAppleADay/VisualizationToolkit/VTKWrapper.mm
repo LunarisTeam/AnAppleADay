@@ -55,18 +55,34 @@
     } @catch (NSException *exception) { return NO; }
 }
 
-/// @brief Reads a directory of DICOM files, reconstructs a 3D isosurface using Marching Cubes,
-///        and exports the resulting mesh as a PLY file.
-/// @param dicomDir Filesystem path to a directory containing DICOM files.
-/// @param fileName The base file name (without extension) for the PLY output.
-/// @param threshold The isosurface threshold used by Marching Cubes.
-///        For CT data in Hounsfield units, a value such as ~300 might capture bone.
-/// @return The full filesystem path to the generated PLY file, or nil on error.
+/// @brief Reads a directory of DICOM files, reconstructs a 3D surface using Marching Cubes,
+/// optionally trims and translates it, and exports the resulting model.
+///
+/// This method uses @c vtkDICOMImageReader to load a series of DICOM slices from the specified directory.
+/// It then applies a Marching Cubes filter at the provided threshold value to extract an isosurface.
+/// If valid bounds are provided (i.e. both @p boxBounds and @p translationBounds are non-NULL), the
+/// extracted model is trimmed to the region defined by @p boxBounds using a bounding box filter and then
+/// translated so that its minimum coordinate aligns with (0,0,0) using @p translationBounds.
+/// Finally, the resulting (trimmed and/or shifted) polydata is exported using a common export method.
+///
+/// If either @p boxBounds or @p translationBounds is NULL, the model is exported untrimmed.
+///
+/// @param dicomDir The filesystem path to the directory containing DICOM files.
+/// @param fileName The base file name (without extension) for the output file.
+/// @param threshold The isosurface threshold used by Marching Cubes (typically in Hounsfield units).
+/// @param boxBounds A pointer to an array of 6 double values representing the bounding box in the form
+///                  [xmin, xmax, ymin, ymax, zmin, zmax] used to trim the model. Must be non-NULL to trim.
+/// @param translationBounds A pointer to an array of 3 double values representing the translation vector
+///                          [tx, ty, tz] that shifts the trimmed model so its minimum is at (0,0,0).
+///                          Must be non-NULL to apply translation.
+///
+/// @return The full filesystem path to the generated model file, or nil if an error occurs.
 - (NSString *)generate3DModelFromDICOMDirectory:(NSString *)dicomDir
                                        fileName:(NSString *)fileName
-                                      threshold:(double)threshold {
+                                      threshold:(double)threshold
+                                      boxBounds:(const double *)boxBounds
+                              translationBounds:(const double *)translationBounds {
     @try {
-        
         // 1) Read the DICOM dataset.
         vtkSmartPointer<vtkDICOMImageReader> reader = vtkSmartPointer<vtkDICOMImageReader>::New();
         reader->SetDirectoryName([dicomDir UTF8String]);
@@ -82,48 +98,76 @@
         // 3) Retrieve the resulting 3D model (polydata).
         vtkSmartPointer<vtkPolyData> polyData = mc->GetOutput();
         
-        // 4) Trim the model to only include the right femur.
-        // Define the bounds for the right femur.
-        double rightFemurBounds[6] = { 0, 150, 50, 175, 500, 625 }; // Adjust these values as needed
+        // 4) If valid bounds are provided, trim and translate the model.
+        vtkSmartPointer<vtkPolyData> finalPolyData = [self trimAndTranslatePolyData:polyData
+                                                                          boxBounds:boxBounds
+                                                                  translationBounds:translationBounds];
         
-        // Create an implicit box using the specified bounds.
-        vtkSmartPointer<vtkBox> femurBox = vtkSmartPointer<vtkBox>::New();
-        femurBox->SetBounds(rightFemurBounds);
-        
-        // Extract the geometry within the box.
-        vtkSmartPointer<vtkExtractPolyDataGeometry> extractFemur = vtkSmartPointer<vtkExtractPolyDataGeometry>::New();
-        extractFemur->SetInputData(polyData);
-        extractFemur->SetImplicitFunction(femurBox);
-        extractFemur->Update();
-        
-        vtkSmartPointer<vtkPolyData> trimmedPolyData = extractFemur->GetOutput();
-        
-        // Optionally, clean the trimmed polydata.
-        vtkSmartPointer<vtkCleanPolyData> cleanFemur = vtkSmartPointer<vtkCleanPolyData>::New();
-        cleanFemur->SetInputData(trimmedPolyData);
-        cleanFemur->Update();
-        vtkSmartPointer<vtkPolyData> finalFemurPolyData = cleanFemur->GetOutput();
-        
-        // 5) Translate the trimmed model so that its bounding box minimum is at (0,0,0).
-        double bounds[6];
-        finalFemurPolyData->GetBounds(bounds); // bounds[0]=xMin, bounds[2]=yMin, bounds[4]=zMin
-        
-        vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-        transform->Translate(-bounds[0], -bounds[2], -bounds[4]);
-        
-        vtkSmartPointer<vtkTransformPolyDataFilter> transformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-        transformFilter->SetInputData(finalFemurPolyData);
-        transformFilter->SetTransform(transform);
-        transformFilter->Update();
-        vtkSmartPointer<vtkPolyData> shiftedFemurPolyData = transformFilter->GetOutput();
-        
-        // 6) Export the trimmed and shifted polydata using the common export method.
-        return [self exportPolyData:shiftedFemurPolyData withFileName:fileName];
+        // 5) Export the (trimmed or untrimmed) polydata using the common export method.
+        return [self exportPolyData:finalPolyData withFileName:fileName];
         
     } @catch (NSException *exception) {
         NSLog(@"❌ Error generating 3D model from DICOM: %@", exception);
         return nil;
     }
+}
+
+/// @brief Trims and translates a vtkPolyData using specified bounds.
+///
+/// This helper method takes an input vtkPolyData and, if valid bounds are provided,
+/// trims it to include only the geometry within a bounding box defined by @p boxBounds.
+/// The bounding box is specified by a 6-element array [xmin, xmax, ymin, ymax, zmin, zmax].
+/// After extraction, the trimmed polydata is cleaned and then translated so that its minimum
+/// coordinate aligns with (0,0,0) using the translation vector specified by the 3-element array
+/// @p translationBounds ([tx, ty, tz]).
+///
+/// If either @p boxBounds or @p translationBounds is NULL, the original @p polyData is returned without any modification.
+///
+/// @param polyData The input vtkPolyData to be trimmed and translated.
+/// @param boxBounds A pointer to a 6-element array of doubles defining the trim region as
+///                  [xmin, xmax, ymin, ymax, zmin, zmax].
+/// @param translationBounds A pointer to a 3-element array of doubles specifying the translation
+///                          vector [tx, ty, tz] to apply, so that the trimmed model's minimum becomes (0,0,0).
+///
+/// @return A vtkSmartPointer to the resulting vtkPolyData after trimming and translation.
+- (vtkSmartPointer<vtkPolyData>)trimAndTranslatePolyData:(vtkSmartPointer<vtkPolyData>)polyData
+                                               boxBounds:(const double *)boxBounds
+                                       translationBounds:(const double *)translationBounds {
+    
+    // If either bounds array is missing, do not trim or translate.
+    if (boxBounds == NULL || translationBounds == NULL) {
+        return polyData;
+    }
+    
+    // Create an implicit box using the provided bounds.
+    vtkSmartPointer<vtkBox> femurBox = vtkSmartPointer<vtkBox>::New();
+    femurBox->SetBounds(boxBounds);
+    
+    // Extract the geometry within the box.
+    vtkSmartPointer<vtkExtractPolyDataGeometry> extractFemur = vtkSmartPointer<vtkExtractPolyDataGeometry>::New();
+    extractFemur->SetInputData(polyData);
+    extractFemur->SetImplicitFunction(femurBox);
+    extractFemur->Update();
+    vtkSmartPointer<vtkPolyData> trimmedPolyData = extractFemur->GetOutput();
+    
+    // Clean the trimmed polydata.
+    vtkSmartPointer<vtkCleanPolyData> cleanFemur = vtkSmartPointer<vtkCleanPolyData>::New();
+    cleanFemur->SetInputData(trimmedPolyData);
+    cleanFemur->Update();
+    vtkSmartPointer<vtkPolyData> finalFemurPolyData = cleanFemur->GetOutput();
+    
+    // Translate the trimmed model so that its bounding box minimum aligns with (0,0,0).
+    vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+    // translationBounds is expected to have three elements: [tx, ty, tz]
+    transform->Translate(-translationBounds[0], -translationBounds[1], -translationBounds[2]);
+    
+    vtkSmartPointer<vtkTransformPolyDataFilter> transformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+    transformFilter->SetInputData(finalFemurPolyData);
+    transformFilter->SetTransform(transform);
+    transformFilter->Update();
+    vtkSmartPointer<vtkPolyData> shiftedFemurPolyData = transformFilter->GetOutput();
+    
+    return shiftedFemurPolyData;
 }
 
 /// @brief Helper method to export vtkPolyData as a PLY file.

@@ -21,6 +21,7 @@ struct VisualizationToolkit {
         case invalidFile
         case failedToGenerateModel
         case conversionToUSDFailed
+        case invalidConfiguration
     }
     
     // MARK: - Properties
@@ -88,40 +89,73 @@ struct VisualizationToolkit {
     
     // MARK: - Public Methods
     
-    /// Generates a 3D model from a DICOM dataset and converts it to USD.
+    /// Generates a 3D model from a DICOM dataset and converts it to a USD file.
     ///
-    /// This method first calls the private `getNamedUSDFromCache(:_)` to check if the requested model
-    /// has already been cached. If not, it uses the VTKWrapper to read a directory of DICOM files,
-    /// apply a Marching Cubes isosurface extraction using the specified threshold, and export the resulting
-    /// model as a PLY file. The PLY file is then loaded into a ModelIO asset and exported as a USD file.
+    /// This function first checks whether a USD version of the requested model is already cached by calling
+    /// `getNamedUSDFromCache(_:)`. If a cached model is found, its URL is returned immediately.
+    ///
+    /// If no cached model exists, the function proceeds to use the VTKWrapper to:
+    ///
+    /// 1. Read the DICOM files from the provided directory.
+    /// 2. Apply a Marching Cubes isosurface extraction at the specified threshold (in Hounsfield units).
+    /// 3. Optionally trim the resulting 3D model to a region of interest using the provided bounds:
+    ///    - `boxBounds`: A 6-element array ([xmin, xmax, ymin, ymax, zmin, zmax]) defining the bounding box.
+    ///    - `translationBounds`: A 3-element array ([tx, ty, tz]) used to translate the trimmed model so that
+    ///      its minimum coordinates align with (0,0,0).
+    ///
+    /// If either `boxBounds` or `translationBounds` is provided, they must have 6 and 3 elements respectively;
+    /// otherwise, an `Error.invalidConfiguration` is thrown and no trimming is performed.
+    /// The (optionally trimmed) model is exported as a PLY file, which is then loaded into a ModelIO asset and
+    /// converted to a USD file.
     ///
     /// - Parameters:
-    ///   - directoryURL: The file URL to the directory containing the DICOM files.
-    ///   - fileName: The base file name (without extension) to use for the output model.
-    ///   - threshold: The isosurface threshold value (e.g., in Hounsfield units for CT data).
+    ///   - directoryURL: The file URL of the directory containing the DICOM files.
+    ///   - fileName: The base file name (without extension) for the output model.
+    ///   - threshold: The isosurface threshold (typically in Hounsfield units for CT data) used in the Marching Cubes algorithm.
+    ///   - boxBounds: An optional array of 6 doubles ([xmin, xmax, ymin, ymax, zmin, zmax]) that defines the region to trim the model.
+    ///   Pass nil to skip  trimming but be aware that translationBounds needs to be nil in this case
+    ///   - translationBounds: An optional array of 3 doubles ([tx, ty, tz]) that defines the translation vector
+    ///   to apply to the trimmed model so its  minimum aligns with (0,0,0). Must be provided if boxBounds is non-nil.
+    ///
     /// - Returns: The file URL of the generated USD model.
-    /// - Throws: `DcmVisionError.failedToGenerateModel` if VTKWrapper fails to generate the PLY;
-    ///           `DcmVisionError.conversionToUSDFailed` if the conversion to USD fails.
+    ///
+    /// - Throws:
+    ///   - `DcmVisionError.failedToGenerateModel` if the VTKWrapper fails to generate the PLY file.
+    ///   - `DcmVisionError.conversionToUSDFailed` if the conversion to USD fails.
+    ///   - `Error.invalidConfiguration` if the provided bounds arrays do not contain the expected number of elements.
     func generateDICOM(
         fromDirectory directoryURL: URL,
         withName fileName: String,
-        threshold: Double
+        threshold: Double,
+        boxBounds: [Double]? = nil,
+        translationBounds: [Double]? = nil
     ) throws -> URL {
         
         if let cachedURL = try? getNamedUSDFromCache(fileName) {
             return cachedURL
         }
             
+        if let boxBounds, boxBounds.count != 6 {
+            throw Error.invalidConfiguration
+        }
+        
+        if let translationBounds, translationBounds.count != 3 {
+            throw Error.invalidConfiguration
+        }
+        
         guard let vtkOutput = vtkWrapper.generate3DModel(
             fromDICOMDirectory: directoryURL.path(percentEncoded: false),
             fileName: fileName,
-            threshold: threshold
+            threshold: threshold,
+            boxBounds: boxBounds,
+            translationBounds: translationBounds
         ) else {
             throw Error.failedToGenerateModel
         }
             
         return try convertToUSD(vtkOutput)
     }
+
     
     // MARK: - Initialization
     

@@ -109,8 +109,7 @@ struct VisualizationToolkit {
     /// converted to a USD file.
     ///
     /// - Parameters:
-    ///   - directoryURL: The file URL of the directory containing the DICOM files.
-    ///   - fileName: The base file name (without extension) for the output model.
+    ///   - dataSet: The data structure containing information about the dicom dataSet
     ///   - threshold: The isosurface threshold (typically in Hounsfield units for CT data) used in the Marching Cubes algorithm.
     ///   - boxBounds: An optional array of 6 doubles ([xmin, xmax, ymin, ymax, zmin, zmax]) that defines the region to trim the model.
     ///   Pass nil to skip  trimming but be aware that translationBounds needs to be nil in this case
@@ -124,17 +123,12 @@ struct VisualizationToolkit {
     ///   - `DcmVisionError.conversionToUSDFailed` if the conversion to USD fails.
     ///   - `Error.invalidConfiguration` if the provided bounds arrays do not contain the expected number of elements.
     func generateDICOM(
-        fromDirectory directoryURL: URL,
-        withName fileName: String,
+        dataSet: DicomDataSet,
         threshold: Double,
         boxBounds: [Double]? = nil,
         translationBounds: [Double]? = nil
     ) throws -> URL {
-        
-        if let cachedURL = try? getNamedUSDFromCache(fileName) {
-            return cachedURL
-        }
-            
+                    
         if let boxBounds, boxBounds.count != 6 {
             throw Error.invalidConfiguration
         }
@@ -143,9 +137,20 @@ struct VisualizationToolkit {
             throw Error.invalidConfiguration
         }
         
+        let tokens: [String] = [
+            dataSet.name,
+            threshold.description,
+            boxBounds?.map { $0.description }.joined(separator: "_") ?? "default",
+            translationBounds?.map { $0.description }.joined(separator: "_") ?? "default"
+        ]
+        
+        if let cachedURL = try? getNamedUSDFromCache(tokens.joined(separator: "-")) {
+            return cachedURL
+        }
+        
         guard let vtkOutput = vtkWrapper.generate3DModel(
-            fromDICOMDirectory: directoryURL.path(percentEncoded: false),
-            fileName: fileName,
+            fromDICOMDirectory: dataSet.url.path(percentEncoded: false),
+            fileName: tokens.joined(separator: "-"),
             threshold: threshold,
             boxBounds: boxBounds,
             translationBounds: translationBounds

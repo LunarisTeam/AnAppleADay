@@ -38,6 +38,22 @@ struct AnAppleADayApp: App {
                         InfoView(showInfo: .constant(true))
                    }
                 }
+                #if DEBUG
+                .overlay(alignment: .bottomLeading) {
+                    Button("Erase Cache", systemImage: "trash") {
+                        let contents = try? FileManager.default.contentsOfDirectory(
+                            at: DicomDataSet.cacheDirectory,
+                            includingPropertiesForKeys: nil,
+                            options: []
+                        )
+                        
+                        for item in contents ?? [] {
+                            print("✅ Erasing \(item.lastPathComponent) from cache")
+                            try? FileManager.default.removeItem(at: item)
+                        }
+                    }.padding(32)
+                }
+                #endif
             }
             .environment(onboarding)
             

@@ -38,23 +38,44 @@ struct AnAppleADayApp: App {
                         InfoView(showInfo: .constant(true))
                    }
                 }
+                #if DEBUG
+                .overlay(alignment: .bottomLeading) {
+                    Button("Erase Cache", systemImage: "trash") {
+                        let contents = try? FileManager.default.contentsOfDirectory(
+                            at: DicomDataSet.cacheDirectory,
+                            includingPropertiesForKeys: nil,
+                            options: []
+                        )
+                        
+                        for item in contents ?? [] {
+                            print("✅ Erasing \(item.lastPathComponent) from cache")
+                            try? FileManager.default.removeItem(at: item)
+                        }
+                    }.padding(32)
+                }
+                #endif
             }
             .environment(onboarding)
             
-            WindowGroup(id: WindowIDs.generateModelWindowID, for: URL?.self) { url in
+            WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 
-                if let firstUnwrap = url.wrappedValue, let secondUnwrap = firstUnwrap {
+                if let firstUnwrap = dataSet.wrappedValue,
+                   let secondUnwrap = firstUnwrap {
+                    
                     ZStack {
                         Color("backgroundColor")
                             .opacity(0.3)
-                        GenerateModelView(directoryURL: secondUnwrap)
+                        GenerateModelView(dataSet: secondUnwrap)
                     }
                 }
             }
             
-            WindowGroup(id: WindowIDs.model3DVolumeWindowID, for: URL?.self) { url in
-                if let firstUnwrap = url.wrappedValue, let secondUnwrap = firstUnwrap {
-                    ModelView(directoryURL: secondUnwrap)
+            WindowGroup(id: WindowIDs.model3DVolumeWindowID, for: DicomDataSet?.self) { dataSet in
+                
+                if let firstUnwrap = dataSet.wrappedValue,
+                   let secondUnwrap = firstUnwrap {
+                    
+                    ModelView(dataSet: secondUnwrap)
                 }
             }
             .windowStyle(.volumetric)
@@ -81,7 +102,7 @@ struct AnAppleADayApp: App {
     /// Whenever an immersive space must be closed, the flow can be whatever (as per date).
     /// ```
     /// - Parameter newMode: The new mode to transition to.
-    @MainActor private func setMode(_ newMode: Mode, url: URL?) async {
+    @MainActor private func setMode(_ newMode: Mode, dataSet: DicomDataSet?) async {
         let oldMode = mode
         guard newMode != oldMode else { return }
         mode = newMode
@@ -89,24 +110,19 @@ struct AnAppleADayApp: App {
         print("")
         print("oldMode: \(oldMode), newMode: \(newMode)")
         
-        if newMode.acceptsURL{
-            openWindow(id: newMode.windowId, value: url)
-        }else{
-            openWindow(id: newMode.windowId)
-        }
-        
-        
-        
+        if newMode.acceptsDataSet {
+            openWindow(id: newMode.windowId, value: dataSet)
+            
+        } else { openWindow(id: newMode.windowId) }
+    
         //The do-catch is to avoid skipping the await for concurrency issues.
         //Increase the sleep if it doesn't work.
-        
         try? await Task.sleep(for: .seconds(0.05))
         
-        if oldMode.acceptsURL{
-            dismissWindow(id: oldMode.windowId, value: url)
-        }else{
-            dismissWindow(id: oldMode.windowId)
-        }
+        if oldMode.acceptsDataSet {
+            dismissWindow(id: oldMode.windowId, value: dataSet)
+            
+        } else { dismissWindow(id: oldMode.windowId) }
     }
 }
 

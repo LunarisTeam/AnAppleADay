@@ -7,19 +7,32 @@
 
 import SwiftUI
 
-/// An environment key for handling mode changes within the application.
+/// An environment key used to handle mode changes within the application.
 ///
-/// `SetModeKey` defines a function type that accepts a `Mode` and performs asynchronous operations
-/// to update the application's state. This key extends the SwiftUI environment, allowing views to
-/// trigger mode transitions by calling the provided function.
+/// `SetModeKey` provides a way to inject a mode-changing function into the SwiftUI
+/// environment. The function takes a `Mode` and an optional `DicomDataSet`, and performs
+/// asynchronous operations to update the application's state.
 ///
-/// The default value is a no-operation closure marked as `nonisolated(unsafe)` since its proper use
-/// is ensured by invoking it on the `MainActor`. The setup anticipates a possible migration to Swift 6 strict concurrency.
+/// This is especially useful for coordinating navigation or app state transitions from
+/// deep within the SwiftUI view hierarchy.
+///
+/// The default value is a no-op closure. It's marked as `nonisolated(unsafe)` because it's
+/// expected to be called from the `MainActor`, and concurrency safety is enforced by usage
+/// patterns rather than the compiler (for now). This prepares for stricter concurrency
+/// enforcement in Swift 6.
 struct SetModeKey: EnvironmentKey {
+    
+    /// A no-op default implementation. Expected to be overridden in an environment context.
     nonisolated(unsafe) static let defaultValue: Value = { _, _ in }
-    typealias Value = (Mode, URL? ) async -> Void
+    
+    /// The function type that updates the mode. It accepts a `Mode` and an optional `DicomDataSet`,
+    /// and runs asynchronously.
+    typealias Value = (Mode, DicomDataSet?) async -> Void
 }
 
+/// Extends the SwiftUI EnvironmentValues to include a `setMode` property.
+///
+/// This allows any SwiftUI view to access or assign a mode-changing function via the environment.
 extension EnvironmentValues {
     var setMode: SetModeKey.Value {
         get { self[SetModeKey.self] }

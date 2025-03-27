@@ -22,29 +22,35 @@ struct ProgressModelView: View {
             Color("backgroundColor")
                 .opacity(0.3)
             
-            VStack(spacing: 18) {
+            VStack(spacing: 40) {
+                
+                Spacer()
                 
                 Image("Sphere")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 200, height: 200)
+                    .frame(width: 140, height: 140)
                     .overlay{
                         ProgressView()
-                            .scaleEffect(2.0)
+                            .scaleEffect(1.5)
                     }
                 
-                Text("Generating the 3D Model")
-                    .font(.system(size: 55, weight: .bold))
-                    .foregroundColor(.white)
-                
-                Text("Wait until your 3D Model is Generated")
-                    .font(.system(size: 35, weight: .medium))
-                    .foregroundColor(.white.opacity(0.9))
+                VStack(spacing: 8) {
+                    Text("Generating the 3D Model")
+                        .font(.title)
+                        .foregroundStyle(.white)
+                    
+                    Text("Please wait until your 3D Model is generated")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.white)
+                    
+                }
+                Spacer()
             }
-            .padding()
-            .padding(32)
         }
-        .frame(width: 900, height: 500)
         .glassBackgroundEffect()
+        .padding()
+        .frame(width: 676, height: 550)
     }
 }

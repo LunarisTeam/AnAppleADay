@@ -21,8 +21,8 @@
     /// The mode for generating 3D models from DICOM data.
     case generate
     
-    /// The mode for displaying the generated 3D volume.
-    case model3DVolume
+    /// The mode for displaying the generated 3D volume.    
+    case needsImmersiveSpace
     
     /// The identifier associated with the mode's corresponding window or scene.
     ///
@@ -32,7 +32,7 @@
         switch self {
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
-        case .model3DVolume: return WindowIDs.model3DVolumeWindowID
+        case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
         }
     }
     
@@ -44,7 +44,7 @@
         switch self {
         case .importDicoms: return false
         case .generate: return true
-        case .model3DVolume: return true
+        case .needsImmersiveSpace: return true
         }
     }
 }

@@ -48,7 +48,7 @@ struct GenerateModelView: View {
                 
                 Button {
                     Task {@MainActor in
-                        await setMode(.model3DVolume, dataSet)
+                        await setMode(.needsImmersiveSpace, dataSet)
                     }
                 } label: {
                     Text("Generate Model")

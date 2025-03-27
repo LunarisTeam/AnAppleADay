@@ -16,6 +16,7 @@ struct ImportDicomView: View {
     @State private var showInfo = false
     @State private var error: Error? = nil
     
+    
     var body: some View {
         
         VStack {
@@ -24,15 +25,14 @@ struct ImportDicomView: View {
             
             VStack(spacing: 50) {
                 Image("Logo").resizable()
-                    .frame(width: 150, height: 150)
+                    .frame(width: 113, height: 113)
                 Image("intrart").resizable()
-                    .frame(width: 394, height: 86)
+                    .frame(width: 294, height: 67)
             }
             Spacer()
             
             HStack(spacing: 15) {
                 Button {
-                   
                     showingFilePicker = true
                 } label: {
                     HStack {

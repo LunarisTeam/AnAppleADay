@@ -7,61 +7,58 @@
 
 import SwiftUI
 
-struct GenerateModelView: View {
-    
-    let dataSet: DicomDataSet
+struct GenerateModelView: View {    
     
     @Environment(\.setMode) private var setMode
     
+    let dataSet: DicomDataSet
+    
     var body: some View {
-        NavigationStack {
+        
+        VStack(spacing: 40) {
+            
             VStack(spacing: 10) {
                 
-                Text("3D Model Generation")
-                    .font(.system(size: 45, weight: .bold))
+                Text("Generate the 3D Model")
+                    .font(.title)
                     .multilineTextAlignment(.center)
                     .foregroundColor(.white)
                 
                 Text("A 3D model will be generated from your imported\nDICOM dataset")
-                    .font(.system(size: 32, weight: .medium))
+                    .font(.headline)
+                    .fontWeight(.medium)
                     .foregroundColor(.white.opacity(0.9))
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 800)
-                    .padding()
+            }
+            
+            VStack(spacing: 12) {
+                Image("dicomIcon")
+                    .resizable()
+                    .offset(x: -10)
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .foregroundColor(.white.opacity(0.8))
                 
-                VStack(spacing: 4) {
-                    Image("dicomIcon")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.white.opacity(0.8))
-                    
+                VStack(spacing: 2) {
                     Text(dataSet.name)
-                        .font(.system(size: 24, weight: .medium))
+                        .font(.headline)
+                        .fontWeight(.medium)
                         .foregroundColor(.white)
                     
                     Text("\(dataSet.sliceCount) slices")
-                        .font(.system(size: 20))
-                        .foregroundColor(.white.opacity(0.7))
+                        .font(.headline)
+                        .fontWeight(.light)
                 }
-                .padding(.top, 12)
-                
-                Button {
-                    Task {@MainActor in
-                        await setMode(.model3DVolume, dataSet)
-                    }
-                } label: {
-                    Text("Generate Model")
-                        .font(.system(size: 24, weight: .medium))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 40)
-                        .padding(.vertical, 16)
-                }.padding(.top, 32)
             }
-            .padding(40)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
             
+            Button("Generate Model") {
+                Task { @MainActor in
+                    await setMode(.model3DVolume, dataSet)
+                }
+            }
         }
+        .padding()
     }
 }
 

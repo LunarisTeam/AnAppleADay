@@ -14,48 +14,9 @@ struct controlPanel: View {
     var bonesEntity: Entity
     var arteriesEntity: Entity
     @Binding var scale: Bool
+    @State private var gestures: Bool = true
     
     var body: some View {
-        
-        
-        //          VStack{
-        //              Button {
-        //                  bonesEntity.isEnabled.toggle()
-        //                  arteriesEntity.isEnabled.toggle()
-        //
-        //                  if(!bonesEntity.isEnabled){
-        //                      arteriesEntity.position = bonesEntity.position
-        //                      arteriesEntity.scale = bonesEntity.scale
-        //                  }else{
-        //                      bonesEntity.position = arteriesEntity.position
-        //                      bonesEntity.scale = arteriesEntity.scale
-        //                  }
-        //
-        //
-        //              } label: {
-        //                  Text("Toggle Bones/Arteries")
-        //                      .font(.title)
-        //              }
-        //
-        //
-        //              Button {
-        //                  scale.toggle()
-        //                  if(scale){
-        //                      bonesEntity.scale *= 2.0
-        //                      arteriesEntity.scale *= 2.0
-        //                  }else{
-        //                      bonesEntity.scale /= 2.0
-        //                      arteriesEntity.scale /= 2.0
-        //                  }
-        //              } label: {
-        //                  Text("Scale model")
-        //                      .font(.title)
-        //              }
-        //
-        //
-        //          }.padding(10)
-        //              .glassBackgroundEffect()
-        //
         
         HStack{
             //toggle bones arteries
@@ -66,9 +27,11 @@ struct controlPanel: View {
                 if(!bonesEntity.isEnabled){
                     arteriesEntity.position = bonesEntity.position
                     arteriesEntity.scale = bonesEntity.scale
+                    arteriesEntity.transform.rotation = bonesEntity.transform.rotation
                 }else{
                     bonesEntity.position = arteriesEntity.position
                     bonesEntity.scale = arteriesEntity.scale
+                    bonesEntity.transform.rotation = arteriesEntity.transform.rotation
                 }
             } label: {
                 Image("hideBones")
@@ -88,24 +51,26 @@ struct controlPanel: View {
                 Image("RestoreSize")
             }
             
-            //lock in position
+            //lock 3D
             Button {
-                
+                gestures.toggle()
+                    toggleGestures(component: bonesEntity, isEnabled: gestures)
+                    toggleGestures(component: arteriesEntity, isEnabled: gestures)
             } label: {
                 Image("lockInPosition")
             }
             
             //Divider
-//            Divider().frame(maxHeight: .infinity)
+            Divider().frame(width: 5, height: 40)
             
-            //2D
+            //Show 2D image
             Button {
-                
+                //open connection window
             } label: {
                 Image("connect2D")
             }
             
-            //lock2D
+            //lock 2D image
             Button {
                 
             } label: {
@@ -114,7 +79,7 @@ struct controlPanel: View {
             
             //LOCKINTO3D2
             Button {
-                
+                //auto overlap??
             } label: {
                 Image("LOCKINTO3D2")
             }
@@ -123,5 +88,13 @@ struct controlPanel: View {
         .glassBackgroundEffect()
         
         
+    }
+    
+    func toggleGestures(component: Entity, isEnabled: Bool) {
+        component.gestureComponent?.canDrag = isEnabled
+        component.gestureComponent?.canRotate = isEnabled
+        component.gestureComponent?.canScale = isEnabled
+        component.gestureComponent?.pivotOnDrag = isEnabled
+        component.gestureComponent?.preserveOrientationOnPivotDrag = isEnabled
     }
 }

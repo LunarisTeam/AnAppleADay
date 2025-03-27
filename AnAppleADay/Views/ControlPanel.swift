@@ -109,7 +109,7 @@ struct controlPanel: View {
             Button {
                 
             } label: {
-                Image("lock2dù")
+                Image("lock2d")
             }
             
             //LOCKINTO3D2

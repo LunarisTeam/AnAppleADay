@@ -33,7 +33,7 @@ struct AnAppleADayApp: App {
         
         Group {
             
-            /// This will be adjusted in the design area, therefore I will leave it like this 
+            /// This will be adjusted in the design area, therefore I will leave it like this
             WindowGroup(id: WindowIDs.importDicomsWindowID) {
                 ZStack {
                     Color("backgroundColor")
@@ -42,9 +42,28 @@ struct AnAppleADayApp: App {
                         ImportDicomView()
                     } else {
                         InfoView(showInfo: .constant(true))
-                   }
+                    }
                 }
+#if DEBUG
+                .if(onboarding.completed) {
+                    $0.overlay(alignment: .bottomLeading) {
+                        Button("Erase Cache", systemImage: "trash") {
+                            let contents = try? FileManager.default.contentsOfDirectory(
+                                at: DicomDataSet.cacheDirectory,
+                                includingPropertiesForKeys: nil,
+                                options: []
+                            )
+                            
+                            for item in contents ?? [] {
+                                print("✅ Erasing \(item.lastPathComponent) from cache")
+                                try? FileManager.default.removeItem(at: item)
+                            }
+                        }.padding(32)
+                    }
+                }
+#endif
             }
+            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             .environment(onboarding)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
@@ -59,6 +78,7 @@ struct AnAppleADayApp: App {
                     }
                 }
             }
+            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID, for: DicomDataSet?.self) { dataSet in
                 
@@ -98,8 +118,7 @@ struct AnAppleADayApp: App {
         
         print("")
         print("oldMode: \(oldMode), newMode: \(newMode)")
-        
-      
+              
     
         if newMode == .needsImmersiveSpace {
             await openImmersiveSpace(id: newMode.windowId, value: dataSet)
@@ -108,6 +127,7 @@ struct AnAppleADayApp: App {
                 openWindow(id: newMode.windowId, value: dataSet)
             } else { openWindow(id: newMode.windowId) }
         }
+
         
         //The do-catch is to avoid skipping the await for concurrency issues.
         //Increase the sleep if it doesn't work.

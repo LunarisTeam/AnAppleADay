@@ -1,0 +1,153 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "Reality Composer Pro Version 2.0 (448.60.4)"
+    }
+    defaultPrim = "Root"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "Root"
+{
+    def "ImageToStl_com_iso" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (1.5493612, 3.1415927, 3.141593)
+        }
+        prepend references = @ImageToStl.com_iso.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.69948786, -0.7146445, -1.4700595e-7, 8.272294e-8)
+        float3 xformOp:scale = (0.0006529606, 0.0006529606, 0.0006529606)
+        float3 xformOp:translate = (-0.0042403853, 0.19467966, -0.068349734)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "InputTarget"
+        {
+            uniform token info:id = "RealityKit.InputTarget"
+        }
+
+        def RealityKitCustomComponent "RealityKitContent_ObjComponent"
+        {
+            uniform token info:id = "RealityKitContent.ObjComponent"
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (361.73438, 264.54883, 469.82117)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (-7.8955154, -124.58899, -297.82416)
+                }
+            }
+        }
+
+        def RealityKitComponent "RigidBody" (
+            active = false
+        )
+        {
+            bool gravityEnabled = 0
+            uniform token info:id = "RealityKit.RigidBody"
+
+            def RealityKitStruct "massFrame"
+            {
+                def RealityKitStruct "m_pose"
+                {
+                }
+            }
+
+            def RealityKitStruct "material"
+            {
+            }
+        }
+    }
+
+    def Capsule "Capsule" (
+        active = false
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.2
+        rel material:binding = </Root/Capsule/DefaultMaterial>
+        double radius = 0.1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+            prepend token outputs:surface.connect = </Root/Capsule/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 1, 1)
+                float inputs:roughness = 0.75
+                token outputs:surface
+            }
+        }
+
+        def RealityKitComponent "InputTarget"
+        {
+            uniform token info:id = "RealityKit.InputTarget"
+        }
+
+        def RealityKitCustomComponent "RealityKitContent_ObjComponent"
+        {
+            uniform token info:id = "RealityKitContent.ObjComponent"
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (0.2, 0.4, 0.20000002)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (0, 0, -3.7252903e-9)
+                }
+            }
+        }
+
+        def RealityKitComponent "RigidBody" (
+            active = false
+        )
+        {
+            bool gravityEnabled = 0
+            uniform token info:id = "RealityKit.RigidBody"
+
+            def RealityKitStruct "massFrame"
+            {
+                def RealityKitStruct "m_pose"
+                {
+                }
+            }
+
+            def RealityKitStruct "material"
+            {
+            }
+        }
+    }
+}
+

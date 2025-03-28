@@ -11,6 +11,6 @@ import Foundation
 struct WindowIDs {
     static let importDicomsWindowID: String = "ImportDicoms"
     static let generateModelWindowID: String = "GenerateModel"
-    static let model3DVolumeWindowID: String = "Model3DVolume"
     static let xRayFeed: String = "XRayFeed"
+    static let immersiveSpaceID: String = "ImmersiveSpaceID"
 }

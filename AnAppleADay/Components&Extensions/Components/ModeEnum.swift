@@ -21,8 +21,8 @@
     /// The mode for generating 3D models from DICOM data.
     case generate
     
-    /// The mode for displaying the generated 3D volume.
-    case model3DVolume
+    /// The mode for displaying the generated 3D volume.    
+    case needsImmersiveSpace
     
     /// The mode for displaying the window with feed from fluoroscope.
     case xRayFeed
@@ -35,8 +35,8 @@
         switch self {
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
-        case .model3DVolume: return WindowIDs.model3DVolumeWindowID
         case .xRayFeed: return WindowIDs.xRayFeed
+        case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
         }
     }
     
@@ -48,8 +48,8 @@
         switch self {
         case .importDicoms: return false
         case .generate: return true
-        case .model3DVolume: return true
         case .xRayFeed: return false
+        case .needsImmersiveSpace: return true
         }
     }
 }

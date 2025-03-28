@@ -99,7 +99,7 @@ struct ModelView: View {
         }attachments: {
             Attachment(id: "ControlPanel") {
                 if let bonesEntity, let arteriesEntity {
-                    controlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale)
+                    controlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale, dataSet: dataSet)
                 }
             }
             

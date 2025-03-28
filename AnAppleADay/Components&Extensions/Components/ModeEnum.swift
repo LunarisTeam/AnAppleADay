@@ -24,6 +24,10 @@
     /// The mode for displaying the generated 3D volume.    
     case needsImmersiveSpace
     
+    case inputAddress
+    
+    case open2DWindow
+    
     /// The identifier associated with the mode's corresponding window or scene.
     ///
     /// This value is used to reference the correct `WindowGroup` or `ImmersiveSpace`
@@ -33,6 +37,8 @@
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
         case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
+        case .inputAddress: return WindowIDs.inputAddress
+        case .open2DWindow: return WindowIDs.open2DWindow
         }
     }
     
@@ -45,6 +51,18 @@
         case .importDicoms: return false
         case .generate: return true
         case .needsImmersiveSpace: return true
+        case .inputAddress: return false
+        case .open2DWindow: return false
+        }
+    }
+    
+    var immersiveSpaceIsOpen: Bool {
+        switch self {
+        case .importDicoms: return false
+        case .generate: return false
+        case .needsImmersiveSpace: return true
+        case .inputAddress: return false
+        case .open2DWindow: return false
         }
     }
 }

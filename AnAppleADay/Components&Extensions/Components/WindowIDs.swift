@@ -12,4 +12,6 @@ struct WindowIDs {
     static let importDicomsWindowID: String = "ImportDicoms"
     static let generateModelWindowID: String = "GenerateModel"
     static let immersiveSpaceID: String = "ImmersiveSpaceID"
+    static let inputAddress: String = "InputAddress"
+    static let open2DWindow: String = "open2DWindow"
 }

@@ -15,6 +15,9 @@ struct controlPanel: View {
     var arteriesEntity: Entity
     @Binding var scale: Bool
     @State private var gestures: Bool = true
+    @Environment(\.setMode) private var setMode
+    
+    let dataSet: DicomDataSet
     
     var body: some View {
         
@@ -65,7 +68,10 @@ struct controlPanel: View {
             
             //Show 2D image
             Button {
-                //open connection window
+                //potentially show and hide the model so they don't overlap
+                Task{
+                    await setMode(.inputAddress, nil)
+                }
             } label: {
                 Image("connect2D")
             }

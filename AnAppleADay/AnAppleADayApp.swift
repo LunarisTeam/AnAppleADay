@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RealityKitContent
 
 @main
 struct AnAppleADayApp: App {
@@ -22,6 +23,11 @@ struct AnAppleADayApp: App {
     @State private var mode: Mode = .importDicoms
     
     @State private var onboarding: OnboardingParameters = .init()
+    
+    init() {
+        RealityKitContent.ObjComponent.registerComponent()
+        // Register custom RealityKit components once
+    }
     
     var body: some Scene {
         
@@ -74,7 +80,7 @@ struct AnAppleADayApp: App {
             }
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
-            WindowGroup(id: WindowIDs.model3DVolumeWindowID, for: DicomDataSet?.self) { dataSet in
+            ImmersiveSpace(id: WindowIDs.immersiveSpaceID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
                    let secondUnwrap = firstUnwrap {
@@ -82,7 +88,6 @@ struct AnAppleADayApp: App {
                     ModelView(dataSet: secondUnwrap)
                 }
             }
-            .windowStyle(.volumetric)
             
         }
         .environment(\.setMode, setMode)
@@ -113,11 +118,16 @@ struct AnAppleADayApp: App {
         
         print("")
         print("oldMode: \(oldMode), newMode: \(newMode)")
-        
-        if newMode.acceptsDataSet {
-            openWindow(id: newMode.windowId, value: dataSet)
-            
-        } else { openWindow(id: newMode.windowId) }
+              
+    
+        if newMode == .needsImmersiveSpace {
+            await openImmersiveSpace(id: newMode.windowId, value: dataSet)
+        }else{
+            if newMode.acceptsDataSet {
+                openWindow(id: newMode.windowId, value: dataSet)
+            } else { openWindow(id: newMode.windowId) }
+        }
+
         
         //The do-catch is to avoid skipping the await for concurrency issues.
         //Increase the sleep if it doesn't work.

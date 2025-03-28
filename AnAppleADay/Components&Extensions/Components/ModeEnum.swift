@@ -24,6 +24,9 @@
     /// The mode for displaying the generated 3D volume.    
     case needsImmersiveSpace
     
+    /// The mode for displaying the window with feed from fluoroscope.
+    case xRayFeed
+    
     /// The identifier associated with the mode's corresponding window or scene.
     ///
     /// This value is used to reference the correct `WindowGroup` or `ImmersiveSpace`
@@ -32,6 +35,7 @@
         switch self {
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
+        case .xRayFeed: return WindowIDs.xRayFeed
         case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
         }
     }
@@ -44,6 +48,7 @@
         switch self {
         case .importDicoms: return false
         case .generate: return true
+        case .xRayFeed: return false
         case .needsImmersiveSpace: return true
         }
     }

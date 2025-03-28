@@ -18,6 +18,8 @@ struct ModelView: View {
     @State private var bonesEntity: Entity? = nil
     @State private var arteriesEntity: Entity? = nil
     @State private var scale: Bool = false
+    @State private var bonesCenter: SIMD3<Float> = .zero
+    @State private var arteriesCenter: SIMD3<Float> = .zero
     
     var body: some View {
         
@@ -40,101 +42,102 @@ struct ModelView: View {
                     
                     await MainActor.run {
                         arteriesEntity.isEnabled = false
+                        bonesEntity.scale /= 2
                         self.bonesEntity = bonesEntity
+                        var boundingBox = bonesEntity.visualBounds(relativeTo: nil)
+                        self.bonesCenter = boundingBox.center
+                        
+                        arteriesEntity.scale /= 2
                         self.arteriesEntity = arteriesEntity
+                        boundingBox = arteriesEntity.visualBounds(relativeTo: nil)
+                        self.arteriesCenter = boundingBox.center
                     }
                     
                 } catch { await MainActor.run { self.error = error } }
             }
             
-            
-            
-            
-            
         } update: { content, attachments in
             
-            if let bonesEntity {
-                let bones = bonesEntity as! ModelEntity
-                bonesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
-                //entity mesh collision shape
-                bonesEntity.components.set(CollisionComponent(shapes: [ShapeResource.generateConvex(from: bones.model!.mesh)],
-                                                              mode: .default,
-                                                              filter: .default))
-                bonesEntity.components.set(ObjComponent())
-                bonesEntity.scale /= 2
-                //                                bonesEntity.position = [0, 0, 0]
-                content.add(bonesEntity)
+            if let progress = attachments.entity(for: "Progress") {
+                progress.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
+                content.add(progress)
             }
             
+            if let bonesEntity {
+                
+                bonesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
+
+                bonesEntity.generateCollisionShapes(recursive: true)
+                
+                
+                bonesEntity.components.set(ObjComponent())
+                
+                
+                bonesEntity.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
+                content.add(bonesEntity)
+                
+            }
+            
+            
+            
             if let arteriesEntity {
-                let arteries = arteriesEntity as! ModelEntity
+
                 arteriesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
-                //entity mesh collision shape
-                arteriesEntity.components.set(CollisionComponent(shapes: [ShapeResource.generateConvex(from: arteries.model!.mesh)],
-                                                                 mode: .default,
-                                                                 filter: .default))
+                arteriesEntity.generateCollisionShapes(recursive: true)
                 arteriesEntity.components.set(ObjComponent())
-                arteriesEntity.scale /= 2
-                //                arteriesEntity.position = [0, 0, 0]
+                
+                arteriesEntity.position = [-arteriesCenter.x, -arteriesCenter.y+1.5, -arteriesCenter.z-1.5]
                 content.add(arteriesEntity)
             }
             
             
-            if let awindowAttachment = attachments.entity(for: "ControlPanel") {
-                
-                if let bonesEntity, let arteriesEntity {
-                    
-                    if(bonesEntity.isEnabled){
-                        let yPosition=bonesEntity.position.y + 1
-                        awindowAttachment.position = [bonesEntity.position.x, yPosition, bonesEntity.position.z]
-                        content.add(awindowAttachment)
-                    }else{
-                        let yPosition=arteriesEntity.position.y + 1
-                        awindowAttachment.position = [arteriesEntity.position.x, yPosition, arteriesEntity.position.z]
-                        content.add(awindowAttachment)
-                    }
-                }
+            if let controlPanelAtt = attachments.entity(for: "ControlPanel") {
+                controlPanelAtt.position = [-bonesCenter.x+0.5, -bonesCenter.y+1.3, -bonesCenter.z-1]
+                content.add(controlPanelAtt)
+                //                          bonesEntity?.addChild(awindowAttachment)
             }
-            
         }attachments: {
             Attachment(id: "ControlPanel") {
                 if let bonesEntity, let arteriesEntity {
                     controlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale)
                 }
             }
-        }.installGestures()
-            .overlay {
+            
+            Attachment(id: "Progress") {
                 if let error {
                     ErrorView(error: error)
                     
                 } else if bonesEntity == nil ||
                             arteriesEntity == nil { ProgressModelView() }
             }
+        }
+        .installGestures()
         
     }
+
+func generateEntity(
+    _ threshold: Double,
+    _ color: UIColor,
+    _ box: [Double],
+    _ translation: [Double]
     
-    func generateEntity(
-        _ threshold: Double,
-        _ color: UIColor,
-        _ box: [Double],
-        _ translation: [Double]
-        
-    ) async throws -> Entity {
-        
-        let visualizationToolkit: VisualizationToolkit = try .init()
-        
-        let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
-            dataSet: dataSet,
-            threshold: threshold,
-            boxBounds: box,
-            translationBounds: translation
-        )
-        
-        let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
-        
-        modelEntity.model?.materials = [
-            SimpleMaterial(color: color, isMetallic: false)
-        ]
-        return modelEntity
-    }
+) async throws -> Entity {
+    
+    let visualizationToolkit: VisualizationToolkit = try .init()
+    
+    let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
+        dataSet: dataSet,
+        threshold: threshold,
+        boxBounds: box,
+        translationBounds: translation
+    )
+    
+    let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
+    
+    modelEntity.model?.materials = [
+        SimpleMaterial(color: color, isMetallic: false)
+    ]
+    return modelEntity
+}
+    
 }

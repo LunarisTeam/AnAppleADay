@@ -1,0 +1,492 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "Reality Composer Pro Version 2.0 (448.60.4)"
+    }
+    defaultPrim = "Root"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "Root"
+{
+    float3 xformOp:scale = (0.25, 0.25, 0.25)
+    float3 xformOp:translate = (0, 36.995316, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+    def Xform "Room" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0, 0)
+        }
+    )
+    {
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (0.1, 0.1, 0.1)
+        float3 xformOp:translate = (1.3581922, -145.3125, -17.332247)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def "Medical_Examination_Room" (
+            active = true
+            references = @Medical_Examination_Room.usdz@
+        )
+        {
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (0.001, 0.001, 0.001)
+            float3 xformOp:translate = (-10.376611, -0.011394653, 159.97322)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            over "Meshes"
+            {
+                over "Sketchfab_model"
+                {
+                    over "c8e4533349d843409139930039f259e1_fbx"
+                    {
+                        over "RootNode"
+                        {
+                            reorder nameChildren = ["Patient", "SM_Glass", "SM_Curtains", "SM_Floor", "SM_Ceiling", "SM_Detail", "SM_Door", "SM_Window", "SM_Table", "SM_Chair", "SM_Bed", "SM_Watches", "SM_Walls", "Medical_X_ray_Image_Viewer___200_Uploads", "C_Arm_Xray_Device", "Samsung_SonoAce___Ultrasound_Machine"]
+                            over "SM_Table" (
+                                active = false
+                            )
+                            {
+                            }
+
+                            over "SM_Chair" (
+                                active = false
+                            )
+                            {
+                            }
+
+                            over "SM_Walls"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Bed" (
+                                customData = {
+                                    float3 rotationEulerHint = (0, 0, -1.5707964)
+                                }
+                            )
+                            {
+                                quatf xformOp:orient = (0.70710677, 0, 0, -0.70710677)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (21.501783, 88.13649, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Ceiling"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Detail"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Curtains"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Glass" (
+                                active = false
+                            )
+                            {
+                            }
+
+                            over "SM_Window"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Door"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (169.20001, 45, 96.3)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Watches"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (160, -70, 180)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Floor"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            def "Medical_X_ray_Image_Viewer___200_Uploads" (
+                                active = true
+                                references = @Medical_X-ray_Image_Viewer_-_200_Uploads.usdz@
+                            )
+                            {
+                                quatf xformOp:orient = (0, 0, 0.70710677, 0.70710677)
+                                float3 xformOp:scale = (1.4228505, 1.4228505, 1.4228505)
+                                float3 xformOp:translate = (-28.463024, -121.19943, -24.4971)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            def "C_Arm_Xray_Device" (
+                                active = true
+                                customData = {
+                                    float3 rotationEulerHint = (0, -1.5707963, 0)
+                                }
+                                references = @C_Arm_Xray_Device.usdz@
+                            )
+                            {
+                                quatf xformOp:orient = (0.5, 0.5, 0.50000006, 0.5)
+                                float3 xformOp:scale = (0.8, 0.8, 0.8)
+                                float3 xformOp:translate = (116.45566, 70.43147, -2.8734133)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                                over "Materials"
+                                {
+                                    over "Lambert_MAT_01"
+                                    {
+                                        token outputs:mtlx:surface
+                                        token outputs:realitykit:vertex
+                                    }
+                                }
+
+                                over "Meshes" (
+                                    prepend apiSchemas = ["MaterialBindingAPI"]
+                                )
+                                {
+                                    rel material:binding = </Root/Room/Medical_Examination_Room/Meshes/Sketchfab_model/c8e4533349d843409139930039f259e1_fbx/RootNode/C_Arm_Xray_Device/Materials/Lambert_MAT_01> (
+                                        bindMaterialAs = "weakerThanDescendants"
+                                    )
+                                }
+                            }
+
+                            def "Samsung_SonoAce___Ultrasound_Machine" (
+                                active = false
+                                customData = {
+                                    float3 rotationEulerHint = (0, -1.5707963, 0)
+                                }
+                                references = @Samsung_SonoAce_-_Ultrasound_Machine.usdz@
+                            )
+                            {
+                                quatf xformOp:orient = (0.5, 0.5, 0.5, 0.49999997)
+                                float3 xformOp:scale = (0.85371035, 0.85371035, 0.85371035)
+                                float3 xformOp:translate = (-121.09418, 2.9472737, 5.8131104)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                                over "Materials"
+                                {
+                                    over "blinn1SG"
+                                    {
+                                        token outputs:mtlx:surface
+                                        token outputs:realitykit:vertex
+                                    }
+
+                                    over "screeninitialShadingGroup"
+                                    {
+                                        token outputs:mtlx:surface
+                                        token outputs:realitykit:vertex
+                                    }
+                                }
+
+                                over "Meshes" (
+                                    prepend apiSchemas = ["MaterialBindingAPI"]
+                                )
+                                {
+                                    rel material:binding = </Root/Medical_Examination_Room/Meshes/Sketchfab_model/c8e4533349d843409139930039f259e1_fbx/RootNode/Samsung_SonoAce___Ultrasound_Machine/Materials/blinn1SG> (
+                                        bindMaterialAs = "weakerThanDescendants"
+                                    )
+                                }
+                            }
+
+                            def "Patient" (
+                                active = true
+                                customData = {
+                                    float3 rotationEulerHint = (-1.570796, 3.1415927, 1.5707964)
+                                }
+                                references = @Patient.usdz@
+                            )
+                            {
+                                quatf xformOp:orient = (-0.5, -0.5000001, 0.50000006, 0.4999999)
+                                float3 xformOp:scale = (0.08, 0.08, 0.08)
+                                float3 xformOp:translate = (61.15254, 75.25102, 79.14893)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                                over "Meshes"
+                                {
+                                    over "Sketchfab_model"
+                                    {
+                                        over "_412fa10c80d4bf287683236c388b0bd_fbx"
+                                        {
+                                            over "RootNode"
+                                            {
+                                                over "Serviette"
+                                                {
+                                                    quatf xformOp:orient = (0.7071067, -0.7071068, 0, 0)
+                                                    float3 xformOp:scale = (100, 100, 100)
+                                                    float3 xformOp:translate = (-0.6419907, 25.762697, 14.956368)
+                                                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        def "Medical_Examination_Room_1" (
+            active = true
+            customData = {
+                float3 rotationEulerHint = (0, 3.1415927, 0)
+            }
+            references = @Medical_Examination_Room.usdz@
+        )
+        {
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (-4.371139e-8, 0, 1, 0)
+            float3 xformOp:scale = (0.001, 0.001, 0.001)
+            float3 xformOp:translate = (-12.1609955, 0, 178.92043)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            over "Meshes"
+            {
+                over "Sketchfab_model"
+                {
+                    over "c8e4533349d843409139930039f259e1_fbx"
+                    {
+                        over "RootNode"
+                        {
+                            reorder nameChildren = ["Patient", "SM_Glass", "SM_Curtains", "SM_Floor", "SM_Ceiling", "SM_Detail", "SM_Door", "SM_Window", "SM_Table", "SM_Chair", "SM_Bed", "SM_Watches", "SM_Walls", "Medical_X_ray_Image_Viewer___200_Uploads", "C_Arm_Xray_Device", "Samsung_SonoAce___Ultrasound_Machine"]
+                            over "SM_Table" (
+                                active = false
+                            )
+                            {
+                            }
+
+                            over "SM_Chair" (
+                                active = false
+                            )
+                            {
+                            }
+
+                            over "SM_Walls"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Bed" (
+                                active = false
+                                customData = {
+                                    float3 rotationEulerHint = (0, 0, -1.5707964)
+                                }
+                            )
+                            {
+                                quatf xformOp:orient = (0.70710677, 0, 0, -0.70710677)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (21.501783, 88.13649, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Ceiling"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Detail"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Curtains"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Glass" (
+                                active = false
+                            )
+                            {
+                            }
+
+                            over "SM_Window"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Door"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (169.20001, 45, 96.3)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Watches"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (160, -70, 180)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            over "SM_Floor"
+                            {
+                                quatf xformOp:orient = (0.7071067, 0, 0, 0.7071068)
+                                float3 xformOp:scale = (100, 100, 100)
+                                float3 xformOp:translate = (0, 0, 0)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            def "Medical_X_ray_Image_Viewer___200_Uploads" (
+                                references = @Medical_X-ray_Image_Viewer_-_200_Uploads.usdz@
+                            )
+                            {
+                                quatf xformOp:orient = (0, 0, 0.70710677, 0.70710677)
+                                float3 xformOp:scale = (1.4228505, 1.4228505, 1.4228505)
+                                float3 xformOp:translate = (-28.463024, -121.19943, -24.4971)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+
+                            def "C_Arm_Xray_Device" (
+                                active = false
+                                customData = {
+                                    float3 rotationEulerHint = (0, -1.5707963, 0)
+                                }
+                                references = @C_Arm_Xray_Device.usdz@
+                            )
+                            {
+                                quatf xformOp:orient = (0.5, 0.5, 0.50000006, 0.5)
+                                float3 xformOp:scale = (0.8, 0.8, 0.8)
+                                float3 xformOp:translate = (116.45566, 70.43147, -2.8734133)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                                over "Materials"
+                                {
+                                    over "Lambert_MAT_01"
+                                    {
+                                        token outputs:mtlx:surface
+                                        token outputs:realitykit:vertex
+                                    }
+                                }
+
+                                over "Meshes" (
+                                    prepend apiSchemas = ["MaterialBindingAPI"]
+                                )
+                                {
+                                    rel material:binding = </Root/Medical_Examination_Room_1/Meshes/Sketchfab_model/c8e4533349d843409139930039f259e1_fbx/RootNode/C_Arm_Xray_Device/Materials/Lambert_MAT_01> (
+                                        bindMaterialAs = "weakerThanDescendants"
+                                    )
+                                }
+                            }
+
+                            def "Samsung_SonoAce___Ultrasound_Machine" (
+                                customData = {
+                                    float3 rotationEulerHint = (0, -1.5707963, 0)
+                                }
+                                references = @Samsung_SonoAce_-_Ultrasound_Machine.usdz@
+                            )
+                            {
+                                quatf xformOp:orient = (0.5, 0.5, 0.5, 0.49999997)
+                                float3 xformOp:scale = (0.85371035, 0.85371035, 0.85371035)
+                                float3 xformOp:translate = (-121.09418, 2.9472737, 5.8131104)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                                over "Materials"
+                                {
+                                    over "blinn1SG"
+                                    {
+                                        token outputs:mtlx:surface
+                                        token outputs:realitykit:vertex
+                                    }
+
+                                    over "screeninitialShadingGroup"
+                                    {
+                                        token outputs:mtlx:surface
+                                        token outputs:realitykit:vertex
+                                    }
+                                }
+
+                                over "Meshes" (
+                                    prepend apiSchemas = ["MaterialBindingAPI"]
+                                )
+                                {
+                                    rel material:binding = </Root/Room/Medical_Examination_Room_1/Meshes/Sketchfab_model/c8e4533349d843409139930039f259e1_fbx/RootNode/Samsung_SonoAce___Ultrasound_Machine/Materials/blinn1SG> (
+                                        bindMaterialAs = "weakerThanDescendants"
+                                    )
+                                }
+                            }
+
+                            def "Patient" (
+                                active = false
+                                customData = {
+                                    float3 rotationEulerHint = (-1.570796, 3.1415927, 1.5707964)
+                                }
+                                prepend references = @Patient.usdz@
+                            )
+                            {
+                                quatf xformOp:orient = (-0.5, -0.5000001, 0.50000006, 0.4999999)
+                                float3 xformOp:scale = (0.08, 0.08, 0.08)
+                                float3 xformOp:translate = (61.15254, 75.25102, 79.14893)
+                                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    def Xform "PointLight"
+    {
+        float3 xformOp:translate = (0, -146.50598, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "PointLight"
+        {
+            token info:id = "RealityKit.PointLight"
+            float intensity = 4000
+        }
+    }
+}
+

@@ -1,26 +1,63 @@
 {
-  "0A9B4653-B11E-4D6A-850E-C6FCB621626C" : {
-    "cameraTransform" : [
-      0.9807314,
-      -1.9820146e-10,
-      -0.195361,
-      0,
-      -0.10051192,
-      0.85749435,
-      -0.5045798,
-      0,
-      0.16752096,
-      0.51449335,
-      0.84097165,
-      0,
-      0.09084191,
-      0.05849296,
-      0.13903293,
-      1
-    ],
+  "0F327C60-3B95-45CD-940F-10577B0F322F" : {
     "objectMetadataList" : [
       [
-        "0A9B4653-B11E-4D6A-850E-C6FCB621626C",
+        "0F327C60-3B95-45CD-940F-10577B0F322F",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "3230031D-8452-42A1-A480-870A592AFA87" : {
+    "objectMetadataList" : [
+      [
+        "3230031D-8452-42A1-A480-870A592AFA87",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "5CE31978-F240-4976-AEF0-287C13CDDB71" : {
+    "objectMetadataList" : [
+      [
+        "5CE31978-F240-4976-AEF0-287C13CDDB71",
+        "Root",
+        "Sphere"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "5CE31978-F240-4976-AEF0-287C13CDDB71",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "A3E7ED19-7022-497D-B5E0-C8DBFA915733" : {
+    "objectMetadataList" : [
+      [
+        "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
+        "Root",
+        "SkyDome"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
         "Root"
       ],
       {
@@ -28,16 +65,16 @@
         "isLocked" : false
       },
       [
-        "0A9B4653-B11E-4D6A-850E-C6FCB621626C",
+        "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
         "Root",
-        "GridMaterial"
+        "Capsule"
       ],
       {
         "isExpanded" : true,
         "isLocked" : false
       },
       [
-        "0A9B4653-B11E-4D6A-850E-C6FCB621626C",
+        "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
         "Root",
         "Sphere"
       ],
@@ -47,158 +84,113 @@
       }
     ]
   },
-  "1CBF3893-ABFD-408C-8B91-045BFD257808" : {
-    "cameraTransform" : [
-      0.99999994,
-      0,
-      -0,
-      0,
-      -0,
-      0.8660255,
-      -0.49999988,
-      0,
-      0,
-      0.49999988,
-      0.8660255,
-      0,
-      0,
-      0.27093542,
-      0.46927398,
-      1
-    ],
-    "objectMetadataList" : [
-
-    ]
-  },
-  "03E02005-EFA6-48D6-8A76-05B2822A74E9" : {
-    "cameraTransform" : [
-      0.99999994,
-      0,
-      -0,
-      0,
-      -0,
-      0.8660254,
-      -0.49999994,
-      0,
-      0,
-      0.49999994,
-      0.8660254,
-      0,
-      0,
-      0.5981957,
-      1.0361054,
-      1
-    ],
-    "objectMetadataList" : [
-
-    ]
-  },
-  "26DBAE76-5DD8-47B6-A085-1B4ADA111097" : {
-    "cameraTransform" : [
-      1,
-      0,
-      -0,
-      0,
-      -0,
-      0.7071069,
-      -0.7071067,
-      0,
-      0,
-      0.7071067,
-      0.7071069,
-      0,
-      0,
-      0.2681068,
-      0.26850593,
-      1
-    ],
+  "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD" : {
     "objectMetadataList" : [
       [
-        "26DBAE76-5DD8-47B6-A085-1B4ADA111097",
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "SkyDome"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "Video_Dock"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root"
       ],
       {
+        "disallowsFraming" : false,
         "isExpanded" : true,
         "isLocked" : false
       }
     ]
   },
-  "34C460AE-CA1B-4348-BD05-621ACBDFFE97" : {
-    "cameraTransform" : [
-      0.99999994,
-      0,
-      -0,
-      0,
-      -0,
-      0.8660255,
-      -0.49999988,
-      0,
-      0,
-      0.49999988,
-      0.8660255,
-      0,
-      0,
-      0.27093542,
-      0.46927398,
-      1
-    ],
-    "objectMetadataList" : [
-
-    ]
-  },
-  "440DE5B4-E4E4-459B-AABF-9ACE96319272" : {
-    "cameraTransform" : [
-      0.99999994,
-      0,
-      -0,
-      0,
-      -0,
-      0.8660254,
-      -0.49999994,
-      0,
-      0,
-      0.49999994,
-      0.8660254,
-      0,
-      0,
-      0.5981957,
-      1.0361054,
-      1
-    ],
+  "F2277F49-9A6F-484C-8B23-8FF75B77A92B" : {
     "objectMetadataList" : [
       [
-        "440DE5B4-E4E4-459B-AABF-9ACE96319272",
+        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
+        "Root",
+        "Room"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
         "Root"
       ],
       {
         "isExpanded" : true,
         "isLocked" : false
-      }
-    ]
-  },
-  "FBD8436F-6B8B-4B82-99B5-995D538B4704" : {
-    "cameraTransform" : [
-      0.99999994,
-      0,
-      -0,
-      0,
-      -0,
-      0.8660254,
-      -0.49999994,
-      0,
-      0,
-      0.49999994,
-      0.8660254,
-      0,
-      0,
-      0.5981957,
-      1.0361054,
-      1
-    ],
-    "objectMetadataList" : [
+      },
       [
-        "FBD8436F-6B8B-4B82-99B5-995D538B4704",
-        "Root"
+        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
+        "Root",
+        "Room",
+        "Medical_Examination_Room",
+        "Meshes",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
+        "Root",
+        "Room",
+        "Medical_Examination_Room",
+        "Meshes",
+        "Sketchfab_model",
+        "c8e4533349d843409139930039f259e1_fbx"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
+        "Root",
+        "Room",
+        "Medical_Examination_Room",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
+        "Root",
+        "Room",
+        "Medical_Examination_Room",
+        "Meshes",
+        "Sketchfab_model",
+        "c8e4533349d843409139930039f259e1_fbx",
+        "RootNode"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
+        "Root",
+        "Room",
+        "Medical_Examination_Room"
       ],
       {
         "isExpanded" : true,

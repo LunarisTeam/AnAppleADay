@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import RealityKitContent
 
 @main
 struct AnAppleADayApp: App {
     
+    @State private var appModel = AppModel()
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
@@ -23,11 +25,15 @@ struct AnAppleADayApp: App {
     
     @State private var onboarding: OnboardingParameters = .init()
     
+    init() {
+        RealityKitContent.ObjComponent.registerComponent()
+        // Register custom RealityKit components once
+    }
+    
     var body: some Scene {
         
         Group {
-            
-            /// This will be adjusted in the design area, therefore I will leave it like this 
+            /// This will be adjusted in the design area, therefore I will leave it like this
             WindowGroup(id: WindowIDs.importDicomsWindowID) {
                 ZStack {
                     Color("backgroundColor")
@@ -36,26 +42,33 @@ struct AnAppleADayApp: App {
                         ImportDicomView()
                     } else {
                         InfoView(showInfo: .constant(true))
-                   }
+                    }
                 }
-                #if DEBUG
-                .overlay(alignment: .bottomLeading) {
-                    Button("Erase Cache", systemImage: "trash") {
-                        let contents = try? FileManager.default.contentsOfDirectory(
-                            at: DicomDataSet.cacheDirectory,
-                            includingPropertiesForKeys: nil,
-                            options: []
-                        )
-                        
-                        for item in contents ?? [] {
-                            print("✅ Erasing \(item.lastPathComponent) from cache")
-                            try? FileManager.default.removeItem(at: item)
-                        }
-                    }.padding(32)
+#if DEBUG
+                .if(onboarding.completed) {
+                    $0.overlay(alignment: .bottomLeading) {
+                        Button("Erase Cache", systemImage: "trash") {
+                            let contents = try? FileManager.default.contentsOfDirectory(
+                                at: DicomDataSet.cacheDirectory,
+                                includingPropertiesForKeys: nil,
+                                options: []
+                            )
+                            
+                            for item in contents ?? [] {
+                                print("✅ Erasing \(item.lastPathComponent) from cache")
+                                try? FileManager.default.removeItem(at: item)
+                            }
+                        }.padding(32)
+                    }
                 }
-                #endif
+#endif
             }
+            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             .environment(onboarding)
+            
+            WindowGroup(id: WindowIDs.xRayFeed) {
+                VideoPlayerView()
+            }.windowStyle(.automatic)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 
@@ -69,8 +82,22 @@ struct AnAppleADayApp: App {
                     }
                 }
             }
+            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
-            WindowGroup(id: WindowIDs.model3DVolumeWindowID, for: DicomDataSet?.self) { dataSet in
+            
+            WindowGroup(id: WindowIDs.inputAddress) {
+                
+                InputAddressView()
+                    .environment(appModel)
+            }.windowStyle(.plain)
+                .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
+            
+            WindowGroup(id: WindowIDs.open2DWindow) {
+                VideoPlayerView()
+                    .environment(appModel)
+            }.windowStyle(.plain)
+            
+            ImmersiveSpace(id: WindowIDs.immersiveSpaceID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
                    let secondUnwrap = firstUnwrap {
@@ -78,7 +105,6 @@ struct AnAppleADayApp: App {
                     ModelView(dataSet: secondUnwrap)
                 }
             }
-            .windowStyle(.volumetric)
             
         }
         .environment(\.setMode, setMode)
@@ -106,21 +132,32 @@ struct AnAppleADayApp: App {
         let oldMode = mode
         guard newMode != oldMode else { return }
         mode = newMode
-        
+        //new mode = input address
+        //old mode = immersive space
         print("")
         print("oldMode: \(oldMode), newMode: \(newMode)")
-        
-        if newMode.acceptsDataSet {
-            openWindow(id: newMode.windowId, value: dataSet)
-            
-        } else { openWindow(id: newMode.windowId) }
+              
     
+        if newMode == .needsImmersiveSpace {
+            await openImmersiveSpace(id: newMode.windowId, value: dataSet)
+        }else{
+            if newMode.acceptsDataSet {
+                openWindow(id: newMode.windowId, value: dataSet)
+            } else { openWindow(id: newMode.windowId) }
+        }
+
+        
         //The do-catch is to avoid skipping the await for concurrency issues.
         //Increase the sleep if it doesn't work.
         try? await Task.sleep(for: .seconds(0.05))
         
         if oldMode.acceptsDataSet {
-            dismissWindow(id: oldMode.windowId, value: dataSet)
+            if oldMode.immersiveSpaceIsOpen {
+                
+            }else{
+                dismissWindow(id: oldMode.windowId, value: dataSet)
+            }
+           
             
         } else { dismissWindow(id: oldMode.windowId) }
     }

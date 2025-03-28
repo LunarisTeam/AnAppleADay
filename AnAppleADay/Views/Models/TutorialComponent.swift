@@ -32,7 +32,7 @@ struct TutorialComponent: View {
     var body: some View {
         
         VStack {
-            Text("Step \(stepNumber)").font(.title3)
+            Text("Step \(stepNumber)").font(.title)
             
             Spacer()
             
@@ -40,7 +40,7 @@ struct TutorialComponent: View {
                 
             //This is a fix until design side doesn't provide the correct asset
                 .if(imageName == "dicomIcon") {
-                    $0.offset(x: -20)
+                    $0.offset(x: -11.5)
                 }
                 .if(imageName == "Window") {
                     $0.background {
@@ -53,7 +53,7 @@ struct TutorialComponent: View {
                 .if(imageName == "Window") {
                     $0.frame(width: 230, height: 150)
                 }
-                .frame(width: 200, height: 200)
+                .frame(width: 160, height: 160)
             
             Spacer()
             

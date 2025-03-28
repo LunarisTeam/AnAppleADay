@@ -21,8 +21,15 @@
     /// The mode for generating 3D models from DICOM data.
     case generate
     
-    /// The mode for displaying the generated 3D volume.
-    case model3DVolume
+    /// The mode for displaying the generated 3D volume.    
+    case needsImmersiveSpace
+    
+    case inputAddress
+    
+    case open2DWindow
+
+    /// The mode for displaying the window with feed from fluoroscope.
+    case xRayFeed
     
     /// The identifier associated with the mode's corresponding window or scene.
     ///
@@ -32,7 +39,10 @@
         switch self {
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
-        case .model3DVolume: return WindowIDs.model3DVolumeWindowID
+        case .xRayFeed: return WindowIDs.xRayFeed
+        case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
+        case .inputAddress: return WindowIDs.inputAddress
+        case .open2DWindow: return WindowIDs.open2DWindow
         }
     }
     
@@ -44,7 +54,21 @@
         switch self {
         case .importDicoms: return false
         case .generate: return true
-        case .model3DVolume: return true
+        case .xRayFeed: return false
+        case .needsImmersiveSpace: return true
+        case .inputAddress: return false
+        case .open2DWindow: return false
+        }
+    }
+    
+    var immersiveSpaceIsOpen: Bool {
+        switch self {
+        case .importDicoms: return false
+        case .generate: return false
+        case .needsImmersiveSpace: return true
+        case .inputAddress: return false
+        case .open2DWindow: return false
+        case .xRayFeed: return false
         }
     }
 }

@@ -24,6 +24,7 @@
     /// The mode for displaying the generated 3D volume.
     case model3DVolume
     
+    /// The mode for displaying the window with feed from fluoroscope.
     case xRayFeed
     
     /// The identifier associated with the mode's corresponding window or scene.

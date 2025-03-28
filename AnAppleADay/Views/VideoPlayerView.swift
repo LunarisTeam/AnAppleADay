@@ -14,7 +14,6 @@ struct VideoPlayerView: View {
     
     var body: some View {
         VideoPlayer(player: player)
-            .frame(width: 600, height: 400)
             .onAppear {
                 player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
                 player.play()

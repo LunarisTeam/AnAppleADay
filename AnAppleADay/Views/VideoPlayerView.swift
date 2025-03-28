@@ -9,18 +9,21 @@ import SwiftUI
 import AVKit
 
 struct VideoPlayerView: View {
-    private let videoURL = URL(string: "http://10.20.50.9:8000/xrayVideo.m3u8")!
+    
+    @Environment(AppModel.self) private var appModel
+    
     @State private var player = AVPlayer()
     
     var body: some View {
         VideoPlayer(player: player)
             .onAppear {
-                player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
-                player.play()
+                if let videoURL = URL(string: "http://\(appModel.address):\(appModel.port)/\(appModel.fileName)"){
+                    player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
+                    player.play()
+                }else{
+                    print("error video")
+                }
+               
             }
     }
-}
-
-#Preview {
-    VideoPlayerView()
 }

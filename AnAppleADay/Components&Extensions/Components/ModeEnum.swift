@@ -24,6 +24,10 @@
     /// The mode for displaying the generated 3D volume.    
     case needsImmersiveSpace
     
+    case inputAddress
+    
+    case open2DWindow
+
     /// The mode for displaying the window with feed from fluoroscope.
     case xRayFeed
     
@@ -37,6 +41,8 @@
         case .generate: return WindowIDs.generateModelWindowID
         case .xRayFeed: return WindowIDs.xRayFeed
         case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
+        case .inputAddress: return WindowIDs.inputAddress
+        case .open2DWindow: return WindowIDs.open2DWindow
         }
     }
     
@@ -50,6 +56,19 @@
         case .generate: return true
         case .xRayFeed: return false
         case .needsImmersiveSpace: return true
+        case .inputAddress: return false
+        case .open2DWindow: return false
+        }
+    }
+    
+    var immersiveSpaceIsOpen: Bool {
+        switch self {
+        case .importDicoms: return false
+        case .generate: return false
+        case .needsImmersiveSpace: return true
+        case .inputAddress: return false
+        case .open2DWindow: return false
+        case .xRayFeed: return false
         }
     }
 }

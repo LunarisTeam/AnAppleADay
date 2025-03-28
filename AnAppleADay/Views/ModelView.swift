@@ -100,7 +100,7 @@ struct ModelView: View {
         } attachments: {
             Attachment(id: "ControlPanel") {
                 if let bonesEntity, let arteriesEntity {
-                    controlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale)
+                    controlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale, dataSet: dataSet)
                 }
             }
             
@@ -112,27 +112,11 @@ struct ModelView: View {
                             arteriesEntity == nil { ProgressModelView() }
             }
             
-//            Button {
-//                Task{
-//                    await setMode(.xRayFeed, nil)
-//                }
-//                
-//            } label: {
-//                Text("Open Video Player")
-//            }
+
             
             
         }
         .installGestures()
-        
-        Button {
-            Task{
-                await setMode(.xRayFeed, nil)
-            }
-            
-        } label: {
-            Text("Open Video Player")
-        }
         
     }
     

@@ -11,6 +11,7 @@ import RealityKitContent
 @main
 struct AnAppleADayApp: App {
     
+    @State private var appModel = AppModel()
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
@@ -83,6 +84,19 @@ struct AnAppleADayApp: App {
             }
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
+            
+            WindowGroup(id: WindowIDs.inputAddress) {
+                
+                InputAddressView()
+                    .environment(appModel)
+            }.windowStyle(.plain)
+                .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
+            
+            WindowGroup(id: WindowIDs.open2DWindow) {
+                VideoPlayerView()
+                    .environment(appModel)
+            }.windowStyle(.plain)
+            
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
@@ -118,7 +132,8 @@ struct AnAppleADayApp: App {
         let oldMode = mode
         guard newMode != oldMode else { return }
         mode = newMode
-        
+        //new mode = input address
+        //old mode = immersive space
         print("")
         print("oldMode: \(oldMode), newMode: \(newMode)")
               
@@ -137,7 +152,12 @@ struct AnAppleADayApp: App {
         try? await Task.sleep(for: .seconds(0.05))
         
         if oldMode.acceptsDataSet {
-            dismissWindow(id: oldMode.windowId, value: dataSet)
+            if oldMode.immersiveSpaceIsOpen {
+                
+            }else{
+                dismissWindow(id: oldMode.windowId, value: dataSet)
+            }
+           
             
         } else { dismissWindow(id: oldMode.windowId) }
     }

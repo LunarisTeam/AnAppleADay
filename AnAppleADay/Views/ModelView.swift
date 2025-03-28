@@ -13,8 +13,9 @@ struct ModelView: View {
     
     let dataSet: DicomDataSet
     
-    @State private var error: Error? = nil
+    @Environment(\.setMode) private var setMode
     
+    @State private var error: Error? = nil
     @State private var bonesEntity: Entity? = nil
     @State private var arteriesEntity: Entity? = nil
     @State private var scale: Bool = false
@@ -66,7 +67,7 @@ struct ModelView: View {
             if let bonesEntity {
                 
                 bonesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
-
+                
                 bonesEntity.generateCollisionShapes(recursive: true)
                 
                 
@@ -81,7 +82,7 @@ struct ModelView: View {
             
             
             if let arteriesEntity {
-
+                
                 arteriesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
                 arteriesEntity.generateCollisionShapes(recursive: true)
                 arteriesEntity.components.set(ObjComponent())
@@ -96,7 +97,7 @@ struct ModelView: View {
                 content.add(controlPanelAtt)
                 //                          bonesEntity?.addChild(awindowAttachment)
             }
-        }attachments: {
+        } attachments: {
             Attachment(id: "ControlPanel") {
                 if let bonesEntity, let arteriesEntity {
                     controlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale, dataSet: dataSet)
@@ -110,34 +111,38 @@ struct ModelView: View {
                 } else if bonesEntity == nil ||
                             arteriesEntity == nil { ProgressModelView() }
             }
+            
+
+            
+            
         }
         .installGestures()
         
     }
-
-func generateEntity(
-    _ threshold: Double,
-    _ color: UIColor,
-    _ box: [Double],
-    _ translation: [Double]
     
-) async throws -> Entity {
-    
-    let visualizationToolkit: VisualizationToolkit = try .init()
-    
-    let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
-        dataSet: dataSet,
-        threshold: threshold,
-        boxBounds: box,
-        translationBounds: translation
-    )
-    
-    let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
-    
-    modelEntity.model?.materials = [
-        SimpleMaterial(color: color, isMetallic: false)
-    ]
-    return modelEntity
-}
+    func generateEntity(
+        _ threshold: Double,
+        _ color: UIColor,
+        _ box: [Double],
+        _ translation: [Double]
+        
+    ) async throws -> Entity {
+        
+        let visualizationToolkit: VisualizationToolkit = try .init()
+        
+        let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
+            dataSet: dataSet,
+            threshold: threshold,
+            boxBounds: box,
+            translationBounds: translation
+        )
+        
+        let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
+        
+        modelEntity.model?.materials = [
+            SimpleMaterial(color: color, isMetallic: false)
+        ]
+        return modelEntity
+    }
     
 }

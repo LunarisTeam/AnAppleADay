@@ -11,6 +11,7 @@ import RealityKitContent
 @main
 struct AnAppleADayApp: App {
     
+    @State private var appModel = AppModel()
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
@@ -32,7 +33,6 @@ struct AnAppleADayApp: App {
     var body: some Scene {
         
         Group {
-            
             /// This will be adjusted in the design area, therefore I will leave it like this
             WindowGroup(id: WindowIDs.importDicomsWindowID) {
                 ZStack {
@@ -66,6 +66,10 @@ struct AnAppleADayApp: App {
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             .environment(onboarding)
             
+            WindowGroup(id: WindowIDs.xRayFeed) {
+                VideoPlayerView()
+            }.windowStyle(.automatic)
+            
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
@@ -84,11 +88,13 @@ struct AnAppleADayApp: App {
             WindowGroup(id: WindowIDs.inputAddress) {
                 
                 InputAddressView()
+                    .environment(appModel)
             }.windowStyle(.plain)
-                .defaultSize(width: 0.3000, height: 0.3500, depth: 0, in: .meters)
+                .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
             
             WindowGroup(id: WindowIDs.open2DWindow) {
-                Text("2D Feed")
+                VideoPlayerView()
+                    .environment(appModel)
             }.windowStyle(.plain)
             
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID, for: DicomDataSet?.self) { dataSet in

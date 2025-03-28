@@ -11,8 +11,11 @@ import RealityKit
 struct InputAddressView: View {
     
     @Environment(\.setMode) private var setMode
-    
-    @State private var address: String = ""
+    @Environment(AppModel.self) private var appModel
+    @State private var first: String = ""
+    @State private var second: String = ""
+    @State private var third: String = ""
+    @State private var fourth: String = ""
     @State private var port: String = ""
     
     var body: some View {
@@ -23,9 +26,36 @@ struct InputAddressView: View {
             
             Form{
                 Section ("Ip address"){
-                    TextField(text: $address) {
-                        Text("Ip address")
-                            .font(.title2)
+                    HStack(spacing: 5){
+                        TextField(text: $first) {
+                            Text("00")
+                                .font(.title2)
+                        }.keyboardType(.numberPad)
+                        
+                        Text(".")
+                            .padding(.horizontal)
+                        
+                        TextField(text: $second) {
+                            Text("00")
+                                .font(.title2)
+                        }.keyboardType(.numberPad)
+                        
+                        Text(".")
+                            .padding(.horizontal)
+                        
+                        TextField(text: $third) {
+                            Text("00")
+                                .font(.title2)
+                        }.keyboardType(.numberPad)
+                        
+                        Text(".")
+                            .padding(.horizontal)
+                        
+                        TextField(text: $fourth) {
+                            Text("00")
+                                .font(.title2)
+                        }.keyboardType(.numberPad)
+                        
                     }
                 }
                 
@@ -33,11 +63,15 @@ struct InputAddressView: View {
                     TextField(text: $port) {
                         Text("Port number")
                             .font(.title2)
-                    }
+                    }.keyboardType(.numberPad)
                 }
             }
             
             Button {
+                
+                appModel.address = first + "." + second + "." + third + "." + fourth
+                appModel.port = port
+                
                 Task{
                     await setMode(.open2DWindow, nil)
                 }

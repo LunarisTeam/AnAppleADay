@@ -14,7 +14,7 @@ struct ModelView: View {
     let dataSet: DicomDataSet
     
     @State private var error: Error? = nil
-    
+    @Environment(\.setMode) private var setMode
     @State private var bonesEntity: Entity? = nil
     @State private var arteriesEntity: Entity? = nil
     
@@ -78,6 +78,17 @@ struct ModelView: View {
                 }
                 .glassBackgroundEffect()
             }
+            
+            Button {
+                Task{
+                    await setMode(.xRayFeed, nil)
+                }
+                
+            } label: {
+                Text("Open Video Player")
+            }
+
+            
         }
     }
     

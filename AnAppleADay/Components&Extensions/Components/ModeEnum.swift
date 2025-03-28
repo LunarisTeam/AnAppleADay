@@ -24,6 +24,8 @@
     /// The mode for displaying the generated 3D volume.
     case model3DVolume
     
+    case xRayFeed
+    
     /// The identifier associated with the mode's corresponding window or scene.
     ///
     /// This value is used to reference the correct `WindowGroup` or `ImmersiveSpace`
@@ -33,6 +35,7 @@
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
         case .model3DVolume: return WindowIDs.model3DVolumeWindowID
+        case .xRayFeed: return WindowIDs.xRayFeed
         }
     }
     
@@ -45,6 +48,7 @@
         case .importDicoms: return false
         case .generate: return true
         case .model3DVolume: return true
+        case .xRayFeed: return false
         }
     }
 }

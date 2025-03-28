@@ -27,6 +27,8 @@ struct AnAppleADayApp: App {
         
         Group {
             
+
+            
             /// This will be adjusted in the design area, therefore I will leave it like this
             WindowGroup(id: WindowIDs.importDicomsWindowID) {
                 ZStack {
@@ -59,6 +61,10 @@ struct AnAppleADayApp: App {
             }
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             .environment(onboarding)
+            
+            WindowGroup(id: WindowIDs.xRayFeed) {
+                VideoPlayerView()
+            }.windowStyle(.automatic)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 

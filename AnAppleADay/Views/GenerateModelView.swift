@@ -57,7 +57,9 @@ struct GenerateModelView: View {
             
             HStack {
                 Button("Back") {
-                    print("Back")
+                    Task{
+                        await setMode(.importDicoms, nil)
+                    }
                 }
                 .buttonStyle(.plain)
                 

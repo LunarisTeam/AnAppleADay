@@ -69,7 +69,7 @@ struct AnAppleADayApp: App {
             .environment(onboarding)
             
             WindowGroup(id: WindowIDs.xRayFeed) {
-                VideoPlayerView()
+                VideoPlayerView().fixedSize()
             }
             .windowStyle(.automatic)
             .environment(appModelServer)
@@ -85,6 +85,7 @@ struct AnAppleADayApp: App {
                         GenerateModelView(dataSet: secondUnwrap)
                             .environment(appModel)
                     }
+                    .fixedSize()
                 }
             }
            
@@ -95,7 +96,7 @@ struct AnAppleADayApp: App {
                 
                 InputAddressView()
                     .environment(appModel)
-                
+                    .fixedSize()
             }
             .windowStyle(.plain)
             .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
@@ -109,6 +110,7 @@ struct AnAppleADayApp: App {
                             .opacity(0.3)
                         ProgressModelView(dataSet: secondUnwrap)
                             .environment(appModel)
+                            .fixedSize()
                     }
                 }
             }
@@ -117,15 +119,18 @@ struct AnAppleADayApp: App {
             WindowGroup(id: WindowIDs.open2DWindow) {
                 VideoPlayerView()
                     .environment(appModel)
+                    .fixedSize()
             }
             
             .windowStyle(.plain)
             
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID) {
-                    ModelView()
-                        .environment(appModel)
-                }
+                ModelView()
+                    .environment(appModel)
+                    .fixedSize()
+            }
         }
+        
         .environment(\.setMode, setMode)
     }
     

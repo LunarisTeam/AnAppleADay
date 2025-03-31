@@ -18,9 +18,6 @@ struct ProgressModelView: View {
     
     var body: some View {
         
-        
-        
-        
         VStack(spacing: 40) {
             
             Spacer()
@@ -48,28 +45,14 @@ struct ProgressModelView: View {
             Spacer()
             
         }
-        .task {
-            print("passing dataset")
-            appModel.dataSetHolder = dataSet
-        }
+        .task { appModel.dataSetHolder = dataSet }
         .onAppear {
-            
-            Task {
-                print("awaiting entities...")
-                await appModel.entitiesLoaded {
-                    print("loaded entities!")
-                    loaded = true
-                }
-            }
+            Task { await appModel.entitiesLoaded { loaded = true } }
         }
         .onChange(of: loaded) { _, newValue in
             print("Switching to immersive space")
-            Task {
-                try? await Task.sleep(for: .seconds(1))
-                await setMode(.needsImmersiveSpace, nil)
-            }
+            Task { await setMode(.needsImmersiveSpace, nil) }
         }
         .padding()
-        .frame(width: 676, height: 550)
     }
 }

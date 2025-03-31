@@ -12,94 +12,89 @@ import RealityKit
 // The bones are the first element of the parent entity, while the second is the arteries
 struct ControlPanel: View {
     
-    @Environment(AppModelServer.self) private var appModel
-   
-    @Binding var scale: Bool
+    @Environment(AppModelServer.self) private var appModelServer
+    @Environment(AppModel.self) private var appModel
+    @Environment(\.setMode) private var setMode
     
     @State private var gestures: Bool = true
     
-    var bonesEntity: Entity
-    var arteriesEntity: Entity
-
-    @Environment(\.setMode) private var setMode
-    
-    let dataSet: DicomDataSet
-    
     var body: some View {
         
-        HStack{
-            //toggle bones arteries
-            Button {
-                bonesEntity.isEnabled.toggle()
-                arteriesEntity.isEnabled.toggle()
-                
-                if !bonesEntity.isEnabled {
-                    arteriesEntity.position = bonesEntity.position
-                    arteriesEntity.scale = bonesEntity.scale
-                    arteriesEntity.transform.rotation = bonesEntity.transform.rotation
-                } else {
-                    bonesEntity.position = arteriesEntity.position
-                    bonesEntity.scale = arteriesEntity.scale
-                    bonesEntity.transform.rotation = arteriesEntity.transform.rotation
+            HStack{
+                //toggle bones arteries
+                Button {
+                    appModel.bonesEntityHolder!.isEnabled.toggle()
+                    appModel.arteriesEntityHolder!.isEnabled.toggle()
+                    
+                    if (!appModel.bonesEntityHolder!.isEnabled) {
+                        appModel.arteriesEntityHolder!.position = appModel.bonesEntityHolder!.position
+                        appModel.arteriesEntityHolder!.scale = appModel.bonesEntityHolder!.scale
+                        appModel.arteriesEntityHolder!.transform.rotation = appModel.bonesEntityHolder!.transform.rotation
+                    } else {
+                        appModel.bonesEntityHolder!.position = appModel.arteriesEntityHolder!.position
+                        appModel.bonesEntityHolder!.scale = appModel.arteriesEntityHolder!.scale
+                        appModel.bonesEntityHolder!.transform.rotation = appModel.arteriesEntityHolder!.transform.rotation
+                    }
+                } label: {
+                    Image("hideBones")
                 }
-            } label: {
-                Image("hideBones")
-            }
-            
-            //scale
-            Button {
-                scale.toggle()
                 
-                if(scale){
-                    bonesEntity.scale *= 2.0
-                    arteriesEntity.scale *= 2.0
-                }else{
-                    bonesEntity.scale /= 2.0
-                    arteriesEntity.scale /= 2.0
+                //scale
+                Button {
+                    appModel.scale.toggle()
+                    if(appModel.scale){
+                        appModel.bonesEntityHolder!.scale *= 2.0
+                        appModel.arteriesEntityHolder!.scale *= 2.0
+                    }else{
+                        appModel.bonesEntityHolder!.scale /= 2.0
+                        appModel.arteriesEntityHolder!.scale /= 2.0
+                    }
+                } label: {
+                    Image("RestoreSize")
                 }
-            } label: {
-                Image("RestoreSize")
-            }
-            
-            //lock 3D
-            Button {
-                gestures.toggle()
-                    toggleGestures(component: bonesEntity, isEnabled: gestures)
-                    toggleGestures(component: arteriesEntity, isEnabled: gestures)
-            } label: {
-                Image("lockInPosition")
-            }
-            
-            //Divider
-            Divider().frame(width: 5, height: 40)
-            
-            //Show 2D image
-            Button {
-                //potentially show and hide the model so they don't overlap
-                Task{
-                    await setMode(.inputAddress, nil)
-                }
-            } label: {
-                Image("connect2D")
-            }
-            
-            //lock 2D image
-            Button {
                 
-            } label: {
-                Image("lock2d")
+                
+                //lock 3D
+                Button {
+                    gestures.toggle()
+                    toggleGestures(component: appModel.bonesEntityHolder!, isEnabled: gestures)
+                    toggleGestures(component: appModel.arteriesEntityHolder!, isEnabled: gestures)
+                } label: {
+                    Image("lockInPosition")
+                }
+                
+                //Divider
+                Divider().frame(width: 5, height: 40)
+                
+                //Show 2D image
+                Button {
+                    //potentially show and hide the model so they don't overlap
+                    Task { await setMode(.inputAddress, nil) }
+                } label: {
+                    Image("connect2D")
+                }
+                
+                //lock 2D image
+                Button {
+                    appModelServer.hideBar.toggle()
+                } label: {
+                    Image("lock2d")
+                }
+                
+                //LOCKINTO3D2
+                Button {
+                    
+                } label: {
+                    Image("LOCKINTO3D2")
+                }
+                
+                
             }
-            
-            //LOCKINTO3D2
-            Button {
-                //auto overlap??
-            } label: {
-                Image("LOCKINTO3D2")
-            }
-        }.padding(.vertical, 20)
+            .padding(.vertical, 20)
             .padding(.horizontal, 30)
-        .glassBackgroundEffect()
-        
+            .glassBackgroundEffect()
+            .persistentSystemOverlays(.visible)
+            
         
     }
     

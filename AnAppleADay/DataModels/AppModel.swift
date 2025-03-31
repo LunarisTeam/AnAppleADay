@@ -16,6 +16,8 @@ final class AppModel {
     var dataSetHolder: DicomDataSet? = nil
     var bonesEntityHolder: Entity? = nil
     var arteriesEntityHolder: Entity? = nil
+    var scale: Bool = false
+    var hideBar: Bool = false
     
     private var bonesCenter: SIMD3<Float> = .zero
     private var arteriesCenter: SIMD3<Float> = .zero
@@ -59,10 +61,11 @@ final class AppModel {
         let boundingBox = bonesEntity.visualBounds(relativeTo: nil)
         bonesCenter = boundingBox.center
         
-        bonesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
+        bonesEntity.components.set(InputTargetComponent(allowedInputTypes: .indirect))
         bonesEntity.generateCollisionShapes(recursive: true)
         bonesEntity.components.set(ObjComponent())
         bonesEntity.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
+        bonesEntity.transform.rotation = simd_quatf(angle: 45, axis: [1, 0, 0])
         
         bonesEntityHolder = bonesEntity
         print("bones set")
@@ -82,7 +85,7 @@ final class AppModel {
         
         arteriesEntity.isEnabled = false
         arteriesEntity.scale *= 0.5
-        arteriesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
+        arteriesEntity.components.set(InputTargetComponent(allowedInputTypes: .indirect))
         arteriesEntity.generateCollisionShapes(recursive: true)
         arteriesEntity.components.set(ObjComponent())
         arteriesEntity.position = [-arteriesCenter.x, -arteriesCenter.y+1.5, -arteriesCenter.z-1.5]

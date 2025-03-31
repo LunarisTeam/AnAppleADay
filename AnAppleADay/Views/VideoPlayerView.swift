@@ -10,20 +10,31 @@ import AVKit
 
 struct VideoPlayerView: View {
     
-    @Environment(AppModelServer.self) private var appModel
+    @Environment(AppModelServer.self) private var appModelServer
+    @Environment(AppModel.self) private var appModel
     
     @State private var player = AVPlayer()
-    
+    @State private var degrees: Double = 0
+
     var body: some View {
-        VideoPlayer(player: player)
-            .onAppear {
-                if let videoURL = URL(string: "http://\(appModel.address):\(appModel.port)/\(appModel.fileName)"){
-                    player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
-                    player.play()
-                }else{
-                    print("error video")
+        VStack{
+            VideoPlayer(player: player)
+                .rotation3DEffect(.degrees(degrees), axis: (x: 0, y: 1, z: 0))
+                .persistentSystemOverlays(appModel.hideBar ? .hidden : .visible)
+                .onAppear {
+                    if let videoURL = URL(string: "http://\(appModelServer.address):\(appModelServer.port)/\(appModelServer.fileName)"){
+                        player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
+                        player.play()
+                    }else{
+                        print("error video")
+                    }
                 }
-               
-            }
+
+                Slider(value: $degrees, in: -180...180)
+                    .padding(.vertical, 20)
+                    .padding(.horizontal, 30)
+            
+        }
+        
     }
 }

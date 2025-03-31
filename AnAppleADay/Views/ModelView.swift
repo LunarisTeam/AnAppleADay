@@ -12,13 +12,17 @@ import RealityKit
 struct ModelView: View {
     
     @Environment(AppModel.self) private var appModel
+    @Environment(\.setMode) private var setMode
     
     var body: some View {
+        
         RealityView { content in
             content.add(appModel.bonesEntityHolder!)
             content.add(appModel.arteriesEntityHolder!)
         }
         .installGestures()
-        
+        .onAppear {
+            Task { await setMode(.controlPanel, nil) }
+        }
     }
 }

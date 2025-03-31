@@ -11,10 +11,9 @@ import Foundation
 struct WindowIDs {
     static let importDicomsWindowID: String = "ImportDicoms"
     static let generateModelWindowID: String = "GenerateModel"
-    static let xRayFeed: String = "XRayFeed"
+    static let xRayFeedWindowID: String = "XRayFeed"
     static let immersiveSpaceID: String = "ImmersiveSpaceID"
-    static let inputAddress: String = "InputAddress"
-    static let open2DWindow: String = "open2DWindow"
+    static let inputAddressWindowID: String = "InputAddress"
     static let controlPanelWindowID: String = "ControlPanel"
     static let progressWindowID: String = "Progress"
 }

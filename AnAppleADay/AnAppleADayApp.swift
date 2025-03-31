@@ -68,11 +68,14 @@ struct AnAppleADayApp: App {
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             .environment(onboarding)
             
-            WindowGroup(id: WindowIDs.xRayFeed) {
-                VideoPlayerView().fixedSize()
+            WindowGroup(id: WindowIDs.xRayFeedWindowID) {
+                VideoPlayerView()
+                    .environment(appModel)
+                    .environment(appModelServer)
             }
-            .windowStyle(.automatic)
-            .environment(appModelServer)
+            .windowResizability(.contentSize)
+            .windowStyle(.plain)
+            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 
@@ -84,20 +87,21 @@ struct AnAppleADayApp: App {
                             .opacity(0.3)
                         GenerateModelView(dataSet: secondUnwrap)
                             .environment(appModel)
+                            .fixedSize()
                     }
-                    .fixedSize()
+                    
                 }
             }
-           
+            
+            .windowResizability(.contentSize)
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
-            
-            WindowGroup(id: WindowIDs.inputAddress) {
-                
+            WindowGroup(id: WindowIDs.inputAddressWindowID) {
                 InputAddressView()
                     .environment(appModel)
-                    .fixedSize()
+                    .environment(appModelServer)
             }
+            .windowResizability(.contentSize)
             .windowStyle(.plain)
             .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
             
@@ -116,21 +120,19 @@ struct AnAppleADayApp: App {
             }
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
-            WindowGroup(id: WindowIDs.open2DWindow) {
-                VideoPlayerView()
+            WindowGroup(id: WindowIDs.controlPanelWindowID) {
+                ControlPanel()
                     .environment(appModel)
-                    .fixedSize()
+                    .environment(appModelServer)
             }
-            
             .windowStyle(.plain)
+            .defaultSize(width: 0.4000, height: 0.0500, depth: 0, in: .meters)
             
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID) {
                 ModelView()
                     .environment(appModel)
-                    .fixedSize()
             }
         }
-        
         .environment(\.setMode, setMode)
     }
     
@@ -164,7 +166,7 @@ struct AnAppleADayApp: App {
             await openImmersiveSpace(id: newMode.windowId)
             dismissWindow(id: oldMode.windowId)
             
-        }else{
+        } else {
             if newMode.acceptsDataSet {
                 openWindow(id: newMode.windowId, value: dataSet)
             } else { openWindow(id: newMode.windowId) }
@@ -177,13 +179,17 @@ struct AnAppleADayApp: App {
         
         if oldMode.acceptsDataSet {
             if oldMode.immersiveSpaceIsOpen {
-                
-            }else{
+
+            } else {
                 dismissWindow(id: oldMode.windowId, value: dataSet)
             }
-            
-            
-        } else { dismissWindow(id: oldMode.windowId) }
+        } else {
+            if oldMode.windowId == "ControlPanel" {
+                
+            } else {
+                dismissWindow(id: oldMode.windowId)
+            }
+        }
     }
 }
 

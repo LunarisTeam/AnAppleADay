@@ -72,16 +72,16 @@ struct InputAddressView: View {
                 appModelServer.address = first + "." + second + "." + third + "." + fourth
                 appModelServer.port = port
                 
-                Task{
-                    await setMode(.open2DWindow, nil)
-                }
+                Task { await setMode(.xRayFeed, nil) }
             } label: {
                 Text("Connect")
                     .font(.title2)
             }
 
             
-        }.padding(20)
+        }
+        
+        .padding(20)
         .glassBackgroundEffect()
     }
 }

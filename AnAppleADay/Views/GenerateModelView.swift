@@ -15,9 +15,8 @@ struct GenerateModelView: View {
     
     var body: some View {
         
-        VStack(spacing: 40) {
-            
-            VStack(spacing: 10) {
+        VStack {
+            VStack {
                 
                 Text("Generate the 3D Model")
                     .font(.title)
@@ -31,8 +30,9 @@ struct GenerateModelView: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 800)
             }
+            .offset(y: 50)
             
-            VStack(spacing: 12) {
+            VStack {
                 Image("dicomIcon")
                     .resizable()
                     .offset(x: -10)
@@ -40,7 +40,7 @@ struct GenerateModelView: View {
                     .frame(width: 100, height: 100)
                     .foregroundColor(.white.opacity(0.8))
                 
-                VStack(spacing: 2) {
+                VStack() {
                     Text(dataSet.name)
                         .font(.headline)
                         .fontWeight(.medium)
@@ -51,12 +51,25 @@ struct GenerateModelView: View {
                         .fontWeight(.light)
                 }
             }
+            .offset(y: 110)
             
-            Button("Generate Model") {
-                Task { @MainActor in
-                    await setMode(.needsImmersiveSpace, dataSet)
+            Spacer()
+            
+            HStack {
+                Button("Back") {
+                    print("Back")
+                }
+                .buttonStyle(.plain)
+                
+                Spacer()
+                
+                Button("Proceed") {
+                    Task { @MainActor in
+                        await setMode(.needsImmersiveSpace, dataSet)
+                    }
                 }
             }
+            .padding()
         }
         .padding()
     }

@@ -16,11 +16,9 @@ struct ModelView: View {
     @Environment(\.setMode) private var setMode
     
     @State private var error: Error? = nil
-    @State private var bonesEntity: Entity? = nil
-    @State private var arteriesEntity: Entity? = nil
-    @State private var scale: Bool = false
     @State private var bonesCenter: SIMD3<Float> = .zero
     @State private var arteriesCenter: SIMD3<Float> = .zero
+    @Environment(AppModel.self) private var appModel
     
     var body: some View {
         
@@ -44,79 +42,67 @@ struct ModelView: View {
                     await MainActor.run {
                         arteriesEntity.isEnabled = false
                         bonesEntity.scale /= 2
-                        self.bonesEntity = bonesEntity
                         var boundingBox = bonesEntity.visualBounds(relativeTo: nil)
                         self.bonesCenter = boundingBox.center
-                        
+                        bonesEntity.transform.rotation = simd_quatf(angle: 45, axis: [1, 0, 0])
+                        bonesEntity.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
+                        appModel.bonesEntity = bonesEntity
+                       
+
                         arteriesEntity.scale /= 2
-                        self.arteriesEntity = arteriesEntity
+                        appModel.arteriesEntity = arteriesEntity
                         boundingBox = arteriesEntity.visualBounds(relativeTo: nil)
                         self.arteriesCenter = boundingBox.center
+                        arteriesEntity.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
+                        appModel.arteriesEntity = arteriesEntity
                     }
                     
                 } catch { await MainActor.run { self.error = error } }
             }
             
-        } update: { content, attachments in
+            
+            Task {
+                await setMode(.controlPanel, nil)
+            }
+            
+        }
+        update: { content, attachments in
             
             if let progress = attachments.entity(for: "Progress") {
                 progress.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
                 content.add(progress)
             }
             
-            if let bonesEntity {
+            if let bonesEntity = appModel.bonesEntity {
                 
-                bonesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
-                
+                bonesEntity.components.set(InputTargetComponent(allowedInputTypes: .indirect))
                 bonesEntity.generateCollisionShapes(recursive: true)
-                
-                
                 bonesEntity.components.set(ObjComponent())
-                
-                
-                bonesEntity.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
                 content.add(bonesEntity)
                 
             }
             
             
             
-            if let arteriesEntity {
+            if let arteriesEntity = appModel.arteriesEntity {
                 
-                arteriesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
+                arteriesEntity.components.set(InputTargetComponent(allowedInputTypes: .indirect))
                 arteriesEntity.generateCollisionShapes(recursive: true)
                 arteriesEntity.components.set(ObjComponent())
-                
-                arteriesEntity.position = [-arteriesCenter.x, -arteriesCenter.y+1.5, -arteriesCenter.z-1.5]
                 content.add(arteriesEntity)
             }
-            
-            
-            if let controlPanelAtt = attachments.entity(for: "ControlPanel") {
-                controlPanelAtt.position = [-bonesCenter.x+0.5, -bonesCenter.y+1.3, -bonesCenter.z-1]
-                content.add(controlPanelAtt)
-                //                          bonesEntity?.addChild(awindowAttachment)
-            }
+
         } attachments: {
-            Attachment(id: "ControlPanel") {
-                if let bonesEntity, let arteriesEntity {
-                    controlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale, dataSet: dataSet)
-                }
-            }
-            
             Attachment(id: "Progress") {
                 if let error {
                     ErrorView(error: error)
                     
-                } else if bonesEntity == nil ||
-                            arteriesEntity == nil { ProgressModelView() }
+                } else if appModel.bonesEntity == nil ||
+                            appModel.arteriesEntity == nil { ProgressModelView() }
             }
-            
-
-            
-            
         }
         .installGestures()
+        
         
     }
     

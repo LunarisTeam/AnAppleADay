@@ -68,7 +68,8 @@ struct AnAppleADayApp: App {
             
             WindowGroup(id: WindowIDs.xRayFeed) {
                 VideoPlayerView()
-            }.windowStyle(.automatic)
+                    .environment(appModel)
+            }.windowStyle(.plain)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 
@@ -89,7 +90,8 @@ struct AnAppleADayApp: App {
                 
                 InputAddressView()
                     .environment(appModel)
-            }.windowStyle(.plain)
+            }
+            .windowStyle(.plain)
                 .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
             
             WindowGroup(id: WindowIDs.open2DWindow) {
@@ -97,12 +99,20 @@ struct AnAppleADayApp: App {
                     .environment(appModel)
             }.windowStyle(.plain)
             
+            WindowGroup(id: WindowIDs.controlPanel) {
+                controlPanel()
+                    .environment(appModel)
+            }
+            .windowStyle(.plain)
+            .defaultSize(width: 0.4000, height: 0.0500, depth: 0, in: .meters)
+            
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
                    let secondUnwrap = firstUnwrap {
                     
                     ModelView(dataSet: secondUnwrap)
+                        .environment(appModel)
                 }
             }
             
@@ -158,9 +168,13 @@ struct AnAppleADayApp: App {
                 print(oldMode.windowId)
                 dismissWindow(id: oldMode.windowId, value: dataSet)
             }
-           
+        } else {
+            if oldMode.windowId == "controlPanel" {
+                
+            }else{
+                dismissWindow(id: oldMode.windowId) }
+            }
             
-        } else { dismissWindow(id: oldMode.windowId) }
     }
 }
 

@@ -16,4 +16,5 @@ struct WindowIDs {
     static let inputAddress: String = "InputAddress"
     static let open2DWindow: String = "open2DWindow"
     static let controlPanelWindowID: String = "ControlPanel"
+    static let progressWindowID: String = "Progress"
 }

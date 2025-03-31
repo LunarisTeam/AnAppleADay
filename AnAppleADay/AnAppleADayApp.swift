@@ -11,13 +11,13 @@ import RealityKitContent
 @main
 struct AnAppleADayApp: App {
     
-    @State private var appModel = AppModel()
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
     @State private var appModel: AppModel = .init()
+    @State private var appModelServer: AppModelServer = .init()
     
     /// Represents the current operational mode of the application.
     ///
@@ -70,7 +70,9 @@ struct AnAppleADayApp: App {
             
             WindowGroup(id: WindowIDs.xRayFeed) {
                 VideoPlayerView()
-            }.windowStyle(.automatic)
+            }
+            .windowStyle(.automatic)
+            .environment(appModelServer)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 
@@ -81,38 +83,48 @@ struct AnAppleADayApp: App {
                         Color("backgroundColor")
                             .opacity(0.3)
                         GenerateModelView(dataSet: secondUnwrap)
+                            .environment(appModel)
                     }
                 }
             }
-            .environment(appModel)
+           
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
             
-<<<<<<< Updated upstream
             WindowGroup(id: WindowIDs.inputAddress) {
                 
                 InputAddressView()
                     .environment(appModel)
-            }.windowStyle(.plain)
-                .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
+                
+            }
+            .windowStyle(.plain)
+            .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
+            
+            WindowGroup(id: WindowIDs.progressWindowID, for: DicomDataSet?.self) { dataSet in
+                
+                if let firstUnwrap = dataSet.wrappedValue,
+                   let secondUnwrap = firstUnwrap {
+                    ZStack {
+                        Color("backgroundColor")
+                            .opacity(0.3)
+                        ProgressModelView(dataSet: secondUnwrap)
+                            .environment(appModel)
+                    }
+                }
+            }
+            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
             WindowGroup(id: WindowIDs.open2DWindow) {
                 VideoPlayerView()
                     .environment(appModel)
-            }.windowStyle(.plain)
-            
-=======
->>>>>>> Stashed changes
-            ImmersiveSpace(id: WindowIDs.immersiveSpaceID, for: DicomDataSet?.self) { dataSet in
-                
-                if let firstUnwrap = dataSet.wrappedValue,
-                   let secondUnwrap = firstUnwrap {
-                    
-                    ModelView(dataSet: secondUnwrap)
-                }
             }
-            .environment(appModel)
             
+            .windowStyle(.plain)
+            
+            ImmersiveSpace(id: WindowIDs.immersiveSpaceID) {
+                    ModelView()
+                        .environment(appModel)
+                }
         }
         .environment(\.setMode, setMode)
     }
@@ -139,20 +151,20 @@ struct AnAppleADayApp: App {
         let oldMode = mode
         guard newMode != oldMode else { return }
         mode = newMode
-        //new mode = input address
-        //old mode = immersive space
+        
         print("")
         print("oldMode: \(oldMode), newMode: \(newMode)")
-              
-    
+        
         if newMode == .needsImmersiveSpace {
-            await openImmersiveSpace(id: newMode.windowId, value: dataSet)
+            await openImmersiveSpace(id: newMode.windowId)
+            dismissWindow(id: oldMode.windowId)
+            
         }else{
             if newMode.acceptsDataSet {
                 openWindow(id: newMode.windowId, value: dataSet)
             } else { openWindow(id: newMode.windowId) }
         }
-
+        
         
         //The do-catch is to avoid skipping the await for concurrency issues.
         //Increase the sleep if it doesn't work.
@@ -164,7 +176,7 @@ struct AnAppleADayApp: App {
             }else{
                 dismissWindow(id: oldMode.windowId, value: dataSet)
             }
-           
+            
             
         } else { dismissWindow(id: oldMode.windowId) }
     }

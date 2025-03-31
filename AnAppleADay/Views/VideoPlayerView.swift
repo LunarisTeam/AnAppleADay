@@ -10,7 +10,7 @@ import AVKit
 
 struct VideoPlayerView: View {
     
-    @Environment(AppModel.self) private var appModel
+    @Environment(AppModelServer.self) private var appModel
     
     @State private var player = AVPlayer()
     

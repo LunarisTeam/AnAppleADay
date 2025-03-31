@@ -42,6 +42,8 @@ final class AppModel {
         modelEntity.model?.materials = [
             SimpleMaterial(color: color, isMetallic: false)
         ]
+        
+        print("Model generated successfully")
         return modelEntity
     }
     
@@ -63,6 +65,7 @@ final class AppModel {
         bonesEntity.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
         
         bonesEntityHolder = bonesEntity
+        print("bones set")
     }
     
     func setUpArteriesEntity() async {
@@ -85,6 +88,17 @@ final class AppModel {
         arteriesEntity.position = [-arteriesCenter.x, -arteriesCenter.y+1.5, -arteriesCenter.z-1.5]
         
         arteriesEntityHolder = arteriesEntity
+        print("arteries set")
     }
+    
+    func entitiesLoaded(completion: @escaping () -> Void) async {
+        async let bonesTask: () = setUpBonesEntity()
+        async let arteriesTask: () = setUpArteriesEntity()
+        
+        _ = await (bonesTask, arteriesTask)
+        
+        completion()
+    }
+
     
 }

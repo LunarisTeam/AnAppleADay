@@ -10,6 +10,7 @@ import SwiftUI
 struct GenerateModelView: View {    
     
     @Environment(\.setMode) private var setMode
+    @Environment(AppModel.self) private var appModel
     
     let dataSet: DicomDataSet
     
@@ -54,7 +55,7 @@ struct GenerateModelView: View {
             
             Button("Generate Model") {
                 Task { @MainActor in
-                    await setMode(.needsImmersiveSpace, dataSet)
+                    await setMode(.progress, dataSet)
                 }
             }
         }

@@ -11,7 +11,7 @@ import RealityKit
 struct InputAddressView: View {
     
     @Environment(\.setMode) private var setMode
-    @Environment(AppModel.self) private var appModel
+    @Environment(AppModelServer.self) private var appModelServer
     @State private var first: String = ""
     @State private var second: String = ""
     @State private var third: String = ""
@@ -69,8 +69,8 @@ struct InputAddressView: View {
             
             Button {
                 
-                appModel.address = first + "." + second + "." + third + "." + fourth
-                appModel.port = port
+                appModelServer.address = first + "." + second + "." + third + "." + fourth
+                appModelServer.port = port
                 
                 Task{
                     await setMode(.open2DWindow, nil)

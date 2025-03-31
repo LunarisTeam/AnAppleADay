@@ -10,14 +10,15 @@ import SwiftUI
 struct GenerateModelView: View {    
     
     @Environment(\.setMode) private var setMode
+    @Environment(AppModel.self) private var appModel
     
     let dataSet: DicomDataSet
     
     var body: some View {
         
-        VStack {
+        VStack(spacing: 40) {
+            Spacer()
             VStack {
-                
                 Text("Generate the 3D Model")
                     .font(.title)
                     .multilineTextAlignment(.center)
@@ -30,9 +31,8 @@ struct GenerateModelView: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 800)
             }
-            .offset(y: 50)
             
-            VStack {
+            VStack(spacing: 8) {
                 Image("dicomIcon")
                     .resizable()
                     .offset(x: -10)
@@ -40,7 +40,7 @@ struct GenerateModelView: View {
                     .frame(width: 100, height: 100)
                     .foregroundColor(.white.opacity(0.8))
                 
-                VStack() {
+                VStack {
                     Text(dataSet.name)
                         .font(.headline)
                         .fontWeight(.medium)
@@ -51,28 +51,25 @@ struct GenerateModelView: View {
                         .fontWeight(.light)
                 }
             }
-            .offset(y: 110)
-            
+                 
             Spacer()
             
             HStack {
                 Button("Back") {
-                    Task {
-                        await setMode(.importDicoms, dataSet)
-                    }
+                    Task { await setMode(.importDicoms, dataSet) }
                 }
                 .buttonStyle(.plain)
-                
+                        
                 Spacer()
                 
-                Button("Proceed") {
-                    Task { @MainActor in
-                        await setMode(.needsImmersiveSpace, dataSet)
-                    }
+                Button("Generate Model") {
+                    Task { await setMode(.progress, dataSet) }
                 }
             }
+            
             .padding()
         }
+        .frame(maxWidth: .infinity)
         .padding()
     }
 }

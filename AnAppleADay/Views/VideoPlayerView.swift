@@ -10,6 +10,7 @@ import AVKit
 
 struct VideoPlayerView: View {
     
+    @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     
     @State private var player = AVPlayer()
@@ -21,7 +22,7 @@ struct VideoPlayerView: View {
                 .rotation3DEffect(.degrees(degrees), axis: (x: 0, y: 1, z: 0))
                 .persistentSystemOverlays(appModel.hideBar ? .hidden : .visible)
                 .onAppear {
-                    if let videoURL = URL(string: "http://\(appModel.address):\(appModel.port)/\(appModel.fileName)"){
+                    if let videoURL = URL(string: "http://\(appModelServer.address):\(appModelServer.port)/\(appModelServer.fileName)"){
                         player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
                         player.play()
                     }else{

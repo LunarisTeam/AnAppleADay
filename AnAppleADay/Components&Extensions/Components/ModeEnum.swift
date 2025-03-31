@@ -24,14 +24,17 @@
     /// The mode for displaying the generated 3D volume.    
     case needsImmersiveSpace
     
+    /// The window handling the server connection
     case inputAddress
     
-    case open2DWindow
-
     /// The mode for displaying the window with feed from fluoroscope.
     case xRayFeed
-    
+
+    /// The mode serving in the immersive space as a panel for controls.
     case controlPanel
+    
+    /// The window during the loading of the model
+    case progress
     
     /// The identifier associated with the mode's corresponding window or scene.
     ///
@@ -41,11 +44,11 @@
         switch self {
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
-        case .xRayFeed: return WindowIDs.xRayFeed
+        case .xRayFeed: return WindowIDs.xRayFeedWindowID
         case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
-        case .inputAddress: return WindowIDs.inputAddress
-        case .open2DWindow: return WindowIDs.open2DWindow
-        case .controlPanel: return WindowIDs.controlPanel
+        case .inputAddress: return WindowIDs.inputAddressWindowID
+        case .controlPanel: return WindowIDs.controlPanelWindowID
+        case .progress: return WindowIDs.progressWindowID
         }
     }
     
@@ -55,25 +58,17 @@
     /// a dataset (e.g., during navigation or processing steps).
     var acceptsDataSet: Bool {
         switch self {
-        case .importDicoms: return false
         case .generate: return true
-        case .xRayFeed: return false
         case .needsImmersiveSpace: return true
-        case .inputAddress: return false
-        case .open2DWindow: return false
-        case .controlPanel: return false
+        case .progress: return true
+        default: return false
         }
     }
     
     var immersiveSpaceIsOpen: Bool {
         switch self {
-        case .importDicoms: return false
-        case .generate: return false
         case .needsImmersiveSpace: return true
-        case .inputAddress: return false
-        case .open2DWindow: return false
-        case .xRayFeed: return false
-        case .controlPanel: return false
+        default: return false
         }
     }
 }

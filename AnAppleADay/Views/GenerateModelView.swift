@@ -10,15 +10,15 @@ import SwiftUI
 struct GenerateModelView: View {    
     
     @Environment(\.setMode) private var setMode
+    @Environment(AppModel.self) private var appModel
     
     let dataSet: DicomDataSet
     
     var body: some View {
         
         VStack(spacing: 40) {
-            
-            VStack(spacing: 10) {
-                
+            Spacer()
+            VStack {
                 Text("Generate the 3D Model")
                     .font(.title)
                     .multilineTextAlignment(.center)
@@ -32,7 +32,7 @@ struct GenerateModelView: View {
                     .frame(maxWidth: 800)
             }
             
-            VStack(spacing: 12) {
+            VStack(spacing: 8) {
                 Image("dicomIcon")
                     .resizable()
                     .offset(x: -10)
@@ -40,7 +40,7 @@ struct GenerateModelView: View {
                     .frame(width: 100, height: 100)
                     .foregroundColor(.white.opacity(0.8))
                 
-                VStack(spacing: 2) {
+                VStack {
                     Text(dataSet.name)
                         .font(.headline)
                         .fontWeight(.medium)
@@ -51,13 +51,25 @@ struct GenerateModelView: View {
                         .fontWeight(.light)
                 }
             }
+                 
+            Spacer()
             
-            Button("Generate Model") {
-                Task { @MainActor in
-                    await setMode(.needsImmersiveSpace, dataSet)
+            HStack {
+                Button("Back") {
+                    Task { await setMode(.importDicoms, dataSet) }
+                }
+                .buttonStyle(.plain)
+                        
+                Spacer()
+                
+                Button("Generate Model") {
+                    Task { await setMode(.progress, dataSet) }
                 }
             }
+            
+            .padding()
         }
+        .frame(maxWidth: .infinity)
         .padding()
     }
 }

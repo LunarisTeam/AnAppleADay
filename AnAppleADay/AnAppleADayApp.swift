@@ -164,7 +164,8 @@ struct AnAppleADayApp: App {
         if oldMode.acceptsDataSet {
             if oldMode.immersiveSpaceIsOpen {
                 
-            }else{
+            } else{
+                print(oldMode.windowId)
                 dismissWindow(id: oldMode.windowId, value: dataSet)
             }
         } else {

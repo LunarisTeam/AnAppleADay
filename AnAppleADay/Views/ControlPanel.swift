@@ -9,12 +9,18 @@ import Foundation
 import SwiftUI
 import RealityKit
 
-struct controlPanel: View {
+// The bones are the first element of the parent entity, while the second is the arteries
+struct ControlPanel: View {
+    
+    @Environment(AppModelServer.self) private var appModel
+   
+    @Binding var scale: Bool
+    
+    @State private var gestures: Bool = true
     
     var bonesEntity: Entity
     var arteriesEntity: Entity
-    @Binding var scale: Bool
-    @State private var gestures: Bool = true
+
     @Environment(\.setMode) private var setMode
     
     let dataSet: DicomDataSet
@@ -27,11 +33,11 @@ struct controlPanel: View {
                 bonesEntity.isEnabled.toggle()
                 arteriesEntity.isEnabled.toggle()
                 
-                if(!bonesEntity.isEnabled){
+                if !bonesEntity.isEnabled {
                     arteriesEntity.position = bonesEntity.position
                     arteriesEntity.scale = bonesEntity.scale
                     arteriesEntity.transform.rotation = bonesEntity.transform.rotation
-                }else{
+                } else {
                     bonesEntity.position = arteriesEntity.position
                     bonesEntity.scale = arteriesEntity.scale
                     bonesEntity.transform.rotation = arteriesEntity.transform.rotation
@@ -43,6 +49,7 @@ struct controlPanel: View {
             //scale
             Button {
                 scale.toggle()
+                
                 if(scale){
                     bonesEntity.scale *= 2.0
                     arteriesEntity.scale *= 2.0

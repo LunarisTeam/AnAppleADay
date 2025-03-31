@@ -30,6 +30,10 @@
 
     /// The mode for displaying the window with feed from fluoroscope.
     case xRayFeed
+
+    /// The mode serving in the immersive space as a panel for controls.
+    case controlPanel
+
     
     /// The identifier associated with the mode's corresponding window or scene.
     ///
@@ -43,6 +47,7 @@
         case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
         case .inputAddress: return WindowIDs.inputAddress
         case .open2DWindow: return WindowIDs.open2DWindow
+        case .controlPanel: return WindowIDs.controlPanelWindowID
         }
     }
     
@@ -58,6 +63,7 @@
         case .needsImmersiveSpace: return true
         case .inputAddress: return false
         case .open2DWindow: return false
+        case .controlPanel: return false
         }
     }
     
@@ -69,6 +75,7 @@
         case .inputAddress: return false
         case .open2DWindow: return false
         case .xRayFeed: return false
+        case .controlPanel: return false
         }
     }
 }

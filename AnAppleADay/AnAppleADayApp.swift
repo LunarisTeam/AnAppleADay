@@ -17,6 +17,8 @@ struct AnAppleADayApp: App {
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
+    @State private var appModel: AppModel = .init()
+    
     /// Represents the current operational mode of the application.
     ///
     /// The mode determines which view is presented and which window is active. Its initial value
@@ -82,9 +84,11 @@ struct AnAppleADayApp: App {
                     }
                 }
             }
+            .environment(appModel)
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
             
+<<<<<<< Updated upstream
             WindowGroup(id: WindowIDs.inputAddress) {
                 
                 InputAddressView()
@@ -97,6 +101,8 @@ struct AnAppleADayApp: App {
                     .environment(appModel)
             }.windowStyle(.plain)
             
+=======
+>>>>>>> Stashed changes
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
@@ -105,6 +111,7 @@ struct AnAppleADayApp: App {
                     ModelView(dataSet: secondUnwrap)
                 }
             }
+            .environment(appModel)
             
         }
         .environment(\.setMode, setMode)

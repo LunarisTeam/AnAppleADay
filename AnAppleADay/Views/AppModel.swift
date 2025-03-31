@@ -10,7 +10,7 @@ import SwiftUI
 /// Maintains app-wide state
 @MainActor
 @Observable
-class AppModel {
+class AppModelServer {
     var address: String = "10.20.50.9"
     var port: String = "8000"
     var fileName: String = "xrayVideo.m3u8"

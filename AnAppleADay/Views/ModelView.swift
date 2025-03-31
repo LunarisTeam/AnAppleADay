@@ -11,6 +11,8 @@ import RealityKit
 
 struct ModelView: View {
     
+    @Environment(AppModel.self) private var appModel
+    
     let dataSet: DicomDataSet
     
     @Environment(\.setMode) private var setMode
@@ -25,37 +27,16 @@ struct ModelView: View {
     var body: some View {
         
         RealityView { content, attachments in
-            
-            Task.detached(priority: .utility) {
-                do {
-                    let bonesEntity = try await generateEntity(
-                        300.0,
-                        .white,
-                        [0, 150, 50, 175, 500, 625],
-                        [0, 50, 500]
-                    )
-                    let arteriesEntity = try await generateEntity(
-                        650.0,
-                        .red,
-                        [60, 150, 100, 175, 500, 625],
-                        [0, 50, 500]
-                    )
-                    
-                    await MainActor.run {
-                        arteriesEntity.isEnabled = false
-                        bonesEntity.scale /= 2
-                        self.bonesEntity = bonesEntity
-                        var boundingBox = bonesEntity.visualBounds(relativeTo: nil)
-                        self.bonesCenter = boundingBox.center
-                        
-                        arteriesEntity.scale /= 2
-                        self.arteriesEntity = arteriesEntity
-                        boundingBox = arteriesEntity.visualBounds(relativeTo: nil)
-                        self.arteriesCenter = boundingBox.center
-                    }
-                    
-                } catch { await MainActor.run { self.error = error } }
+            appModel.dataSetHolder = dataSet
+            Task { @MainActor in
+                
+                await appModel.setUpBonesEntity()
+                await appModel.setUpArteriesEntity()
+                bonesEntity = appModel.bonesEntityHolder
             }
+            
+            
+        
             
         } update: { content, attachments in
             
@@ -64,32 +45,6 @@ struct ModelView: View {
                 content.add(progress)
             }
             
-            if let bonesEntity {
-                
-                bonesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
-                
-                bonesEntity.generateCollisionShapes(recursive: true)
-                
-                
-                bonesEntity.components.set(ObjComponent())
-                
-                
-                bonesEntity.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
-                content.add(bonesEntity)
-                
-            }
-            
-            
-            
-            if let arteriesEntity {
-                
-                arteriesEntity.components.set(InputTargetComponent(allowedInputTypes: .all))
-                arteriesEntity.generateCollisionShapes(recursive: true)
-                arteriesEntity.components.set(ObjComponent())
-                
-                arteriesEntity.position = [-arteriesCenter.x, -arteriesCenter.y+1.5, -arteriesCenter.z-1.5]
-                content.add(arteriesEntity)
-            }
             
             
             if let controlPanelAtt = attachments.entity(for: "ControlPanel") {
@@ -100,7 +55,7 @@ struct ModelView: View {
         } attachments: {
             Attachment(id: "ControlPanel") {
                 if let bonesEntity, let arteriesEntity {
-                    controlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale, dataSet: dataSet)
+                    ControlPanel(bonesEntity: bonesEntity, arteriesEntity: arteriesEntity, scale: $scale, dataSet: dataSet)
                 }
             }
             
@@ -115,34 +70,26 @@ struct ModelView: View {
 
             
             
+//                        bonesEntity?.addChild(awindowAttachment)
+        } placeholder: {
+            if let error {
+                ErrorView(error: error)
+            } else {
+                ProgressModelView()
+            }
+        } attachments: {
+            Attachment(id: "ControlPanel") {
+                if let bonesEntity, let arteriesEntity {
+                    ControlPanel(scale: $scale, bonesEntity: bonesEntity, arteriesEntity: arteriesEntity)
+                }
+            }
+            
+
         }
         .installGestures()
+        .onChange(of: appModel.bonesEntityHolder) { _, newValue in
+            bonesEntity = newValue
+        }
         
     }
-    
-    func generateEntity(
-        _ threshold: Double,
-        _ color: UIColor,
-        _ box: [Double],
-        _ translation: [Double]
-        
-    ) async throws -> Entity {
-        
-        let visualizationToolkit: VisualizationToolkit = try .init()
-        
-        let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
-            dataSet: dataSet,
-            threshold: threshold,
-            boxBounds: box,
-            translationBounds: translation
-        )
-        
-        let modelEntity = try await ModelEntity(contentsOf: dicom3DURL)
-        
-        modelEntity.model?.materials = [
-            SimpleMaterial(color: color, isMetallic: false)
-        ]
-        return modelEntity
-    }
-    
 }

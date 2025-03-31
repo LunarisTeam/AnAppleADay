@@ -15,4 +15,5 @@ struct WindowIDs {
     static let immersiveSpaceID: String = "ImmersiveSpaceID"
     static let inputAddress: String = "InputAddress"
     static let open2DWindow: String = "open2DWindow"
+    static let controlPanelWindowID: String = "ControlPanel"
 }

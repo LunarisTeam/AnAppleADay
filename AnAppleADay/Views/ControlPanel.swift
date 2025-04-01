@@ -15,11 +15,16 @@ struct ControlPanel: View {
     @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
+    @Environment(\.openWindow) private var openWindow
     
     @State private var gestures: Bool = true
     
     var body: some View {
         
+        ZStack {
+            
+            Color("backgroundColor").opacity(0.3)
+            
             HStack{
                 //toggle bones arteries
                 Button {
@@ -68,8 +73,8 @@ struct ControlPanel: View {
                 
                 //Show 2D image
                 Button {
-                    //potentially show and hide the model so they don't overlap
-                    Task { await setMode(.inputAddress, nil) }
+                    guard !appModelServer.isInputWindowOpen else { return }
+                    openWindow(id: WindowIDs.inputAddressWindowID)
                 } label: {
                     Image("connect2D")
                 }
@@ -88,14 +93,12 @@ struct ControlPanel: View {
                     Image("LOCKINTO3D2")
                 }
                 
-                
             }
-            .padding(.vertical, 20)
             .padding(.horizontal, 30)
-            .glassBackgroundEffect()
-            .persistentSystemOverlays(.visible)
-            
-        
+        }
+        .frame(height: 75)
+        .glassBackgroundEffect()
+        .persistentSystemOverlays(.visible)
     }
     
     func toggleGestures(component: Entity, isEnabled: Bool) {

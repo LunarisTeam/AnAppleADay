@@ -19,4 +19,5 @@ class AppModelServer {
     var bonesEntity: Entity? = nil
     var arteriesEntity: Entity? = nil
     var scale: Bool = false
+    var isInputWindowOpen: Bool = false
 }

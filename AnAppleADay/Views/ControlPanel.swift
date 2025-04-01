@@ -15,9 +15,14 @@ struct ControlPanel: View {
     @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
+    @Environment(\.openWindow) private var openWindow
         
     var body: some View {
         
+        ZStack {
+            
+            Color("backgroundColor").opacity(0.3)
+            
             HStack{
                 //toggle bones arteries
                 Button { appModel.bonesArteriesToggle() }
@@ -36,8 +41,12 @@ struct ControlPanel: View {
                 Divider().frame(width: 5, height: 40)
                 
                 //Show 2D image
-                Button { Task { await setMode(.inputAddress, nil) } }
-                label: { Image("connect2D") }
+                Button {
+                    guard !appModelServer.isInputWindowOpen else { return }
+                    openWindow(id: WindowIDs.inputAddressWindowID)
+                } label: {
+                    Image("connect2D")
+                }
                 
                 
                 Button { appModel.hideBar.toggle() }
@@ -50,13 +59,11 @@ struct ControlPanel: View {
                     Image("LOCKINTO3D2")
                 }
                 
-                
             }
-            .padding(.vertical, 20)
             .padding(.horizontal, 30)
-            .glassBackgroundEffect()
-            .persistentSystemOverlays(.visible)
-            
-        
+        }
+        .frame(height: 75)
+        .glassBackgroundEffect()
+        .persistentSystemOverlays(.visible)
     }
 }

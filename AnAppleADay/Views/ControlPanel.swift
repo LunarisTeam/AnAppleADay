@@ -23,18 +23,7 @@ struct ControlPanel: View {
             HStack{
                 //toggle bones arteries
                 Button {
-                    appModel.bonesEntityHolder!.isEnabled.toggle()
-                    appModel.arteriesEntityHolder!.isEnabled.toggle()
-                    
-                    if (!appModel.bonesEntityHolder!.isEnabled) {
-                        appModel.arteriesEntityHolder!.position = appModel.bonesEntityHolder!.position
-                        appModel.arteriesEntityHolder!.scale = appModel.bonesEntityHolder!.scale
-                        appModel.arteriesEntityHolder!.transform.rotation = appModel.bonesEntityHolder!.transform.rotation
-                    } else {
-                        appModel.bonesEntityHolder!.position = appModel.arteriesEntityHolder!.position
-                        appModel.bonesEntityHolder!.scale = appModel.arteriesEntityHolder!.scale
-                        appModel.bonesEntityHolder!.transform.rotation = appModel.arteriesEntityHolder!.transform.rotation
-                    }
+                    appModel.bonesArteriesToggle()
                 } label: {
                     Image("hideBones")
                 }

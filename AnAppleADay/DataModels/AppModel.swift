@@ -49,7 +49,7 @@ final class AppModel {
         return modelEntity
     }
     
-    func setUpBonesEntity() async {
+    private func setUpBonesEntity() async {
         guard let bonesEntity = try? await generateEntity(
             300.0,
             .white,
@@ -71,7 +71,7 @@ final class AppModel {
         print("bones set")
     }
     
-    func setUpArteriesEntity() async {
+    private func setUpArteriesEntity() async {
         
         guard let arteriesEntity = try? await generateEntity(
             650.0,
@@ -101,6 +101,27 @@ final class AppModel {
         _ = await (bonesTask, arteriesTask)
         
         completion()
+    }
+    
+    func bonesArteriesToggle() {
+        
+        guard var bonesEntity = bonesEntityHolder else { return }
+        print("bones found")
+        guard var arteriesEntity = arteriesEntityHolder else { return }
+        print("passed checks")
+        
+        bonesEntity.isEnabled.toggle()
+        arteriesEntity.isEnabled.toggle()
+        
+        if !bonesEntity.isEnabled {
+            arteriesEntity.position = bonesEntity.position
+            arteriesEntity.scale = bonesEntity.scale
+            arteriesEntity.transform.rotation = bonesEntity.transform.rotation
+        } else {
+            bonesEntity.position = arteriesEntity.position
+            bonesEntity.scale = arteriesEntity.scale
+            bonesEntity.transform.rotation = arteriesEntity.transform.rotation
+        }
     }
 
     

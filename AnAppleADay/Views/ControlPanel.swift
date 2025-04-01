@@ -16,9 +16,7 @@ struct ControlPanel: View {
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
     @Environment(\.openWindow) private var openWindow
-    
-    @State private var gestures: Bool = true
-    
+        
     var body: some View {
         
         ZStack {
@@ -27,46 +25,17 @@ struct ControlPanel: View {
             
             HStack{
                 //toggle bones arteries
-                Button {
-                    appModel.bonesEntityHolder!.isEnabled.toggle()
-                    appModel.arteriesEntityHolder!.isEnabled.toggle()
-                    
-                    if (!appModel.bonesEntityHolder!.isEnabled) {
-                        appModel.arteriesEntityHolder!.position = appModel.bonesEntityHolder!.position
-                        appModel.arteriesEntityHolder!.scale = appModel.bonesEntityHolder!.scale
-                        appModel.arteriesEntityHolder!.transform.rotation = appModel.bonesEntityHolder!.transform.rotation
-                    } else {
-                        appModel.bonesEntityHolder!.position = appModel.arteriesEntityHolder!.position
-                        appModel.bonesEntityHolder!.scale = appModel.arteriesEntityHolder!.scale
-                        appModel.bonesEntityHolder!.transform.rotation = appModel.arteriesEntityHolder!.transform.rotation
-                    }
-                } label: {
-                    Image("hideBones")
-                }
+                Button { appModel.bonesArteriesToggle() }
+                label: { Image("hideBones") }
                 
                 //scale
-                Button {
-                    appModel.scale.toggle()
-                    if(appModel.scale){
-                        appModel.bonesEntityHolder!.scale *= 2.0
-                        appModel.arteriesEntityHolder!.scale *= 2.0
-                    }else{
-                        appModel.bonesEntityHolder!.scale /= 2.0
-                        appModel.arteriesEntityHolder!.scale /= 2.0
-                    }
-                } label: {
-                    Image("RestoreSize")
-                }
+                Button { appModel.scaleEntities() }
+                label: { Image("RestoreSize") }
                 
                 
                 //lock 3D
-                Button {
-                    gestures.toggle()
-                    toggleGestures(component: appModel.bonesEntityHolder!, isEnabled: gestures)
-                    toggleGestures(component: appModel.arteriesEntityHolder!, isEnabled: gestures)
-                } label: {
-                    Image("lockInPosition")
-                }
+                Button { appModel.toggleGestures() }
+                label: { Image("lockInPosition") }
                 
                 //Divider
                 Divider().frame(width: 5, height: 40)
@@ -79,12 +48,9 @@ struct ControlPanel: View {
                     Image("connect2D")
                 }
                 
-                //lock 2D image
-                Button {
-                    appModelServer.hideBar.toggle()
-                } label: {
-                    Image("lock2d")
-                }
+                
+                Button { appModel.hideBar.toggle() }
+                label: { Image("lock2d") }
                 
                 //LOCKINTO3D2
                 Button {
@@ -99,13 +65,5 @@ struct ControlPanel: View {
         .frame(height: 75)
         .glassBackgroundEffect()
         .persistentSystemOverlays(.visible)
-    }
-    
-    func toggleGestures(component: Entity, isEnabled: Bool) {
-        component.gestureComponent?.canDrag = isEnabled
-        component.gestureComponent?.canRotate = isEnabled
-        component.gestureComponent?.canScale = isEnabled
-        component.gestureComponent?.pivotOnDrag = isEnabled
-        component.gestureComponent?.preserveOrientationOnPivotDrag = isEnabled
     }
 }

@@ -27,10 +27,8 @@ struct BackToMain: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            VStack {
-                Text("This action is irreversible.")
-                    .fontWeight(.regular)
-            }
+            Text("This action is irreversible.")
+                .fontWeight(.regular)
         }
     }
 }

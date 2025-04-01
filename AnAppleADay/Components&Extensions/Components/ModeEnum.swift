@@ -79,4 +79,8 @@
     var overlapsImmersiveSpace: Bool {
         return self == .xRayFeed
     }
+    
+    var shouldStopImmersion: Bool {
+        return self == .importDicoms
+    }
 }

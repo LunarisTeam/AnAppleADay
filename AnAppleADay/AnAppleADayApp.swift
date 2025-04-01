@@ -94,10 +94,8 @@ struct AnAppleADayApp: App {
                             .environment(appModel)
                             .fixedSize()
                     }
-                    
                 }
             }
-            
             .windowResizability(.contentSize)
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
@@ -163,13 +161,6 @@ struct AnAppleADayApp: App {
     /// Whenever an immersive space must be closed, the flow can be whatever (as per date).
     /// ```
     /// - Parameter newMode: The new mode to transition to.
-    ///
-    ///
-    /// From main screen (import dicoms) the user can either press popover or generate model. Popover is automatic so there is only one flow: generate the model
-    /// The generate model needs the dataset.
-    /// After selecting the files the user can either go back or generate the model, if he goes back it's back to the main view, otherwise it's progress view
-    /// After the progress is completed, an immersive space is open, while overlapping a window group with 7 buttons.
-    /// Only one of these buttons uses the setMode, to go back to the main screen.
     @MainActor private func setMode(_ newMode: Mode, dataSet: DicomDataSet?) async {
         let oldMode = mode
         guard newMode != oldMode else {
@@ -180,83 +171,37 @@ struct AnAppleADayApp: App {
         print("Transitioning from \(oldMode) to \(newMode)")
         mode = newMode
         
-        if immersiveSpacePresented && newMode == .importDicoms {
+        switch immersiveSpacePresented {
+        case true:
+            if newMode.overlapsImmersiveSpace { openWindow(id: newMode.windowId) }
             
-            dismissWindow(id: WindowIDs.controlPanelWindowID)
-            await dismissImmersiveSpace()
-            immersiveSpacePresented = false
-        }
-        
-        if newMode.needsImmersiveSpace && !immersiveSpacePresented {
+            if newMode.shouldStopImmersion {
+                
+                if appModelServer.isConnected { dismissWindow(id: WindowIDs.xRayFeedWindowID) }
+                dismissWindow(id: WindowIDs.controlPanelWindowID)
+                await dismissImmersiveSpace()
+                immersiveSpacePresented = false
+                openWindow(id: newMode.windowId)
+            }
+            try? await Task.sleep(for: .seconds(0.1))
+            
+        case false:
+            if newMode.needsImmersiveSpace {
+                
+                immersiveSpacePresented = true
+                await openImmersiveSpace(id: newMode.windowId)
 
-            immersiveSpacePresented = true
-            await openImmersiveSpace(id: newMode.windowId)
-            openWindow(id: WindowIDs.controlPanelWindowID)
-            dismissWindow(id: oldMode.windowId)
-        }
-        
-        if newMode.acceptsDataSet {
-            
-            openWindow(id: newMode.windowId, value: dataSet)
-            try? await Task.sleep(for: .seconds(0.25))
-            
-            if !oldMode.needsImmersiveSpace { dismissWindow(id: oldMode.windowId) }
-            
-        } else if immersiveSpacePresented && newMode.overlapsImmersiveSpace {
-            
-            openWindow(id: newMode.windowId)
-            dismissWindow(id: WindowIDs.inputAddressWindowID)
-            
-        } else if !newMode.acceptsDataSet && !immersiveSpacePresented {
-            
-            openWindow(id: newMode.windowId)
-            try? await Task.sleep(for: .seconds(0.25))
-            if appModelServer.isConnected {
-                dismissWindow(id: WindowIDs.xRayFeedWindowID)
-                appModelServer.isConnected = false
+                openWindow(id: WindowIDs.controlPanelWindowID)
+                dismissWindow(id: oldMode.windowId)
+                
+            } else {
+                
+                if newMode.acceptsDataSet { openWindow(id: newMode.windowId, value: dataSet) }
+                else { openWindow(id: newMode.windowId) }
+                
+                try? await Task.sleep(for: .seconds(0.1))
+                dismissWindow(id: oldMode.windowId)
             }
         }
     }
 }
-/**
- @MainActor private func setMode(_ newMode: Mode, dataSet: DicomDataSet?) async {
- let oldMode = mode
- guard newMode != oldMode else { return }
- mode = newMode
- 
- print("")
- print("oldMode: \(oldMode), newMode: \(newMode)")
- 
- if newMode == .needsImmersiveSpace {
- await openImmersiveSpace(id: newMode.windowId)
- dismissWindow(id: oldMode.windowId)
- 
- } else {
- if newMode.acceptsDataSet {
- openWindow(id: newMode.windowId, value: dataSet)
- } else { openWindow(id: newMode.windowId) }
- }
- 
- 
- //The do-catch is to avoid skipping the await for concurrency issues.
- //Increase the sleep if it doesn't work.
- try? await Task.sleep(for: .seconds(0.05))
- 
- if oldMode.acceptsDataSet {
- if oldMode.immersiveSpaceIsOpen {
- 
- } else {
- dismissWindow(id: oldMode.windowId, value: dataSet)
- }
- } else {
- if oldMode.windowId == "ControlPanel" {
- 
- } else {
- dismissWindow(id: oldMode.windowId)
- }
- }
- }
- **/
-
-
-

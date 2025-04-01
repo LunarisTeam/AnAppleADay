@@ -9,22 +9,12 @@ import Foundation
 import SwiftUI
 import RealityKit
 
-// The bones are the first element of the parent entity, while the second is the arteries
 struct ControlPanel: View {
     
     @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
     @Environment(\.openWindow) private var openWindow
-    
-    private let tooltipArray = [
-        "Show/Hide Bones",
-        "Enlarge/Shrink",
-        "Lock position",
-        "Connect X-Ray",
-        "Lock window",
-        "Lock model to window"
-    ]
     
     var body: some View {
         
@@ -42,7 +32,7 @@ struct ControlPanel: View {
                     Image("hideBones")
                 }
                 .background(Circle().fill(.background.opacity(0.3)))
-                .help(tooltipArray[0])
+                .help("Show/Hide Bones")
                 
                 //scale
                 Button {
@@ -52,7 +42,7 @@ struct ControlPanel: View {
                     Image("RestoreSize")
                 }
                 .background(Circle().fill(.background.opacity(0.3)))
-                .help(tooltipArray[1])
+                .help("Enlarge/Shrink")
                 
                 //lock 3D
                 Button {
@@ -62,7 +52,7 @@ struct ControlPanel: View {
                     Image("lockInPosition")
                 }
                 .background(Circle().fill(.background.opacity(0.3)))
-                .help(tooltipArray[2])
+                .help("Lock position")
                 
                 //Divider
                 Divider().frame(width: 5, height: 40)
@@ -75,7 +65,7 @@ struct ControlPanel: View {
                     Image("connect2D")
                 }
                 .background(Circle().fill(.background.opacity(0.3)))
-                .help(tooltipArray[3])
+                .help("Lock window")
                 
                 Button {
                     appModel.hideBar.toggle()
@@ -83,7 +73,7 @@ struct ControlPanel: View {
                 label: {
                     Image("lock2d")
                 }
-                .help(tooltipArray[4])
+                .help("Connect X-Ray")
                 
                 .background(Circle().fill(.background.opacity(0.3)))
                 //LOCKINTO3D2
@@ -94,7 +84,7 @@ struct ControlPanel: View {
                     Image ("LOCKINTO3D2" )
                 }
                 .background(Circle().fill(.background.opacity(0.3)))
-                .help(tooltipArray[5])
+                .help("Lock model to window")
             }
             .buttonBorderShape(.circle)
         }

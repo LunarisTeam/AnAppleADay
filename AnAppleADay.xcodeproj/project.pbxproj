@@ -190,6 +190,7 @@
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "AnAppleADay/VisualizationToolkit/VTK-Bridging-Header.h";
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
 				XROS_DEPLOYMENT_TARGET = 2.2;
@@ -220,6 +221,7 @@
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "AnAppleADay/VisualizationToolkit/VTK-Bridging-Header.h";
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
 				XROS_DEPLOYMENT_TARGET = 2.2;

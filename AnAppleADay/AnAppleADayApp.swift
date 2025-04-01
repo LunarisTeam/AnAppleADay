@@ -180,60 +180,38 @@ struct AnAppleADayApp: App {
         mode = newMode
         
         if immersiveSpacePresented && newMode == .importDicoms {
-            print("immersive -> window operation")
             
             dismissWindow(id: WindowIDs.controlPanelWindowID)
-            print("dismissing panel window")
-            try? await Task.sleep(for: .seconds(0.05))
-            
-            print("dismissing \(oldMode) window")
-            
-            try? await Task.sleep(for: .seconds(0.05))
             await dismissImmersiveSpace()
             immersiveSpacePresented = false
-            print("dismissing immersive space")
         }
         
         if newMode.needsImmersiveSpace && !immersiveSpacePresented {
 
-            print("window(s) -> immersive")
             immersiveSpacePresented = true
             await openImmersiveSpace(id: newMode.windowId)
-            print("opened the immersive space: \(newMode.windowId)")
-            try? await Task.sleep(for: .seconds(0.05))
             openWindow(id: WindowIDs.controlPanelWindowID)
-            print("opened the control panel window")
-            try? await Task.sleep(for: .seconds(0.05))
             dismissWindow(id: oldMode.windowId)
-            print("dismissed old window: \(oldMode.windowId)")
         }
         
         if newMode.acceptsDataSet {
-            print("accepts dataset")
-            openWindow(id: newMode.windowId, value: dataSet)
-            print("opening: \(newMode)")
             
-            try? await Task.sleep(for: .seconds(0.05))
-           
-            if !oldMode.needsImmersiveSpace {
-                print("dismissing \(oldMode)")
-                dismissWindow(id: oldMode.windowId)
-            }
+            openWindow(id: newMode.windowId, value: dataSet)
+            try? await Task.sleep(for: .seconds(0.25))
+            if !oldMode.needsImmersiveSpace { dismissWindow(id: oldMode.windowId) }
+            
         } else if immersiveSpacePresented && newMode.overlapsImmersiveSpace {
-            print("immersive space is presented and window must overlap")
+            
             openWindow(id: newMode.windowId)
-            try? await Task.sleep(for: .seconds(0.05))
             dismissWindow(id: WindowIDs.inputAddressWindowID)
-            print("dismissed window id")
+            
         } else if !newMode.acceptsDataSet && !immersiveSpacePresented {
-            print("doesn't need immersive space and dataset")
+            
             openWindow(id: newMode.windowId)
-            print("opening: \(newMode)")
-            try? await Task.sleep(for: .seconds(0.05))
+            try? await Task.sleep(for: .seconds(0.25))
             if appModelServer.isConnected {
                 dismissWindow(id: WindowIDs.xRayFeedWindowID)
                 appModelServer.isConnected = false
-                print("dismissed xray id")
             }
         }
     }

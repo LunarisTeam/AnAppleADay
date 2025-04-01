@@ -20,81 +20,83 @@ struct ControlPanel: View {
     
     var body: some View {
         
-            HStack{
-                //toggle bones arteries
-                Button {
-                    appModel.bonesEntityHolder!.isEnabled.toggle()
-                    appModel.arteriesEntityHolder!.isEnabled.toggle()
-                    
-                    if (!appModel.bonesEntityHolder!.isEnabled) {
-                        appModel.arteriesEntityHolder!.position = appModel.bonesEntityHolder!.position
-                        appModel.arteriesEntityHolder!.scale = appModel.bonesEntityHolder!.scale
-                        appModel.arteriesEntityHolder!.transform.rotation = appModel.bonesEntityHolder!.transform.rotation
-                    } else {
-                        appModel.bonesEntityHolder!.position = appModel.arteriesEntityHolder!.position
-                        appModel.bonesEntityHolder!.scale = appModel.arteriesEntityHolder!.scale
-                        appModel.bonesEntityHolder!.transform.rotation = appModel.arteriesEntityHolder!.transform.rotation
-                    }
-                } label: {
-                    Image("hideBones")
+        HStack{
+            //toggle bones arteries
+            Button {
+                appModel.bonesEntityHolder!.isEnabled.toggle()
+                appModel.arteriesEntityHolder!.isEnabled.toggle()
+                
+                if (!appModel.bonesEntityHolder!.isEnabled) {
+                    appModel.arteriesEntityHolder!.position = appModel.bonesEntityHolder!.position
+                    appModel.arteriesEntityHolder!.scale = appModel.bonesEntityHolder!.scale
+                    appModel.arteriesEntityHolder!.transform.rotation = appModel.bonesEntityHolder!.transform.rotation
+                } else {
+                    appModel.bonesEntityHolder!.position = appModel.arteriesEntityHolder!.position
+                    appModel.bonesEntityHolder!.scale = appModel.arteriesEntityHolder!.scale
+                    appModel.bonesEntityHolder!.transform.rotation = appModel.arteriesEntityHolder!.transform.rotation
                 }
-                
-                //scale
-                Button {
-                    appModel.scale.toggle()
-                    if(appModel.scale){
-                        appModel.bonesEntityHolder!.scale *= 2.0
-                        appModel.arteriesEntityHolder!.scale *= 2.0
-                    }else{
-                        appModel.bonesEntityHolder!.scale /= 2.0
-                        appModel.arteriesEntityHolder!.scale /= 2.0
-                    }
-                } label: {
-                    Image("RestoreSize")
-                }
-                
-                
-                //lock 3D
-                Button {
-                    gestures.toggle()
-                    toggleGestures(component: appModel.bonesEntityHolder!, isEnabled: gestures)
-                    toggleGestures(component: appModel.arteriesEntityHolder!, isEnabled: gestures)
-                } label: {
-                    Image("lockInPosition")
-                }
-                
-                //Divider
-                Divider().frame(width: 5, height: 40)
-                
-                //Show 2D image
-                Button {
-                    //potentially show and hide the model so they don't overlap
-                    Task { await setMode(.inputAddress, nil) }
-                } label: {
-                    Image("connect2D")
-                }
-                
-                //lock 2D image
-                Button {
-                    appModelServer.hideBar.toggle()
-                } label: {
-                    Image("lock2d")
-                }
-                
-                //LOCKINTO3D2
-                Button {
-                    
-                } label: {
-                    Image("LOCKINTO3D2")
-                }
-                
-                
+            } label: {
+                Image("hideBones")
             }
-            .padding(.vertical, 20)
-            .padding(.horizontal, 30)
-            .glassBackgroundEffect()
-            .persistentSystemOverlays(.visible)
             
+            //scale
+            Button {
+                appModel.scale.toggle()
+                if(appModel.scale){
+                    appModel.bonesEntityHolder!.scale *= 2.0
+                    appModel.arteriesEntityHolder!.scale *= 2.0
+                }else{
+                    appModel.bonesEntityHolder!.scale /= 2.0
+                    appModel.arteriesEntityHolder!.scale /= 2.0
+                }
+            } label: {
+                Image("RestoreSize")
+            }
+            
+            
+            //lock 3D
+            Button {
+                gestures.toggle()
+                toggleGestures(component: appModel.bonesEntityHolder!, isEnabled: gestures)
+                toggleGestures(component: appModel.arteriesEntityHolder!, isEnabled: gestures)
+            } label: {
+                Image("lockInPosition")
+            }
+            
+            //Divider
+            Divider().frame(width: 5, height: 40)
+            
+            //Show 2D image
+            Button {
+                //potentially show and hide the model so they don't overlap
+                Task { await setMode(.inputAddress, nil) }
+            } label: {
+                Image("connect2D")
+            }
+            
+            //lock 2D image
+            Button {
+                appModel.hideBar.toggle()
+            }
+            label: {
+                Image ("lock2d" )
+            }
+            // LOCKINTO3D2
+            Button {
+                appModel.lockTogether.toggle()
+                toggleGestures (component: appModel.bonesEntityHolder!, isEnabled: !appModel.lockTogether)
+            }
+            label: {
+                Image ("LOCKINTO3D2" )
+            }
+            
+            
+        }
+        .padding(.vertical, 20)
+        .padding(.horizontal, 30)
+        .glassBackgroundEffect()
+        .persistentSystemOverlays(.visible)
+        
         
     }
     

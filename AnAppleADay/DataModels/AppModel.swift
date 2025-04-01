@@ -18,6 +18,8 @@ final class AppModel {
     var arteriesEntityHolder: Entity? = nil
     var scale: Bool = false
     var hideBar: Bool = false
+    var transform: AffineTransform3D? = nil
+    var lockTogether: Bool = false
     
     private var bonesCenter: SIMD3<Float> = .zero
     private var arteriesCenter: SIMD3<Float> = .zero

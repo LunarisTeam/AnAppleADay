@@ -134,7 +134,8 @@ struct AnAppleADayApp: App {
                 .environment(appModel)
             }
             .windowStyle(.plain)
-            .defaultSize(width: 0.4000, height: 0.0500, depth: 0, in: .meters)
+            .windowResizability(.contentMinSize)
+            .defaultSize(width: 0.4, height: 0.015, depth: 0, in: .meters)
             
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID) {
                 ModelView()
@@ -198,6 +199,7 @@ struct AnAppleADayApp: App {
             
             openWindow(id: newMode.windowId, value: dataSet)
             try? await Task.sleep(for: .seconds(0.25))
+            
             if !oldMode.needsImmersiveSpace { dismissWindow(id: oldMode.windowId) }
             
         } else if immersiveSpacePresented && newMode.overlapsImmersiveSpace {

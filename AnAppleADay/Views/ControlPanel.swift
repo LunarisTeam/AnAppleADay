@@ -16,26 +16,54 @@ struct ControlPanel: View {
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
     @Environment(\.openWindow) private var openWindow
+    
+    @FocusState private var isFocused: Bool
+    
+    private let tooltipArray = [
+        "Show/Hide Bones",
+        "Enlarge/Shrink",
+        "Lock position",
+        "Connect X-Ray",
+        "Lock window",
+        "Lock model to window"
+    ]
         
     var body: some View {
         
         ZStack {
             
-            Color("backgroundColor").opacity(0.3)
+            Color.background.opacity(0.3)
             
-            HStack{
+            HStack(spacing: 20) {
                 //toggle bones arteries
-                Button { appModel.bonesArteriesToggle() }
-                label: { Image("hideBones") }
+                Button {
+                    appModel.bonesArteriesToggle()
+                }
+                label: {
+                    Image("hideBones")
+                }
+                .background(Circle().fill(.background.opacity(0.3)))
+                .help(tooltipArray[0])
                 
                 //scale
-                Button { appModel.scaleEntities() }
-                label: { Image("RestoreSize") }
-                
+                Button {
+                    appModel.scaleEntities()
+                }
+                label: {
+                    Image("RestoreSize")
+                }
+                .background(Circle().fill(.background.opacity(0.3)))
+                .help(tooltipArray[1])
                 
                 //lock 3D
-                Button { appModel.toggleGestures() }
-                label: { Image("lockInPosition") }
+                Button {
+                    appModel.toggleGestures()
+                }
+                label: {
+                    Image("lockInPosition")
+                }
+                .background(Circle().fill(.background.opacity(0.3)))
+                .help(tooltipArray[2])
                 
                 //Divider
                 Divider().frame(width: 5, height: 40)
@@ -47,22 +75,30 @@ struct ControlPanel: View {
                 } label: {
                     Image("connect2D")
                 }
+                .background(Circle().fill(.background.opacity(0.3)))
+                .help(tooltipArray[3])
                 
+                Button {
+                    appModel.hideBar.toggle()
+                }
+                label: {
+                    Image("lock2d")
+                }
+                .help(tooltipArray[4])
                 
-                Button { appModel.hideBar.toggle() }
-                label: { Image("lock2d") }
-                
+                .background(Circle().fill(.background.opacity(0.3)))
                 //LOCKINTO3D2
                 Button {
                     
                 } label: {
                     Image("LOCKINTO3D2")
                 }
-                
+                .background(Circle().fill(.background.opacity(0.3)))
+                .help(tooltipArray[5])
             }
-            .padding(.horizontal, 30)
+            .buttonBorderShape(.circle)
         }
-        .frame(height: 75)
+        .frame(height: 80)
         .glassBackgroundEffect()
         .persistentSystemOverlays(.visible)
     }

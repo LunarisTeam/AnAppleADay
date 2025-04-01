@@ -15,90 +15,62 @@ struct ControlPanel: View {
     @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
-    
-    @State private var gestures: Bool = true
+    @Environment(\.openWindow) private var openWindow
     
     var body: some View {
         
-        HStack{
-            //toggle bones arteries
-            Button {
-                appModel.bonesEntityHolder!.isEnabled.toggle()
-                appModel.arteriesEntityHolder!.isEnabled.toggle()
+        
+        ZStack {
+            
+            Color("backgroundColor").opacity(0.3)
+            
+            HStack{
+                //toggle bones arteries
+                Button { appModel.bonesArteriesToggle() }
+                label: { Image("hideBones") }
                 
-                if (!appModel.bonesEntityHolder!.isEnabled) {
-                    appModel.arteriesEntityHolder!.position = appModel.bonesEntityHolder!.position
-                    appModel.arteriesEntityHolder!.scale = appModel.bonesEntityHolder!.scale
-                    appModel.arteriesEntityHolder!.transform.rotation = appModel.bonesEntityHolder!.transform.rotation
-                } else {
-                    appModel.bonesEntityHolder!.position = appModel.arteriesEntityHolder!.position
-                    appModel.bonesEntityHolder!.scale = appModel.arteriesEntityHolder!.scale
-                    appModel.bonesEntityHolder!.transform.rotation = appModel.arteriesEntityHolder!.transform.rotation
+                //scale
+                Button { appModel.scaleEntities() }
+                label: { Image("RestoreSize") }
+                
+                
+                //lock 3D
+                Button { appModel.toggleGestures() }
+                label: { Image("lockInPosition") }
+                
+                //Divider
+                Divider().frame(width: 5, height: 40)
+                
+                //Show 2D image
+                Button {
+                    guard !appModelServer.isInputWindowOpen else { return }
+                    openWindow(id: WindowIDs.inputAddressWindowID)
+                } label: {
+                    Image("connect2D")
                 }
-            } label: {
-                Image("hideBones")
-            }
-            
-            //scale
-            Button {
-                appModel.scale.toggle()
-                if(appModel.scale){
-                    appModel.bonesEntityHolder!.scale *= 2.0
-                    appModel.arteriesEntityHolder!.scale *= 2.0
-                }else{
-                    appModel.bonesEntityHolder!.scale /= 2.0
-                    appModel.arteriesEntityHolder!.scale /= 2.0
+                
+                
+                Button { appModel.hideBar.toggle() }
+                label: { Image("lock2d") }
+                
+                //LOCKINTO3D2
+                Button {
+                    appModel.lockTogether.toggle()
+                    toggleGestures (component: appModel.bonesEntityHolder!, isEnabled: !appModel.lockTogether)
                 }
-            } label: {
-                Image("RestoreSize")
+                label: {
+                    Image ("LOCKINTO3D2" )
+                }
+                
             }
-            
-            
-            //lock 3D
-            Button {
-                gestures.toggle()
-                toggleGestures(component: appModel.bonesEntityHolder!, isEnabled: gestures)
-                toggleGestures(component: appModel.arteriesEntityHolder!, isEnabled: gestures)
-            } label: {
-                Image("lockInPosition")
-            }
-            
-            //Divider
-            Divider().frame(width: 5, height: 40)
-            
-            //Show 2D image
-            Button {
-                //potentially show and hide the model so they don't overlap
-                Task { await setMode(.inputAddress, nil) }
-            } label: {
-                Image("connect2D")
-            }
-            
-            //lock 2D image
-            Button {
-                appModel.hideBar.toggle()
-            }
-            label: {
-                Image ("lock2d" )
-            }
-            // LOCKINTO3D2
-            Button {
-                appModel.lockTogether.toggle()
-                toggleGestures (component: appModel.bonesEntityHolder!, isEnabled: !appModel.lockTogether)
-            }
-            label: {
-                Image ("LOCKINTO3D2" )
-            }
-            
-            
+            .padding(.horizontal, 30)
         }
-        .padding(.vertical, 20)
-        .padding(.horizontal, 30)
+        .frame(height: 75)
         .glassBackgroundEffect()
         .persistentSystemOverlays(.visible)
         
-        
     }
+    
     
     func toggleGestures(component: Entity, isEnabled: Bool) {
         component.gestureComponent?.canDrag = isEnabled
@@ -106,5 +78,6 @@ struct ControlPanel: View {
         component.gestureComponent?.canScale = isEnabled
         component.gestureComponent?.pivotOnDrag = isEnabled
         component.gestureComponent?.preserveOrientationOnPivotDrag = isEnabled
+        
     }
 }

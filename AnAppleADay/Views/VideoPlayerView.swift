@@ -16,12 +16,17 @@ struct VideoPlayerView: View {
     
     @State private var player = AVPlayer()
     @State private var degrees: Double = 0
-
+    
     var body: some View {
         VStack{
             VideoPlayer(player: player)
                 .rotation3DEffect(.degrees(degrees), axis: (x: 0, y: 1, z: 0))
                 .persistentSystemOverlays(appModel.hideBar ? .hidden : .visible)
+                .onGeometryChange (for: AffineTransform3D.self) {
+                    $0.transform(in: .immersiveSpace) ?? .identity
+                } action: { newValue in
+                    appModel.windowPosition = newValue
+                }
                 .onAppear {
                     if let videoURL = URL(string: "http://\(appModelServer.address):\(appModelServer.port)/\(appModelServer.fileName)"){
                         player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
@@ -33,10 +38,10 @@ struct VideoPlayerView: View {
                     
                     Task { await setMode(.immersiveSpace, nil) }
                 }
-
-                Slider(value: $degrees, in: -180...180)
-                    .padding(.vertical, 20)
-                    .padding(.horizontal, 30)
+            
+            Slider(value: $degrees, in: -180...180)
+                .padding(.vertical, 20)
+                .padding(.horizontal, 30)
             
         }
     }

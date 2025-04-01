@@ -28,6 +28,9 @@ final class AppModel {
     
     /// Hides the system bar overlay under the 2D window overlapping the immersive space
     var hideBar: Bool = false
+    var windowPosition: AffineTransform3D? = nil
+    
+    var lockElements: Bool = false
     
     /// To enable the scaling of entities
     private var scale: Bool = false
@@ -114,7 +117,7 @@ final class AppModel {
             [60, 150, 100, 175, 500, 625],
             [0, 50, 500]
         ) else { return }
-                
+        
         let boundingBox = arteriesEntity.visualBounds(relativeTo: nil)
         arteriesCenter = boundingBox.center
         
@@ -166,7 +169,7 @@ final class AppModel {
             bonesEntity.transform.rotation = arteriesEntity.transform.rotation
         }
     }
-
+    
     /// Scales both entities up or down based on the current scaling state.
     ///
     /// Serves to double or return to the default size of the 3D model.
@@ -196,11 +199,24 @@ final class AppModel {
         bonesEntity.gestureComponent?.canScale = enableGestures
         bonesEntity.gestureComponent?.pivotOnDrag = enableGestures
         bonesEntity.gestureComponent?.preserveOrientationOnPivotDrag = enableGestures
-
+        
         arteriesEntity.gestureComponent?.canDrag = enableGestures
         arteriesEntity.gestureComponent?.canRotate = enableGestures
         arteriesEntity.gestureComponent?.canScale = enableGestures
         arteriesEntity.gestureComponent?.pivotOnDrag = enableGestures
         arteriesEntity.gestureComponent?.preserveOrientationOnPivotDrag = enableGestures
+    }
+    
+    func lockTogether() {
+        
+        lockElements.toggle()
+        
+        guard let bonesEntity = bonesEntityHolder else { return }
+        
+        bonesEntity.gestureComponent?.canDrag = lockElements
+        bonesEntity.gestureComponent?.canRotate = lockElements
+        bonesEntity.gestureComponent?.canScale = lockElements
+        bonesEntity.gestureComponent?.pivotOnDrag = lockElements
+        bonesEntity.gestureComponent?.preserveOrientationOnPivotDrag = lockElements
     }
 }

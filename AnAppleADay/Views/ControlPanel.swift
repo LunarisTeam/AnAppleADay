@@ -17,8 +17,6 @@ struct ControlPanel: View {
     @Environment(\.setMode) private var setMode
     @Environment(\.openWindow) private var openWindow
     
-    @FocusState private var isFocused: Bool
-    
     private let tooltipArray = [
         "Show/Hide Bones",
         "Enlarge/Shrink",
@@ -27,8 +25,9 @@ struct ControlPanel: View {
         "Lock window",
         "Lock model to window"
     ]
-        
+    
     var body: some View {
+        
         
         ZStack {
             
@@ -89,9 +88,10 @@ struct ControlPanel: View {
                 .background(Circle().fill(.background.opacity(0.3)))
                 //LOCKINTO3D2
                 Button {
-                    
-                } label: {
-                    Image("LOCKINTO3D2")
+                    appModel.lockTogether()
+                }
+                label: {
+                    Image ("LOCKINTO3D2" )
                 }
                 .background(Circle().fill(.background.opacity(0.3)))
                 .help(tooltipArray[5])
@@ -101,5 +101,6 @@ struct ControlPanel: View {
         .frame(height: 80)
         .glassBackgroundEffect()
         .persistentSystemOverlays(.visible)
+        
     }
 }

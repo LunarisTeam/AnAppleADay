@@ -22,7 +22,7 @@
     case generate
     
     /// The mode for displaying the generated 3D volume.    
-    case needsImmersiveSpace
+    case immersiveSpace
     
     /// The window handling the server connection
     case inputAddress
@@ -45,7 +45,7 @@
         case .importDicoms: return WindowIDs.importDicomsWindowID
         case .generate: return WindowIDs.generateModelWindowID
         case .xRayFeed: return WindowIDs.xRayFeedWindowID
-        case .needsImmersiveSpace: return WindowIDs.immersiveSpaceID
+        case .immersiveSpace: return WindowIDs.immersiveSpaceID
         case .inputAddress: return WindowIDs.inputAddressWindowID
         case .controlPanel: return WindowIDs.controlPanelWindowID
         case .progress: return WindowIDs.progressWindowID
@@ -59,16 +59,24 @@
     var acceptsDataSet: Bool {
         switch self {
         case .generate: return true
-        case .needsImmersiveSpace: return true
         case .progress: return true
         default: return false
         }
     }
     
-    var immersiveSpaceIsOpen: Bool {
+    var needsImmersiveSpace: Bool {
+        return self == .immersiveSpace
+    }
+    
+    var needsLastWindowClosed: Bool {
         switch self {
-        case .needsImmersiveSpace: return true
-        default: return false
+        case .immersiveSpace: return false
+        case .controlPanel: return false
+        default: return true
         }
+    }
+    
+    var overlapsImmersiveSpace: Bool {
+        return self == .xRayFeed
     }
 }

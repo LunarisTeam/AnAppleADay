@@ -51,7 +51,7 @@ struct ProgressModelView: View {
         }
         .onChange(of: loaded) { _, newValue in
             print("Switching to immersive space")
-            Task { await setMode(.needsImmersiveSpace, nil) }
+            Task { await setMode(.immersiveSpace, nil) }
         }
         .padding()
     }

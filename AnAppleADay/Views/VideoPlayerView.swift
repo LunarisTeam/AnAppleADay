@@ -10,6 +10,7 @@ import AVKit
 
 struct VideoPlayerView: View {
     
+    @Environment(\.setMode) private var setMode
     @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     
@@ -25,9 +26,12 @@ struct VideoPlayerView: View {
                     if let videoURL = URL(string: "http://\(appModelServer.address):\(appModelServer.port)/\(appModelServer.fileName)"){
                         player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
                         player.play()
+                        appModelServer.isConnected = true
                     }else{
                         print("error video")
                     }
+                    
+                    Task { await setMode(.immersiveSpace, nil) }
                 }
 
                 Slider(value: $degrees, in: -180...180)
@@ -35,6 +39,5 @@ struct VideoPlayerView: View {
                     .padding(.horizontal, 30)
             
         }
-        
     }
 }

@@ -21,8 +21,5 @@ struct ModelView: View {
             content.add(appModel.arteriesEntityHolder!)
         }
         .installGestures()
-        .onAppear {
-            Task { await setMode(.controlPanel, nil) }
-        }
     }
 }

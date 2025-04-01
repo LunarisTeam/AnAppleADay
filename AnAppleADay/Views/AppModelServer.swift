@@ -26,4 +26,7 @@ class AppModelServer {
     
     /// A flag indicating whether the input window is currently open.
     var isInputWindowOpen: Bool = false
+    
+    
+    var isConnected: Bool = false
 }

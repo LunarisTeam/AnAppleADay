@@ -26,4 +26,7 @@ class AppModelServer {
     
     /// A flag indicating whether the input window is currently open.
     var isInputWindowOpen: Bool = false
+    
+    /// Retrieves the status of the connection. It is connected if the view is showing feed
+    var isConnected: Bool = false
 }

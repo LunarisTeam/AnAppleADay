@@ -10,8 +10,10 @@ import RealityKit
 
 struct InputAddressView: View {
     
-    @Environment(\.setMode) private var setMode
     @Environment(AppModelServer.self) private var appModelServer
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
+    
     @State private var first: String = ""
     @State private var second: String = ""
     @State private var third: String = ""
@@ -21,8 +23,7 @@ struct InputAddressView: View {
     var body: some View {
         
         ZStack {
-            
-            Color("backgroundColor").opacity(0.3)
+            Color.background.opacity(0.3)
             
             VStack {
                 
@@ -78,7 +79,8 @@ struct InputAddressView: View {
                     appModelServer.address = first + "." + second + "." + third + "." + fourth
                     appModelServer.port = port
                     
-                    Task { await setMode(.xRayFeed, nil) }
+                    openWindow(id: WindowIDs.xRayFeedWindowID)
+                    dismissWindow(id: WindowIDs.inputAddressWindowID)
                 } label: {
                     Text("Connect")
                         .font(.title2)

@@ -29,6 +29,12 @@ final class AppModel {
     /// Hides the system bar overlay under the 2D window overlapping the immersive space
     var hideBar: Bool = false
     
+    /// The window position that is used during the X-Ray
+    var windowPosition: AffineTransform3D? = nil
+    
+    /// Locks both the entity and the window X-Ray so that they can move together
+    var lockElements: Bool = false
+    
     /// To enable the scaling of entities
     private var scale: Bool = false
     
@@ -59,8 +65,13 @@ final class AppModel {
         
         let visualizationToolkit: VisualizationToolkit = try .init()
         
+        guard let dataSet = dataSetHolder else {
+            print("Error, dataSet unwrap failed")
+            return Entity()
+        }
+        
         let dicom3DURL: URL = try visualizationToolkit.generateDICOM(
-            dataSet: dataSetHolder!,
+            dataSet: dataSet,
             threshold: threshold,
             boxBounds: box,
             translationBounds: translation
@@ -114,7 +125,7 @@ final class AppModel {
             [60, 150, 100, 175, 500, 625],
             [0, 50, 500]
         ) else { return }
-                
+        
         let boundingBox = arteriesEntity.visualBounds(relativeTo: nil)
         arteriesCenter = boundingBox.center
         
@@ -166,18 +177,19 @@ final class AppModel {
             bonesEntity.transform.rotation = arteriesEntity.transform.rotation
         }
     }
-
+    
     /// Scales both entities up or down based on the current scaling state.
     ///
     /// Serves to double or return to the default size of the 3D model.
     func scaleEntities() {
         scale.toggle()
+        
         if scale {
-            bonesEntityHolder!.scale *= 2.0
-            arteriesEntityHolder!.scale *= 2.0
+            bonesEntityHolder?.scale *= 2.0
+            arteriesEntityHolder?.scale *= 2.0
         } else {
-            bonesEntityHolder!.scale *= 0.5
-            arteriesEntityHolder!.scale *= 0.5
+            bonesEntityHolder?.scale *= 0.5
+            arteriesEntityHolder?.scale *= 0.5
         }
     }
     
@@ -196,11 +208,24 @@ final class AppModel {
         bonesEntity.gestureComponent?.canScale = enableGestures
         bonesEntity.gestureComponent?.pivotOnDrag = enableGestures
         bonesEntity.gestureComponent?.preserveOrientationOnPivotDrag = enableGestures
-
+        
         arteriesEntity.gestureComponent?.canDrag = enableGestures
         arteriesEntity.gestureComponent?.canRotate = enableGestures
         arteriesEntity.gestureComponent?.canScale = enableGestures
         arteriesEntity.gestureComponent?.pivotOnDrag = enableGestures
         arteriesEntity.gestureComponent?.preserveOrientationOnPivotDrag = enableGestures
+    }
+    
+    func lockTogether() {
+        
+        lockElements.toggle()
+        
+        guard let bonesEntity = bonesEntityHolder else { return }
+        
+        bonesEntity.gestureComponent?.canDrag = lockElements
+        bonesEntity.gestureComponent?.canRotate = lockElements
+        bonesEntity.gestureComponent?.canScale = lockElements
+        bonesEntity.gestureComponent?.pivotOnDrag = lockElements
+        bonesEntity.gestureComponent?.preserveOrientationOnPivotDrag = lockElements
     }
 }

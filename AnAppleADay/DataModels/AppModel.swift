@@ -28,8 +28,11 @@ final class AppModel {
     
     /// Hides the system bar overlay under the 2D window overlapping the immersive space
     var hideBar: Bool = false
+    
+    /// The window position that is used during the X-Ray
     var windowPosition: AffineTransform3D? = nil
     
+    /// Locks both the entity and the window X-Ray so that they can move together
     var lockElements: Bool = false
     
     /// To enable the scaling of entities

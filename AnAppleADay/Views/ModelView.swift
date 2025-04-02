@@ -17,10 +17,18 @@ struct ModelView: View {
     var body: some View {
         
         RealityView { content in
-            content.add (appModel.bonesEntityHolder!)
-            content.add(appModel.arteriesEntityHolder!)
-        } update: { content in
             
+            guard let bones = appModel.bonesEntityHolder else {
+                print("Bones failed to load")
+                return
+            }
+            content.add(bones)
+            guard let arteries = appModel.arteriesEntityHolder else {
+                print("Arteries failed to load")
+                return
+            }
+            content.add(arteries)
+        } update: { content in
             
             if appModel.lockElements {
                

@@ -114,7 +114,9 @@ struct AnAppleADayApp: App {
                     
                     ProgressModelView(dataSet: secondUnwrap)
                         .environment(appModel)
+                        .frame(width: 676, height: 550)
                         .fixedSize()
+                        .background(Color.background.opacity(0.3))
                 }
             }
             .windowResizability(.contentSize)
@@ -183,7 +185,7 @@ struct AnAppleADayApp: App {
                 immersiveSpacePresented = false
                 openWindow(id: newMode.windowId)
             }
-            try? await Task.sleep(for: .seconds(0.1))
+            try? await Task.sleep(for: .seconds(0.2))
             
         case false:
             if newMode.needsImmersiveSpace {
@@ -199,7 +201,7 @@ struct AnAppleADayApp: App {
                 if newMode.acceptsDataSet { openWindow(id: newMode.windowId, value: dataSet) }
                 else { openWindow(id: newMode.windowId) }
                 
-                try? await Task.sleep(for: .seconds(0.1))
+                try? await Task.sleep(for: .seconds(0.2))
                 dismissWindow(id: oldMode.windowId)
             }
         }

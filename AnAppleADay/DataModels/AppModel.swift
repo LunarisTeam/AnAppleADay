@@ -16,7 +16,7 @@ import SwiftUI
 /// As per date, compatible with `Swift6 - strict concurrency`
 @MainActor @Observable
 final class AppModel {
-    
+        
     /// The variable holding the DICOM dataset
     var dataSetHolder: DicomDataSet? = nil
     
@@ -58,8 +58,8 @@ final class AppModel {
     private func generateEntity(
         _ threshold: Double,
         _ color: UIColor,
-        _ box: [Double],
-        _ translation: [Double]
+        _ box: [Double]?,
+        _ translation: [Double]?
         
     ) async throws -> Entity {
         
@@ -92,11 +92,15 @@ final class AppModel {
     /// This method applies scaling, calculates the center for proper positioning,
     /// and configures input components and collision shapes.
     private func setUpBonesEntity() async {
+        
+        // Currently we are trimming the model only if the submitted dataSet
+        // matches a slice count of 862, which is exactly our test DataSet.
+        // We would offer a UI to configure the trimming in a production scenario.
         guard let bonesEntity = try? await generateEntity(
             300.0,
             .white,
-            [0, 150, 50, 175, 500, 625],
-            [0, 50, 500]
+            dataSetHolder?.sliceCount == 862 ? [0, 150, 50, 175, 500, 625] : nil,
+            dataSetHolder?.sliceCount == 862 ? [0, 50, 500] : nil
         ) else { return }
         
         bonesEntity.scale *= 0.5
@@ -119,11 +123,14 @@ final class AppModel {
     /// and configures input components and collision shapes. The entity is initially disabled.
     private func setUpArteriesEntity() async {
         
+        // Currently we are trimming the model only if the submitted dataSet
+        // matches a slice count of 862, which is exactly our test DataSet.
+        // We would offer a UI to configure the trimming in a production scenario.
         guard let arteriesEntity = try? await generateEntity(
             650.0,
             .red,
-            [60, 150, 100, 175, 500, 625],
-            [0, 50, 500]
+            dataSetHolder?.sliceCount == 862 ? [60, 150, 100, 175, 500, 625] : nil,
+            dataSetHolder?.sliceCount == 862 ? [0, 50, 500] : nil
         ) else { return }
         
         let boundingBox = arteriesEntity.visualBounds(relativeTo: nil)

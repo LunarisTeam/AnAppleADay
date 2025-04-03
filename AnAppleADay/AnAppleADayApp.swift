@@ -101,10 +101,11 @@ struct AnAppleADayApp: App {
                     .environment(appModel)
                     .environment(appModelServer)
                     .fixedSize()
-                    .frame(width: 350, height: 350)
+                    .frame(width: 381, height: 449)
             }
             .windowResizability(.contentSize)
             .windowStyle(.plain)
+            .defaultSize(width: 381, height: 449)
             
             WindowGroup(id: WindowIDs.progressWindowID, for: DicomDataSet?.self) { dataSet in
                 
@@ -129,7 +130,7 @@ struct AnAppleADayApp: App {
                 .fixedSize()
                 .environment(appModel)
             }
-            .defaultWindowPlacement{ content, context in
+            .defaultWindowPlacement{ _, _ in
                 return WindowPlacement(.utilityPanel)
             }
             .windowStyle(.plain)

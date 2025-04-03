@@ -106,7 +106,7 @@ struct AnAppleADayApp: App {
             }
             .windowResizability(.contentSize)
             .windowStyle(.plain)
-            .defaultSize(width: 0.3500, height: 0.3500, depth: 0, in: .meters)
+            .defaultSize(width: 0.2800, height: 0.3300, depth: 0, in: .meters)
             
             WindowGroup(id: WindowIDs.progressWindowID, for: DicomDataSet?.self) { dataSet in
                 

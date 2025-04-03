@@ -24,6 +24,7 @@ struct AnAppleADayApp: App {
     /// The mode determines which view is presented and which window is active. Its initial value
     /// is set to `.importDicoms`.
     @State private var mode: Mode = .importDicoms
+    @State private var immersiveSpacePresented: Bool = false
     
     @State private var onboarding: OnboardingParameters = .init()
     
@@ -70,6 +71,10 @@ struct AnAppleADayApp: App {
             
             WindowGroup(id: WindowIDs.xRayFeedWindowID) {
                 VideoPlayerView()
+                    .onDisappear {
+                        print("disppear from window group")
+                        Task { await setMode(.immersiveSpace, dataSet: nil) }
+                    }
                     .environment(appModel)
                     .environment(appModelServer)
             }
@@ -89,10 +94,8 @@ struct AnAppleADayApp: App {
                             .environment(appModel)
                             .fixedSize()
                     }
-                    
                 }
             }
-            
             .windowResizability(.contentSize)
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
@@ -121,12 +124,16 @@ struct AnAppleADayApp: App {
             .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
             WindowGroup(id: WindowIDs.controlPanelWindowID) {
-                ControlPanel()
-                    .environment(appModel)
-                    .environment(appModelServer)
+                
+                HStack {
+                    BackToMain()
+                    ControlPanel().environment(appModelServer)
+                }
+                .environment(appModel)
             }
             .windowStyle(.plain)
-            .defaultSize(width: 0.4000, height: 0.0500, depth: 0, in: .meters)
+            .windowResizability(.contentMinSize)
+            .defaultSize(width: 0.4, height: 0.015, depth: 0, in: .meters)
             
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID) {
                 ModelView()
@@ -156,42 +163,45 @@ struct AnAppleADayApp: App {
     /// - Parameter newMode: The new mode to transition to.
     @MainActor private func setMode(_ newMode: Mode, dataSet: DicomDataSet?) async {
         let oldMode = mode
-        guard newMode != oldMode else { return }
-        mode = newMode
-        
-        print("")
-        print("oldMode: \(oldMode), newMode: \(newMode)")
-        
-        if newMode == .needsImmersiveSpace {
-            await openImmersiveSpace(id: newMode.windowId)
-            dismissWindow(id: oldMode.windowId)
-            
-        } else {
-            if newMode.acceptsDataSet {
-                openWindow(id: newMode.windowId, value: dataSet)
-            } else { openWindow(id: newMode.windowId) }
+        guard newMode != oldMode else {
+            print("setMode: newMode \(newMode) is the same as oldMode. No action taken.")
+            return
         }
         
+        print("Transitioning from \(oldMode) to \(newMode)")
+        mode = newMode
         
-        //The do-catch is to avoid skipping the await for concurrency issues.
-        //Increase the sleep if it doesn't work.
-        try? await Task.sleep(for: .seconds(0.05))
-        
-        if oldMode.acceptsDataSet {
-            if oldMode.immersiveSpaceIsOpen {
-
-            } else {
-                dismissWindow(id: oldMode.windowId, value: dataSet)
+        switch immersiveSpacePresented {
+        case true:
+            if newMode.overlapsImmersiveSpace { openWindow(id: newMode.windowId) }
+            
+            if newMode.shouldStopImmersion {
+                
+                if appModelServer.isConnected { dismissWindow(id: WindowIDs.xRayFeedWindowID) }
+                dismissWindow(id: WindowIDs.controlPanelWindowID)
+                await dismissImmersiveSpace()
+                immersiveSpacePresented = false
+                openWindow(id: newMode.windowId)
             }
-        } else {
-            if oldMode.windowId == "ControlPanel" {
+            try? await Task.sleep(for: .seconds(0.1))
+            
+        case false:
+            if newMode.needsImmersiveSpace {
+                
+                immersiveSpacePresented = true
+                await openImmersiveSpace(id: newMode.windowId)
+
+                openWindow(id: WindowIDs.controlPanelWindowID)
+                dismissWindow(id: oldMode.windowId)
                 
             } else {
+                
+                if newMode.acceptsDataSet { openWindow(id: newMode.windowId, value: dataSet) }
+                else { openWindow(id: newMode.windowId) }
+                
+                try? await Task.sleep(for: .seconds(0.1))
                 dismissWindow(id: oldMode.windowId)
             }
         }
     }
 }
-
-
-

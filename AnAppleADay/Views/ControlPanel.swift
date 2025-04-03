@@ -9,100 +9,124 @@ import Foundation
 import SwiftUI
 import RealityKit
 
-// The bones are the first element of the parent entity, while the second is the arteries
 struct ControlPanel: View {
     
     @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
+    @Environment(\.openWindow) private var openWindow
     
-    @State private var gestures: Bool = true
+    // State variables to track the toggle (selected) state for the buttons.
+    @State private var isHideSelected: Bool = false      // For "Hide" (bones/arteries)
+    @State private var isLock3DSelected: Bool = false      // For "Lock" (3D gestures)
+    @State private var isLock2DSelected: Bool = false      // For "Lock2D" (X-Ray)
+    @State private var isLock2Dto3DSelected: Bool = false    // For "Lock2Dto3D" (model lock)
     
     var body: some View {
-        
-            HStack{
-                //toggle bones arteries
+        ZStack {
+            Color.background.opacity(0.3)
+            
+            HStack(spacing: 20) {
+                
+                // Toggle bones/arteries visibility ("Hide")
                 Button {
-                    appModel.bonesEntityHolder!.isEnabled.toggle()
-                    appModel.arteriesEntityHolder!.isEnabled.toggle()
-                    
-                    if (!appModel.bonesEntityHolder!.isEnabled) {
-                        appModel.arteriesEntityHolder!.position = appModel.bonesEntityHolder!.position
-                        appModel.arteriesEntityHolder!.scale = appModel.bonesEntityHolder!.scale
-                        appModel.arteriesEntityHolder!.transform.rotation = appModel.bonesEntityHolder!.transform.rotation
-                    } else {
-                        appModel.bonesEntityHolder!.position = appModel.arteriesEntityHolder!.position
-                        appModel.bonesEntityHolder!.scale = appModel.arteriesEntityHolder!.scale
-                        appModel.bonesEntityHolder!.transform.rotation = appModel.arteriesEntityHolder!.transform.rotation
-                    }
+                    appModel.bonesArteriesToggle()
+                    isHideSelected.toggle()
                 } label: {
                     Image("hideBones")
+                        .renderingMode(.template)
+                        .foregroundStyle(isHideSelected ? Color.background : Color.white)
                 }
+                .help(isHideSelected ? "Show Bones" : "Hide Bones")
+                .buttonStyle(VisionOSButtonStyle(isSelected: isHideSelected))
                 
-                //scale
                 Button {
-                    appModel.scale.toggle()
-                    if(appModel.scale){
-                        appModel.bonesEntityHolder!.scale *= 2.0
-                        appModel.arteriesEntityHolder!.scale *= 2.0
-                    }else{
-                        appModel.bonesEntityHolder!.scale /= 2.0
-                        appModel.arteriesEntityHolder!.scale /= 2.0
-                    }
+                    appModel.scaleEntities()
                 } label: {
                     Image("RestoreSize")
+                        .renderingMode(.template)
+                        .foregroundStyle(Color.white)
                 }
+                .help("Restore Size")
+                .buttonStyle(VisionOSButtonStyle())
                 
-                
-                //lock 3D
+                // Toggle 3D gestures ("Lock")
                 Button {
-                    gestures.toggle()
-                    toggleGestures(component: appModel.bonesEntityHolder!, isEnabled: gestures)
-                    toggleGestures(component: appModel.arteriesEntityHolder!, isEnabled: gestures)
+                    appModel.toggleGestures()
+                    isLock3DSelected.toggle()
                 } label: {
                     Image("lockInPosition")
+                        .renderingMode(.template)
+                        .foregroundStyle(isLock3DSelected ? Color.background : Color.white)
                 }
+                .help("Lock position")
+                .buttonStyle(VisionOSButtonStyle(isSelected: isLock3DSelected))
                 
-                //Divider
-                Divider().frame(width: 5, height: 40)
+                // Divider between button groups
+                Divider()
+                    .frame(width: 10, height: 50)
+                    .foregroundStyle(Color.gray)
+                    .bold()
                 
-                //Show 2D image
+                // 2D Connection ("Connect")
                 Button {
-                    //potentially show and hide the model so they don't overlap
-                    Task { await setMode(.inputAddress, nil) }
+                    guard !appModelServer.isInputWindowOpen else { return }
+                    openWindow(id: WindowIDs.inputAddressWindowID)
+                    // The button does not handle a local toggle; its selected state depends on the connection.
                 } label: {
                     Image("connect2D")
+                        .renderingMode(.template)
+                        .foregroundStyle(appModelServer.isConnected ? Color.background : Color.white)
                 }
+                .help("Connect window")
+                .buttonStyle(VisionOSButtonStyle(isSelected: appModelServer.isConnected))
                 
-                //lock 2D image
+                // Toggle X-Ray ("Lock2D")
                 Button {
-                    appModelServer.hideBar.toggle()
+                    appModel.hideBar.toggle()
+                    isLock2DSelected.toggle()
                 } label: {
                     Image("lock2d")
+                        .renderingMode(.template)
+                        .foregroundStyle(isLock2DSelected ? Color.background : Color.white)
                 }
+                .help("Lock Window")
+                .buttonStyle(VisionOSButtonStyle(isSelected: isLock2DSelected))
+                // Disables the button if there is no 2D connection.
+                .disabled(!appModelServer.isConnected)
                 
-                //LOCKINTO3D2
+                // Lock model to window ("Lock2Dto3D")
                 Button {
-                    
+                    appModel.lockTogether()
+                    isLock2Dto3DSelected.toggle()
                 } label: {
                     Image("LOCKINTO3D2")
+                        .renderingMode(.template)
+                        .foregroundStyle(isLock2Dto3DSelected ? Color.background : Color.white)
                 }
-                
-                
+                .help("Lock to Model")
+                .buttonStyle(VisionOSButtonStyle(isSelected: isLock2Dto3DSelected))
+                // Disables the button if there is no 2D connection.
+                .disabled(!appModelServer.isConnected)
             }
-            .padding(.vertical, 20)
-            .padding(.horizontal, 30)
-            .glassBackgroundEffect()
-            .persistentSystemOverlays(.visible)
-            
-        
-    }
-    
-    func toggleGestures(component: Entity, isEnabled: Bool) {
-        component.gestureComponent?.canDrag = isEnabled
-        component.gestureComponent?.canRotate = isEnabled
-        component.gestureComponent?.canScale = isEnabled
-        component.gestureComponent?.pivotOnDrag = isEnabled
-        component.gestureComponent?.preserveOrientationOnPivotDrag = isEnabled
+            .buttonBorderShape(.circle) // Standard circular border shape for buttons.
+        }
+        .frame(height: 80)
+        .glassBackgroundEffect()
+        .persistentSystemOverlays(.visible)
+        // Reset toggles when view appears.
+        .onAppear {
+            isHideSelected = false
+            isLock3DSelected = false
+            isLock2DSelected = false
+            isLock2Dto3DSelected = false
+        }
+        // Monitor connection state changes.
+        .onChange(of: appModelServer.isConnected) { oldValue, newValue in
+            if !newValue {
+                isLock2DSelected = false
+                isLock2Dto3DSelected = false
+            }
+        }
     }
 }

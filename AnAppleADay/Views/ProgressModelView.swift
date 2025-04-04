@@ -49,10 +49,8 @@ struct ProgressModelView: View {
                 Spacer()
                 
             }
-            .task {
-                appModel.dataSetHolder = dataSet
-            }
             .onAppear {
+                appModel.dataSetHolder = dataSet
                 Task { await appModel.entitiesLoaded { loaded = true } }
             }
             .onChange(of: loaded) { _, newValue in

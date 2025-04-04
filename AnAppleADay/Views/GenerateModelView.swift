@@ -18,7 +18,7 @@ struct GenerateModelView: View {
         
         VStack(spacing: 40) {
             Spacer()
-            VStack {
+            VStack(spacing: 8) {
                 Text("Generate the 3D Model")
                     .font(.title)
                     .multilineTextAlignment(.center)
@@ -27,18 +27,17 @@ struct GenerateModelView: View {
                 Text("A 3D model will be generated from your imported\nDICOM dataset")
                     .font(.headline)
                     .fontWeight(.medium)
-                    .foregroundColor(.white.opacity(0.9))
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 800)
             }
             
-            VStack(spacing: 8) {
+            Spacer()
+            VStack(spacing: 15) {
                 Image("dicomIcon")
                     .resizable()
                     .offset(x: -10)
                     .scaledToFit()
-                    .frame(width: 100, height: 100)
-                    .foregroundColor(.white.opacity(0.8))
+                    .frame(width: 131, height: 131)
                 
                 VStack {
                     Text(dataSet.name)
@@ -50,26 +49,23 @@ struct GenerateModelView: View {
                         .font(.headline)
                         .fontWeight(.light)
                 }
+                Spacer()
             }
                  
-            Spacer()
             
-            HStack {
-                Button("Back") {
-                    Task { await setMode(.importDicoms, dataSet) }
-                }
-                .buttonStyle(.plain)
-                        
-                Spacer()
-                
-                Button("Generate Model") {
-                    Task { await setMode(.progress, dataSet) }
-                }
-            }
-            
-            .padding()
         }
-        .frame(maxWidth: .infinity)
+        .overlay(alignment: .bottomLeading) {
+            Button("Back") {
+                Task { await setMode(.importDicoms, dataSet) }
+            }
+            .buttonStyle(.borderless)
+        }
+        .overlay(alignment: .bottomTrailing) {
+            Button("Proceed") {
+                Task { await setMode(.progress, dataSet) }
+            }
+        }
+        .frame(width: 600, height: 500)
         .padding()
     }
 }

@@ -39,14 +39,15 @@ struct AnAppleADayApp: App {
             /// This will be adjusted in the design area, therefore I will leave it like this
             WindowGroup(id: WindowIDs.importDicomsWindowID) {
                 ZStack {
-                    Color("backgroundColor")
-                        .opacity(0.3)
                     if onboarding.completed {
                         ImportDicomView()
                     } else {
                         InfoView(showInfo: .constant(true))
                     }
                 }
+                .frame(width: 676, height: 550)
+                .fixedSize()
+                .background(Color.background.opacity(0.3))
 #if DEBUG
                 .if(onboarding.completed) {
                     $0.overlay(alignment: .bottomLeading) {
@@ -66,78 +67,79 @@ struct AnAppleADayApp: App {
                 }
 #endif
             }
-            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
+            .windowResizability(.contentSize)
             .environment(onboarding)
             
             WindowGroup(id: WindowIDs.xRayFeedWindowID) {
                 VideoPlayerView()
-                    .onDisappear {
-                        print("disppear from window group")
-                        Task { await setMode(.immersiveSpace, dataSet: nil) }
-                    }
+                    .frame(width: 676, height: 550)
+                    .fixedSize()
+                    .background(Color.background.opacity(0.3))
                     .environment(appModel)
                     .environment(appModelServer)
             }
             .windowResizability(.contentSize)
             .windowStyle(.plain)
-            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
                    let secondUnwrap = firstUnwrap {
                     
-                    ZStack {
-                        Color("backgroundColor")
-                            .opacity(0.3)
-                        GenerateModelView(dataSet: secondUnwrap)
-                            .environment(appModel)
-                            .fixedSize()
-                    }
+                    GenerateModelView(dataSet: secondUnwrap)
+                        .environment(appModel)
+                        .frame(width: 676, height: 550)
+                        .fixedSize()
+                        .background(Color.background.opacity(0.3))
                 }
             }
             .windowResizability(.contentSize)
-            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
+            
             
             WindowGroup(id: WindowIDs.inputAddressWindowID) {
                 InputAddressView()
                     .environment(appModel)
                     .environment(appModelServer)
+                    .fixedSize()
+                    .frame(width: 381, height: 449)
             }
             .windowResizability(.contentSize)
             .windowStyle(.plain)
-            .defaultSize(width: 0.2800, height: 0.3300, depth: 0, in: .meters)
+            .defaultSize(width: 381, height: 449)
             
             WindowGroup(id: WindowIDs.progressWindowID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
                    let secondUnwrap = firstUnwrap {
-                    ZStack {
-                        Color("backgroundColor")
-                            .opacity(0.3)
-                        ProgressModelView(dataSet: secondUnwrap)
-                            .environment(appModel)
-                            .fixedSize()
-                    }
+                    
+                    ProgressModelView(dataSet: secondUnwrap)
+                        .environment(appModel)
+                        .frame(width: 676, height: 550)
+                        .fixedSize()
+                        .background(Color.background.opacity(0.3))
                 }
             }
-            .defaultSize(width: 0.4971, height: 0.4044, depth: 0, in: .meters)
+            .windowResizability(.contentSize)
             
             WindowGroup(id: WindowIDs.controlPanelWindowID) {
                 
                 HStack {
                     BackToMain()
                     ControlPanel().environment(appModelServer)
+                        .background(Capsule().fill(.background.opacity(0.3)))
                 }
+                .frame(width: 550, height: 68)
+                .fixedSize()
                 .environment(appModel)
             }
+            .defaultWindowPlacement{ _, _ in
+                return WindowPlacement(.utilityPanel)
+            }
             .windowStyle(.plain)
-            .windowResizability(.contentMinSize)
-            .defaultSize(width: 0.4, height: 0.015, depth: 0, in: .meters)
+            .windowResizability(.contentSize)
             
             ImmersiveSpace(id: WindowIDs.immersiveSpaceID) {
-                ModelView()
-                    .environment(appModel)
+                ModelView().environment(appModel)
             }
         }
         .environment(\.setMode, setMode)
@@ -183,7 +185,7 @@ struct AnAppleADayApp: App {
                 immersiveSpacePresented = false
                 openWindow(id: newMode.windowId)
             }
-            try? await Task.sleep(for: .seconds(0.1))
+            try? await Task.sleep(for: .seconds(0.2))
             
         case false:
             if newMode.needsImmersiveSpace {
@@ -199,7 +201,7 @@ struct AnAppleADayApp: App {
                 if newMode.acceptsDataSet { openWindow(id: newMode.windowId, value: dataSet) }
                 else { openWindow(id: newMode.windowId) }
                 
-                try? await Task.sleep(for: .seconds(0.1))
+                try? await Task.sleep(for: .seconds(0.2))
                 dismissWindow(id: oldMode.windowId)
             }
         }

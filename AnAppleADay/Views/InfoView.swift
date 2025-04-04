@@ -56,15 +56,15 @@ struct InfoView: View {
         }
         
         .overlay(alignment: .bottomLeading) {
-            if stepCounter > 1 {
-                Text("Previous")
-                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 8, trailing: 0))
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            stepCounter -= 1
-                        }
+            
+            Button("Previous") {
+                if stepCounter > 1 {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        stepCounter -= 1
                     }
+                }
             }
+            .buttonStyle(.borderless)
         }
         .frame(width: 600, height: 500)
         .padding()

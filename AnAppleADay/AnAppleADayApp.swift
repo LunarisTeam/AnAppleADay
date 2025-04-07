@@ -100,8 +100,8 @@ struct AnAppleADayApp: App {
                 InputAddressView()
                     .environment(appModel)
                     .environment(appModelServer)
-                    .fixedSize()
                     .frame(width: 381, height: 449)
+                    .fixedSize()
             }
             .windowResizability(.contentSize)
             .windowStyle(.plain)

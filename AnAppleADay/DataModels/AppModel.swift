@@ -243,6 +243,8 @@ final class AppModel {
     
     func resetModelPosition() {
         
+        guard self.mustResetPosition else { return }
+        
         guard let bonesEntity = bonesEntityHolder else {
             print("Bones entity not found")
             return
@@ -253,6 +255,38 @@ final class AppModel {
             return
         }
         
-//        mustResetPosition = false
+        guard let headAnchorRoot = headAnchorPositionHolder else {
+            print("Could not find head anchor")
+            return
+        }
+                
+        //Hardcoded, there should be a way to obtain the center of the model
+        let position = SIMD3<Float>(-0.2, 0, -1.2)
+        
+        let headAnchor = AnchorEntity(.head)
+        headAnchor.anchoring.trackingMode = .once
+        headAnchor.name = "headAnchor"
+        
+        print("head anchor position: \(headAnchor.position)")
+        headAnchorRoot.addChild(headAnchor)
+        print("head anchor root position: \(headAnchorRoot.position)")
+        
+        let headPositionedEntitiesRoot = Entity()
+        
+        headPositionedEntitiesRoot.addChild(bonesEntity)
+        headPositionedEntitiesRoot.addChild(arteriesEntity)
+        
+        bonesEntity.setPosition(position, relativeTo: headPositionedEntitiesRoot)
+        arteriesEntity.setPosition(position, relativeTo: headPositionedEntitiesRoot)
+        
+        print("bones position: \(bonesEntity.position)")
+        print("arteries position: \(arteriesEntity.position)")
+        
+        headAnchor.addChild(headPositionedEntitiesRoot)
+        headPositionedEntitiesRoot.setPosition(position, relativeTo: headAnchor)
+        
+        print("head entities position: \(headPositionedEntitiesRoot.position)")
+        
+        self.mustResetPosition = false
     }
 }

@@ -32,16 +32,16 @@ struct ModelView: View {
             }
             content.add(arteries)
             
+            // The head anchor to be used as reference for position reset
             content.add(headAnchorRoot)
             appModel.headAnchorPositionHolder = headAnchorRoot
         } update: { content in
-                        
             
             guard let bonesEntity = appModel.bonesEntityHolder,
                   let windowPosition = appModel.windowPosition else { return }
             
             if appModel.lockElements {
-               
+                
                 //MARK: This does not work as intended
                 
                 bonesEntity.transform.translation = [
@@ -62,42 +62,8 @@ struct ModelView: View {
             Task { await setMode(.controlPanel, nil) }
         }
         .onChange(of: appModel.mustResetPosition) { _, newValue in
-            if newValue {
-                guard let bones = appModel.bonesEntityHolder, let arteries = appModel.arteriesEntityHolder else { return }
-                checkResetStatus(bones, arteries)
-            }
+            if newValue { appModel.resetModelPosition() }
         }
     }
     
-    func checkResetStatus(_ bones: Entity, _ arteries: Entity) {
-        
-        if appModel.mustResetPosition {
-            
-            // Create a head anchor (or reuse existing logic to prevent duplicates if needed).
-            let headAnchor = AnchorEntity(.head)
-            headAnchor.anchoring.trackingMode = .once
-            headAnchor.name = "headAnchor"
-            
-            print("head anchor position: \(headAnchor.position)")
-            headAnchorRoot.addChild(headAnchor)
-            print("head anchor root position: \(headAnchorRoot.position)")
-            
-            headPositionedEntitiesRoot.addChild(bones)
-            headPositionedEntitiesRoot.addChild(arteries)
-            
-            bones.setPosition([-0.25, 0, -1.2], relativeTo: headPositionedEntitiesRoot)
-            arteries.setPosition([-0.25, 0, -1.2], relativeTo: headPositionedEntitiesRoot)
-            
-            print("bones position: \(bones.position)")
-            print("arteries position: \(arteries.position)")
-            
-            headAnchor.addChild(headPositionedEntitiesRoot)
-            headPositionedEntitiesRoot.setPosition([-0.25,0,-1.2], relativeTo: headAnchor)
-            
-            print("head entities position: \(headPositionedEntitiesRoot.position)")
-            
-            appModel.mustResetPosition = false
-        }
-////        appModel.headAnchorPositionHolder = headAnchorRoot
-    }
 }

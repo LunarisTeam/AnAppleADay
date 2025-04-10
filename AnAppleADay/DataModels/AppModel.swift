@@ -23,6 +23,11 @@ final class AppModel {
     /// The variable holding the bones entity in the immersive space
     var bonesEntityHolder: Entity? = nil
     
+    /// Holds the position of the head of the user
+    var headAnchorPositionHolder: Entity? = nil
+    
+    var mustResetPosition: Bool = false
+    
     /// The variable holding the bones entity in the immersive space
     var arteriesEntityHolder: Entity? = nil
     
@@ -234,5 +239,20 @@ final class AppModel {
         bonesEntity.gestureComponent?.canScale = lockElements
         bonesEntity.gestureComponent?.pivotOnDrag = lockElements
         bonesEntity.gestureComponent?.preserveOrientationOnPivotDrag = lockElements
+    }
+    
+    func resetModelPosition() {
+        
+        guard let bonesEntity = bonesEntityHolder else {
+            print("Bones entity not found")
+            return
+        }
+        
+        guard let arteriesEntity = arteriesEntityHolder else {
+            print("Bones entity not found")
+            return
+        }
+        
+//        mustResetPosition = false
     }
 }

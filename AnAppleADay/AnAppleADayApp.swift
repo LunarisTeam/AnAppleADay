@@ -74,7 +74,7 @@ struct AnAppleADayApp: App {
                 VideoPlayerView()
                     .frame(width: 676, height: 550)
                     .fixedSize()
-                    .background(Color.background.opacity(0.3))
+//                    .background(Color.background.opacity(0.3))
                     .environment(appModel)
                     .environment(appModelServer)
             }

@@ -40,10 +40,22 @@ struct ControlPanel: View {
                 .help(isHideSelected ? "Show Bones" : "Hide Bones")
                 .buttonStyle(VisionOSButtonStyle(isSelected: isHideSelected))
                 
+                // Scale entities button
+//                Button {
+//                    appModel.scaleEntities()
+//                } label: {
+//                    Image("RestoreSize")
+//                        .renderingMode(.template)
+//                        .foregroundStyle(Color.white)
+//                }
+//                .help("Restore Size")
+//                .buttonStyle(VisionOSButtonStyle())
+                
+                // Reset model's position
                 Button {
-                    appModel.scaleEntities()
+                    appModel.mustResetPosition = true
                 } label: {
-                    Image("RestoreSize")
+                    Image(systemName: "camera.metering.center.weighted")
                         .renderingMode(.template)
                         .foregroundStyle(Color.white)
                 }

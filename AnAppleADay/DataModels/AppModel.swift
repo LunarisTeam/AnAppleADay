@@ -260,32 +260,24 @@ final class AppModel {
             return
         }
                 
-        //Hardcoded, there should be a way to obtain the center of the model
-        let position = SIMD3<Float>(-0.2, 0, -1.2)
+        let position = SIMD3<Float>(-0.35, 0, -2)
         
         let headAnchor = AnchorEntity(.head)
         headAnchor.anchoring.trackingMode = .once
         headAnchor.name = "headAnchor"
-        
-        print("head anchor position: \(headAnchor.position)")
+
         headAnchorRoot.addChild(headAnchor)
-        print("head anchor root position: \(headAnchorRoot.position)")
-        
+
         let headPositionedEntitiesRoot = Entity()
         
-        headPositionedEntitiesRoot.addChild(bonesEntity)
-        headPositionedEntitiesRoot.addChild(arteriesEntity)
+        headAnchor.addChild(bonesEntity)
         
-        bonesEntity.setPosition(position, relativeTo: headPositionedEntitiesRoot)
-        arteriesEntity.setPosition(position, relativeTo: headPositionedEntitiesRoot)
-        
-        print("bones position: \(bonesEntity.position)")
-        print("arteries position: \(arteriesEntity.position)")
-        
-        headAnchor.addChild(headPositionedEntitiesRoot)
-        headPositionedEntitiesRoot.setPosition(position, relativeTo: headAnchor)
-        
-        print("head entities position: \(headPositionedEntitiesRoot.position)")
+        // AB segment, therefore distance is B - A (where position is B)
+        // There is a problem with the bonesEntity I believe regarding the real center of the entity.
+        // That is why when this code is run, there is a random teleportation
+        let transformPosition = Transform(translation: position - bonesEntity.position)
+
+        headAnchor.move(to: transformPosition, relativeTo: headAnchor, duration: 2.5, timingFunction: .easeInOut)
         
         self.mustResetPosition = false
     }

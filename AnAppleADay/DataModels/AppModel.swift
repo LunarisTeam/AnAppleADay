@@ -23,6 +23,11 @@ final class AppModel {
     /// The variable holding the bones entity in the immersive space
     var bonesEntityHolder: Entity? = nil
     
+    /// Holds the position of the head of the user
+    var headAnchorPositionHolder: Entity? = nil
+    
+    var mustResetPosition: Bool = false
+    
     /// The variable holding the bones entity in the immersive space
     var arteriesEntityHolder: Entity? = nil
     
@@ -234,5 +239,46 @@ final class AppModel {
         bonesEntity.gestureComponent?.canScale = lockElements
         bonesEntity.gestureComponent?.pivotOnDrag = lockElements
         bonesEntity.gestureComponent?.preserveOrientationOnPivotDrag = lockElements
+    }
+    
+    func resetModelPosition() {
+        
+        guard self.mustResetPosition else { return }
+        
+        guard let bonesEntity = bonesEntityHolder else {
+            print("Bones entity not found")
+            return
+        }
+        
+        guard let arteriesEntity = arteriesEntityHolder else {
+            print("Bones entity not found")
+            return
+        }
+        
+        guard let headAnchorRoot = headAnchorPositionHolder else {
+            print("Could not find head anchor")
+            return
+        }
+                
+        let position = SIMD3<Float>(-0.35, 0, -2)
+        
+        let headAnchor = AnchorEntity(.head)
+        headAnchor.anchoring.trackingMode = .once
+        headAnchor.name = "headAnchor"
+
+        headAnchorRoot.addChild(headAnchor)
+
+        let headPositionedEntitiesRoot = Entity()
+        
+        headAnchor.addChild(bonesEntity)
+        
+        // AB segment, therefore distance is B - A (where position is B)
+        // There is a problem with the bonesEntity I believe regarding the real center of the entity.
+        // That is why when this code is run, there is a random teleportation
+        let transformPosition = Transform(translation: position - bonesEntity.position)
+
+        headAnchor.move(to: transformPosition, relativeTo: headAnchor, duration: 2.5, timingFunction: .easeInOut)
+        
+        self.mustResetPosition = false
     }
 }

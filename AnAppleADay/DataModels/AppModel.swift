@@ -104,8 +104,8 @@ final class AppModel {
         guard let bonesEntity = try? await generateEntity(
             300.0,
             .white,
-            dataSetHolder?.sliceCount == 862 ? [0, 150, 50, 175, 500, 625] : nil,
-            dataSetHolder?.sliceCount == 862 ? [0, 50, 500] : nil
+            dataSetHolder?.sliceCount == 862 ? [0, 150, 50, 175, 450, 625] : nil,
+            dataSetHolder?.sliceCount == 862 ? [0, 50, 450] : nil
         ) else { return }
         
         bonesEntity.scale *= 0.5
@@ -134,8 +134,8 @@ final class AppModel {
         guard let arteriesEntity = try? await generateEntity(
             650.0,
             .red,
-            dataSetHolder?.sliceCount == 862 ? [60, 150, 100, 175, 500, 625] : nil,
-            dataSetHolder?.sliceCount == 862 ? [0, 50, 500] : nil
+            dataSetHolder?.sliceCount == 862 ? [60, 150, 100, 175, 450, 625] : nil,
+            dataSetHolder?.sliceCount == 862 ? [0, 50, 450] : nil
         ) else { return }
         
         let boundingBox = arteriesEntity.visualBounds(relativeTo: nil)

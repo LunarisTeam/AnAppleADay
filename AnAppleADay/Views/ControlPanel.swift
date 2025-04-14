@@ -52,8 +52,18 @@ struct ControlPanel: View {
 //                .buttonStyle(VisionOSButtonStyle())
                 
                 // Reset model's position
+//                Button {
+//                    appModel.mustResetPosition = true
+//                } label: {
+//                    Image(systemName: "camera.metering.center.weighted")
+//                        .renderingMode(.template)
+//                        .foregroundStyle(Color.white)
+//                }
+//                .help("Restore Size")
+//                .buttonStyle(VisionOSButtonStyle())
+                
                 Button {
-                    appModel.mustResetPosition = true
+                    appModel.mustShowBox.toggle()
                 } label: {
                     Image(systemName: "camera.metering.center.weighted")
                         .renderingMode(.template)

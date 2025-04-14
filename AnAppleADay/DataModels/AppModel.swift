@@ -5,7 +5,7 @@
 //  Created by Davide Castaldi on 28/03/25.
 //
 
-import RealityFoundation
+import RealityKit
 import RealityKitContent
 import SwiftUI
 
@@ -16,7 +16,9 @@ import SwiftUI
 /// As per date, compatible with `Swift6 - strict concurrency`
 @MainActor @Observable
 final class AppModel {
-        
+    
+    var sceneHolder: Entity? = nil
+    
     /// The variable holding the DICOM dataset
     var dataSetHolder: DicomDataSet? = nil
     
@@ -27,6 +29,8 @@ final class AppModel {
     var headAnchorPositionHolder: Entity? = nil
     
     var mustResetPosition: Bool = false
+    var mustShowBox: Bool = false
+    var rootEntity: Entity? = nil
     
     /// The variable holding the bones entity in the immersive space
     var arteriesEntityHolder: Entity? = nil
@@ -259,15 +263,15 @@ final class AppModel {
             print("Could not find head anchor")
             return
         }
-                
+        
         let position = SIMD3<Float>(-0.35, 0, -2)
         
         let headAnchor = AnchorEntity(.head)
         headAnchor.anchoring.trackingMode = .once
         headAnchor.name = "headAnchor"
-
+        
         headAnchorRoot.addChild(headAnchor)
-
+        
         let headPositionedEntitiesRoot = Entity()
         
         headAnchor.addChild(bonesEntity)
@@ -276,9 +280,82 @@ final class AppModel {
         // There is a problem with the bonesEntity I believe regarding the real center of the entity.
         // That is why when this code is run, there is a random teleportation
         let transformPosition = Transform(translation: position - bonesEntity.position)
-
+        
         headAnchor.move(to: transformPosition, relativeTo: headAnchor, duration: 2.5, timingFunction: .easeInOut)
         
         self.mustResetPosition = false
+    }
+    
+    func showBoundingBox(content: RealityViewContent) {
+        
+        guard mustShowBox else { return }
+        guard let bonesEntity = bonesEntityHolder else {
+            print("Bones entity not found")
+            return
+        }
+        
+        guard let rootScene = sceneHolder else { return }
+        print("rip")
+        
+        let bounds = bonesEntity.visualBounds(relativeTo: nil)
+        print("Bounds center: \(bounds.center), extents: \(bounds.extents)")
+        let size = bounds.extents
+        let center = bounds.center
+        
+        let wireframeBox = createWireframeBoundingBox(center: center, size: size)
+        wireframeBox.name = "box"
+        
+        if let bones = sceneHolder?.findEntity(named: "bones") {
+            rootScene.addChild(wireframeBox)
+        }
+        
+        print("Wireframe added")
+    }
+    
+    private func createWireframeBoundingBox(center: SIMD3<Float>, size: SIMD3<Float>, thickness: Float = 0.002) -> Entity {
+        let hx = size.x / 2
+        let hy = size.y / 2
+        let hz = size.z / 2
+        
+        let c0 = SIMD3<Float>(center.x - hx, center.y - hy, center.z - hz)
+        let c1 = SIMD3<Float>(center.x + hx, center.y - hy, center.z - hz)
+        let c2 = SIMD3<Float>(center.x + hx, center.y - hy, center.z + hz)
+        let c3 = SIMD3<Float>(center.x - hx, center.y - hy, center.z + hz)
+        let c4 = SIMD3<Float>(center.x - hx, center.y + hy, center.z - hz)
+        let c5 = SIMD3<Float>(center.x + hx, center.y + hy, center.z - hz)
+        let c6 = SIMD3<Float>(center.x + hx, center.y + hy, center.z + hz)
+        let c7 = SIMD3<Float>(center.x - hx, center.y + hy, center.z + hz)
+        
+        let edges: [(SIMD3<Float>, SIMD3<Float>)] = [
+            (c0, c1), (c1, c2), (c2, c3), (c3, c0), // bottom face
+            (c4, c5), (c5, c6), (c6, c7), (c7, c4), // top face
+            (c0, c4), (c1, c5), (c2, c6), (c3, c7)  // vertical edges
+        ]
+        
+        let wireframeEntity = Entity()
+        for (start, end) in edges {
+            let edgeEntity = createEdge(from: start, to: end, thickness: thickness)
+            wireframeEntity.addChild(edgeEntity)
+        }
+        return wireframeEntity
+    }
+    
+    private func createEdge(from start: SIMD3<Float>, to end: SIMD3<Float>, thickness: Float) -> ModelEntity {
+        let vector = end - start
+        let length = simd_length(vector)
+        
+        let cylinderMesh = MeshResource.generateCylinder(height: length, radius: thickness)
+        let material = SimpleMaterial(color: .white, isMetallic: false)
+        let cylinderEntity = ModelEntity(mesh: cylinderMesh, materials: [material])
+        
+        let midPoint = (start + end) / 2
+        cylinderEntity.position = midPoint
+        
+        let up = SIMD3<Float>(0, 1, 0)
+        let direction = normalize(vector)
+        let rotation = simd_quatf(from: up, to: direction)
+        cylinderEntity.orientation = rotation
+        
+        return cylinderEntity
     }
 }

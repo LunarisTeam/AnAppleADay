@@ -25,12 +25,8 @@ struct ModelView: View {
                 print("Bones failed to load")
                 return
             }
+            
             content.add(bones)
-            guard let arteries = appModel.arteriesEntityHolder else {
-                print("Arteries failed to load")
-                return
-            }
-            content.add(arteries)
             
             // The head anchor to be used as reference for position reset
             content.add(headAnchorRoot)

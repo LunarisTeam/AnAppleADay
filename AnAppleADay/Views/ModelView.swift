@@ -36,7 +36,7 @@ struct ModelView: View {
             content.add(bones)
             content.add(arteries)
         } update: { content in
-            appModel.showBoundingBox()
+            if appModel.mustShowBox { appModel.showBoundingBox() }
         }
         .installGestures()
         .onAppear {

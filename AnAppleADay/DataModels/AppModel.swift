@@ -23,12 +23,16 @@ final class AppModel {
     /// The variable holding the bones entity in the immersive space
     var bonesEntityHolder: Entity? = nil
     
-    /// Holds the position of the head of the user
+    /// Holds the position of the head of the user.
     var headAnchorPositionHolder: Entity? = nil
     
+    /// Indicates whether the model position should be reset.
     var mustResetPosition: Bool = false
+    
+    /// Flag to control the visibility of a debug bounding box.
     var mustShowBox: Bool = false
     
+    /// The entity representing the bounding box of the bones.
     var bonesBoundingBox: Entity? = nil
     
     /// The variable holding the bones entity in the immersive space
@@ -285,11 +289,13 @@ final class AppModel {
         self.mustResetPosition = false
     }
     
+    /// Toggles the display of the debug bounding box for the bones entity.
     func toggleBoundingBox() {
         mustShowBox.toggle()
         showBoundingBox()
     }
     
+    /// Manages the display of the bounding box by creating it if needed and toggling its visibility.
     func showBoundingBox() {
         guard let bonesEntity = bonesEntityHolder else {
             print("Bones entity not found")
@@ -303,9 +309,6 @@ final class AppModel {
 
         guard let box = bonesBoundingBox else { return }
 
-        print("Toggle box visibility: \(mustShowBox)")
-        print("Box parent before: \(String(describing: box.parent?.name))")
-
         if !bonesEntity.children.contains(box) { bonesEntity.addChild(box, preservingWorldTransform: true) }
         
         box.isEnabled = mustShowBox
@@ -313,6 +316,7 @@ final class AppModel {
         print("Box parent after: \(String(describing: box.parent?.name))")
     }
     
+    /// Creates the bounding box entity for the bones if it does not already exist.
     private func createBoundingBox() {
         guard bonesBoundingBox == nil else { return }
         
@@ -332,11 +336,20 @@ final class AppModel {
         
     }
     
+    /// Creates a wireframe bounding box entity given a center, size, and optional line thickness.
+    ///
+    /// - Parameters:
+    ///   - center: The center of the bounding box.
+    ///   - size: The size (extents) of the bounding box.
+    ///   - thickness: The thickness of the bounding box lines. Default is 0.0025.
+    /// - Returns: An `Entity` representing the wireframe bounding box.
     private func createWireframeBoundingBox(
         center: SIMD3<Float>,
         size: SIMD3<Float>,
         thickness: Float = 0.0025
     ) -> Entity {
+        
+        // some maths here, move along if not interested...
         let hx = size.x / 2
         let hy = size.y / 2
         let hz = size.z / 2
@@ -364,11 +377,20 @@ final class AppModel {
         return wireframeEntity
     }
     
+    /// Creates an edge of the bounding box as a cylinder connecting two given points.
+    ///
+    /// - Parameters:
+    ///   - start: The start point of the edge.
+    ///   - end: The end point of the edge.
+    ///   - thickness: The radius (thickness) of the edge cylinder.
+    /// - Returns: A `ModelEntity` representing the cylindrical edge.
     private func createEdge(
         from start: SIMD3<Float>,
         to end: SIMD3<Float>,
         thickness: Float
     ) -> ModelEntity {
+        
+        //still more maths...
         let vector = end - start
         let length = simd_length(vector)
         

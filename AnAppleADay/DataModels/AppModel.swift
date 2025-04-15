@@ -16,9 +16,7 @@ import SwiftUI
 /// As per date, compatible with `Swift6 - strict concurrency`
 @MainActor @Observable
 final class AppModel {
-    
-    var sceneHolder: Entity? = nil
-    
+        
     /// The variable holding the DICOM dataset
     var dataSetHolder: DicomDataSet? = nil
     
@@ -30,7 +28,8 @@ final class AppModel {
     
     var mustResetPosition: Bool = false
     var mustShowBox: Bool = false
-    var rootEntity: Entity? = nil
+    
+    var bonesBoundingBox: Entity? = nil
     
     /// The variable holding the bones entity in the immersive space
     var arteriesEntityHolder: Entity? = nil
@@ -286,33 +285,58 @@ final class AppModel {
         self.mustResetPosition = false
     }
     
-    func showBoundingBox(content: RealityViewContent) {
+    func toggleBoundingBox() {
+        mustShowBox.toggle()
+        showBoundingBox()
+    }
+    
+    func showBoundingBox() {
+        guard let bonesEntity = bonesEntityHolder else {
+            print("Bones entity not found")
+            return
+        }
+
+        if bonesBoundingBox == nil {
+            print("Creating bounding box")
+            createBoundingBox()
+        }
+
+        guard let box = bonesBoundingBox else { return }
+
+        print("Toggle box visibility: \(mustShowBox)")
+        print("Box parent before: \(String(describing: box.parent?.name))")
+
+        if !bonesEntity.children.contains(box) { bonesEntity.addChild(box, preservingWorldTransform: true) }
         
-        guard mustShowBox else { return }
+        box.isEnabled = mustShowBox
+        
+        print("Box parent after: \(String(describing: box.parent?.name))")
+    }
+    
+    private func createBoundingBox() {
+        guard bonesBoundingBox == nil else { return }
+        
         guard let bonesEntity = bonesEntityHolder else {
             print("Bones entity not found")
             return
         }
         
-        guard let rootScene = sceneHolder else { return }
-        print("rip")
-        
         let bounds = bonesEntity.visualBounds(relativeTo: nil)
-        print("Bounds center: \(bounds.center), extents: \(bounds.extents)")
+
         let size = bounds.extents
         let center = bounds.center
         
-        let wireframeBox = createWireframeBoundingBox(center: center, size: size)
-        wireframeBox.name = "box"
+        let boundingBox = createWireframeBoundingBox(center: center, size: size)
+        boundingBox.name = "BoundingBox"
+        bonesBoundingBox = boundingBox
         
-        if let bones = sceneHolder?.findEntity(named: "bones") {
-            rootScene.addChild(wireframeBox)
-        }
-        
-        print("Wireframe added")
     }
     
-    private func createWireframeBoundingBox(center: SIMD3<Float>, size: SIMD3<Float>, thickness: Float = 0.002) -> Entity {
+    private func createWireframeBoundingBox(
+        center: SIMD3<Float>,
+        size: SIMD3<Float>,
+        thickness: Float = 0.0025
+    ) -> Entity {
         let hx = size.x / 2
         let hy = size.y / 2
         let hz = size.z / 2
@@ -340,12 +364,16 @@ final class AppModel {
         return wireframeEntity
     }
     
-    private func createEdge(from start: SIMD3<Float>, to end: SIMD3<Float>, thickness: Float) -> ModelEntity {
+    private func createEdge(
+        from start: SIMD3<Float>,
+        to end: SIMD3<Float>,
+        thickness: Float
+    ) -> ModelEntity {
         let vector = end - start
         let length = simd_length(vector)
         
         let cylinderMesh = MeshResource.generateCylinder(height: length, radius: thickness)
-        let material = SimpleMaterial(color: .white, isMetallic: false)
+        let material = SimpleMaterial(color: .green.withAlphaComponent(0.5), isMetallic: false)
         let cylinderEntity = ModelEntity(mesh: cylinderMesh, materials: [material])
         
         let midPoint = (start + end) / 2

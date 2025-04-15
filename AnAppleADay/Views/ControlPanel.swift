@@ -63,7 +63,7 @@ struct ControlPanel: View {
 //                .buttonStyle(VisionOSButtonStyle())
                 
                 Button {
-                    appModel.mustShowBox.toggle()
+                    appModel.toggleBoundingBox()
                 } label: {
                     Image(systemName: "camera.metering.center.weighted")
                         .renderingMode(.template)

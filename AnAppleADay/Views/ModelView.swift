@@ -13,14 +13,13 @@ struct ModelView: View {
     
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
-    
+        
     let headAnchorRoot: Entity = Entity()
     
     var body: some View {
         
         RealityView { content in
             
-            let sceneHolder = Entity()
             
             guard let bones = appModel.bonesEntityHolder else {
                 print("Bones failed to load")
@@ -34,15 +33,10 @@ struct ModelView: View {
             bones.name = "bones"
             arteries.name = "arteries"
             
-            sceneHolder.addChild(bones)
-            sceneHolder.addChild(arteries)
-            
-            content.add(sceneHolder)
-            appModel.sceneHolder = sceneHolder
+            content.add(bones)
+            content.add(arteries)
         } update: { content in
-            if appModel.mustShowBox {
-                appModel.showBoundingBox(content: content)
-            }
+            appModel.showBoundingBox()
         }
         .installGestures()
         .onAppear {

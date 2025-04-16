@@ -50,8 +50,11 @@ struct ProgressModelView: View {
                 
             }
             .onAppear {
-                appModel.dataSetHolder = dataSet
-                Task { await appModel.entitiesLoaded { loaded = true } }
+                Task {
+                    try? await Task.sleep(for: .seconds(0.2))
+                    appModel.dataSetHolder = dataSet
+                    await appModel.entitiesLoaded { loaded = true }
+                }
             }
             .onChange(of: loaded) { _, newValue in
                 print("Switching to immersive space")

@@ -13,25 +13,24 @@ struct ModelView: View {
     
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
-    
+        
     let headAnchorRoot: Entity = Entity()
-    let headPositionedEntitiesRoot: Entity = Entity()
     
     var body: some View {
         
         RealityView { content in
             
+            
             guard let bones = appModel.bonesEntityHolder else {
                 print("Bones failed to load")
                 return
             }
-            
+
+            bones.name = "bones"
             content.add(bones)
             
-            // The head anchor to be used as reference for position reset
-            content.add(headAnchorRoot)
-            appModel.headAnchorPositionHolder = headAnchorRoot
-        
+        } update: { content in
+            if appModel.mustShowBox { appModel.showBoundingBox() }
         }
         .installGestures()
         .onAppear {

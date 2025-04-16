@@ -21,9 +21,9 @@ struct ControlPanel: View {
             Color.background.opacity(0.3)
             
             HStack(spacing: 20) {
-                
+            
                 Button {
-                    appModel.mustResetPosition = true
+                    appModel.toggleBoundingBox()
                 } label: {
                     Image(systemName: "camera.metering.center.weighted")
                         .renderingMode(.template)

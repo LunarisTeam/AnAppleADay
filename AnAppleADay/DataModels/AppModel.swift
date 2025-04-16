@@ -311,9 +311,7 @@ final class AppModel {
 
         if !bonesEntity.children.contains(box) { bonesEntity.addChild(box, preservingWorldTransform: true) }
         
-        box.isEnabled = mustShowBox
-        
-        print("Box parent after: \(String(describing: box.parent?.name))")
+        box.isEnabled = mustShowBox        
     }
     
     /// Creates the bounding box entity for the bones if it does not already exist.

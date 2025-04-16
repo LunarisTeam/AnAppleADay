@@ -123,8 +123,7 @@ final class AppModel {
         bonesEntity.generateCollisionShapes(recursive: true)
         bonesEntity.components.set(ObjComponent())
         bonesEntity.position = [-bonesCenter.x, -bonesCenter.y+1.5, -bonesCenter.z-1.5]
-        bonesEntity.transform.rotation = simd_quatf(angle: 45, axis: [1, 0, 0])
-        
+                
         bonesEntityHolder = bonesEntity
         print("bones set")
     }
@@ -309,7 +308,7 @@ final class AppModel {
 
         guard let box = bonesBoundingBox else { return }
 
-        if !bonesEntity.children.contains(box) { bonesEntity.addChild(box, preservingWorldTransform: true) }
+//        if !bonesEntity.children.contains(box) { bonesEntity.addChild(box, preservingWorldTransform: true) }
         
         box.isEnabled = mustShowBox        
     }
@@ -330,6 +329,9 @@ final class AppModel {
         
         let boundingBox = createWireframeBoundingBox(center: center, size: size)
         boundingBox.name = "BoundingBox"
+        
+        bonesEntity.addChild(boundingBox, preservingWorldTransform: true)
+                
         bonesBoundingBox = boundingBox
         
     }

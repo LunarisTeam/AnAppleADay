@@ -6,11 +6,12 @@
 //
 import Foundation
 import SwiftUI
+import RealityKitContent
 import RealityKit
 
 struct InputAddressView: View {
     
-    @Environment(AppModelServer.self) private var appModelServer
+    @Environment(AppModel.self) private var appModel
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     
@@ -76,21 +77,22 @@ struct InputAddressView: View {
                 
                 Button {
                     
-                    appModelServer.address = first + "." + second + "." + third + "." + fourth
-                    appModelServer.port = port
+                    let address = first + "." + second + "." + third + "." + fourth
+                    //openWindow(id: WindowIDs.xRayFeedWindowID)
                     
-                    openWindow(id: WindowIDs.xRayFeedWindowID)
+                    //add image to RealityContent
+                    Task { await appModel.createVideoEntity(address: address, port: port) }
+                  
                     dismissWindow(id: WindowIDs.inputAddressWindowID)
                 } label: {
                     Text("Connect")
                         .font(.title2)
                 }
-                
             }
             .padding(20)
         }
-        .onAppear { appModelServer.isInputWindowOpen = true }
-        .onDisappear { appModelServer.isInputWindowOpen = false }
+        .onAppear { appModel.isInputWindowOpen = true }
+        .onDisappear { appModel.isInputWindowOpen = false }
         .glassBackgroundEffect()
     }
 }

@@ -20,29 +20,32 @@ struct ModelView: View {
     var body: some View {
         
         RealityView { content in
-            
-            
+                        
             guard let bones = appModel.bonesEntityHolder else {
                 print("Bones failed to load")
                 return
             }
-            guard let arteries = appModel.arteriesEntityHolder else {
-                print("Arteries failed to load")
-                return
-            }
-            
+
             bones.name = "bones"
-            arteries.name = "arteries"
             
             appModel.headAnchorPositionHolder = headAnchorRoot
             appModel.headPositionedEntitiesHolder = headPositionedEntitiesRoot
             
             content.add(bones)
-            content.add(arteries)
             content.add(headAnchorRoot)
             content.add(headPositionedEntitiesRoot)
+        
         } update: { content in
+            
             if appModel.mustShowBox { appModel.showBoundingBox() }
+            
+            if let video = appModel.videoEntityHolder {
+                video.name = "video"
+                content.add(video)
+                
+            } else if let video = content.entities.first(where: { $0.name == "video" }) {
+                content.remove(video)
+            }            
         }
         .installGestures()
         .onAppear {

@@ -8,6 +8,7 @@
 import RealityKit
 import RealityKitContent
 import SwiftUI
+import AVFoundation
 
 /// The `AppModel` serves to control the 3D and 2D components before and during the surgery
 ///
@@ -21,7 +22,14 @@ final class AppModel {
     var dataSetHolder: DicomDataSet? = nil
     
     /// The variable holding the bones entity in the immersive space
-    var bonesEntityHolder: Entity? = nil
+    var bonesEntityHolder: Entity? = nil {
+        didSet { enableBonesGestures = true }
+    }
+    
+    /// The variable holding the bones entity in the immersive space
+    var videoEntityHolder: Entity? {
+        didSet { enableVideoGestures = true }
+    }
     
     /// Holds the position of the head of the user.
     var headAnchorPositionHolder: Entity? = nil
@@ -34,26 +42,25 @@ final class AppModel {
     
     /// The entity representing the bounding box of the bones.
     var bonesBoundingBox: Entity? = nil
-
-    /// Hides the system bar overlay under the 2D window overlapping the immersive space
-    var hideBar: Bool = false
-    
-    /// The window position that is used during the X-Ray
-    var windowPosition: AffineTransform3D? = nil
     
     /// To enable the scaling of entities
-    
     var scale: Bool = false
     
-    var realityContent: RealityViewContent? = nil
+    /// A flag indicating whether the input window is currently open.
+    var isInputWindowOpen: Bool = false
     
     /// Finds the center of the bones to be subtracted manually in order to center the entity
     /// The same applies for the artieries.
     var bonesCenter: SIMD3<Float> = .zero
-    var arteriesCenter: SIMD3<Float> = .zero
     
     /// Enables the custom gestures to be perfomed on the entity
-    var enableGestures: Bool = true
+    var enableBonesGestures: Bool = true {
+        didSet { bonesEntityHolder?.setDirectGestures(enabled: enableBonesGestures) }
+    }
+    
+    var enableVideoGestures: Bool = true {
+        didSet { videoEntityHolder?.setDirectGestures(enabled: enableVideoGestures) }
+    }
     
     /// Generates a 3D model entity from the DICOM dataset.
     ///
@@ -139,23 +146,6 @@ final class AppModel {
         completion()
     }
     
-    /// Toggles the enablement of gesture interactions on both the bones and arteries entities.
-    ///
-    /// This controls whether users can drag, rotate, or scale the entities, and whether the entity
-    /// should pivot on drag. When toggled, it updates the corresponding gesture properties for each entity.
-    func toggleGestures() {
-        
-        guard let bonesEntity = bonesEntityHolder else { return }
-        
-        enableGestures.toggle()
-        
-        bonesEntity.gestureComponent?.canDrag = enableGestures
-        bonesEntity.gestureComponent?.canRotate = enableGestures
-        bonesEntity.gestureComponent?.canScale = enableGestures
-        bonesEntity.gestureComponent?.pivotOnDrag = enableGestures
-        bonesEntity.gestureComponent?.preserveOrientationOnPivotDrag = enableGestures
-    }
-    
     func resetModelPosition() {
         
         guard self.mustResetPosition else { return }
@@ -197,7 +187,7 @@ final class AppModel {
     
     /// Manages the display of the bounding box by creating it if needed and toggling its visibility.
     func showBoundingBox() {
-        guard let bonesEntity = bonesEntityHolder else {
+        guard bonesEntityHolder != nil else {
             print("Bones entity not found")
             return
         }
@@ -308,5 +298,28 @@ final class AppModel {
         cylinderEntity.orientation = rotation
         
         return cylinderEntity
+    }
+    
+    func createVideoEntity(address: String, port: String) async {
+        
+        let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!
+        let player = AVPlayer(url: url)
+        player.play()
+
+        let material = VideoMaterial(avPlayer: player)
+        
+        guard let imageEntity = try? await Entity(
+            named: "Image",
+            in: realityKitContentBundle
+        ) else { return }
+        
+        if let cube = imageEntity.findEntity(named: "Cube"),
+           var modelComponent = cube.components[ModelComponent.self] {
+            modelComponent.materials = [material]
+            cube.components[ModelComponent.self] = modelComponent
+            cube.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.5]
+            
+            videoEntityHolder = cube
+        }
     }
 }

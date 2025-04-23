@@ -13,15 +13,11 @@ struct ModelView: View {
     
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
-        
-    let headAnchorRoot: Entity = Entity()
-    
+            
     var body: some View {
         
         RealityView { content in
-            
-            appModel.realityContent = content
-            
+                        
             guard let bones = appModel.bonesEntityHolder else {
                 print("Bones failed to load")
                 return
@@ -29,9 +25,18 @@ struct ModelView: View {
 
             bones.name = "bones"
             content.add(bones)
-            
+        
         } update: { content in
+            
             if appModel.mustShowBox { appModel.showBoundingBox() }
+            
+            if let video = appModel.videoEntityHolder {
+                video.name = "video"
+                content.add(video)
+                
+            } else if let video = content.entities.first(where: { $0.name == "video" }) {
+                content.remove(video)
+            }            
         }
         .installGestures()
         .onAppear {

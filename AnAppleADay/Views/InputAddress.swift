@@ -11,7 +11,6 @@ import RealityKit
 
 struct InputAddressView: View {
     
-    @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
@@ -78,43 +77,22 @@ struct InputAddressView: View {
                 
                 Button {
                     
-                    appModelServer.address = first + "." + second + "." + third + "." + fourth
-                    appModelServer.port = port
-                    
+                    let address = first + "." + second + "." + third + "." + fourth
                     //openWindow(id: WindowIDs.xRayFeedWindowID)
                     
                     //add image to RealityContent
-                    Task{
-                        guard let content = appModel.realityContent else { return }
-                        if let imageEntity = try? await Entity(named: "Image", in: realityKitContentBundle) {
-                            
-                            if let texture = try? TextureResource.load(named: "2DAsset") {
-                                var material = SimpleMaterial()
-                                material.color = .init(tint: .white, texture: .init(texture))
-                                
-                                if let cube = imageEntity.findEntity(named: "Cube"),
-                                   var modelComponent = cube.components[ModelComponent.self] {
-                                    modelComponent.materials = [material]
-                                    cube.components[ModelComponent.self] = modelComponent
-                                    cube.position = [-appModel.arteriesCenter.x, -appModel.arteriesCenter.y + 1.5, -appModel.arteriesCenter.z - 1.5]
-                                    content.add(cube)
-                                }
-                            }
-                        }
-                    }
+                    Task { await appModel.createVideoEntity(address: address, port: port) }
                   
-                    
                     dismissWindow(id: WindowIDs.inputAddressWindowID)
                 } label: {
                     Text("Connect")
                         .font(.title2)
                 }
-                
             }
             .padding(20)
         }
-        .onAppear { appModelServer.isInputWindowOpen = true }
-        .onDisappear { appModelServer.isInputWindowOpen = false }
+        .onAppear { appModel.isInputWindowOpen = true }
+        .onDisappear { appModel.isInputWindowOpen = false }
         .glassBackgroundEffect()
     }
 }

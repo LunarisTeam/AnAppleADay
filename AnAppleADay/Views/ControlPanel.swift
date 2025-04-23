@@ -11,7 +11,6 @@ import RealityKit
 
 struct ControlPanel: View {
     
-    @Environment(AppModelServer.self) private var appModelServer
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
     @Environment(\.openWindow) private var openWindow
@@ -34,14 +33,14 @@ struct ControlPanel: View {
                 
                 // Toggle 3D gestures ("Lock")
                 Button {
-                    appModel.toggleGestures()
+                    appModel.enableBonesGestures.toggle()
                 } label: {
                     Image("lockInPosition")
                         .renderingMode(.template)
-                        .foregroundStyle(appModel.enableGestures ? Color.white : Color.background)
+                        .foregroundStyle(!appModel.enableBonesGestures ? Color.background : Color.white)
                 }
                 .help("Lock position")
-                .buttonStyle(VisionOSButtonStyle(isSelected: !appModel.enableGestures))
+                .buttonStyle(VisionOSButtonStyle(isSelected: !appModel.enableBonesGestures))
                 
                 // Divider between button groups
                 Divider()
@@ -51,29 +50,33 @@ struct ControlPanel: View {
                 
                 // 2D Connection ("Connect")
                 Button {
-                    guard !appModelServer.isInputWindowOpen else { return }
-                    openWindow(id: WindowIDs.inputAddressWindowID)
+                    if appModel.videoEntityHolder != nil {
+                        appModel.videoEntityHolder = nil
+                        
+                    } else if !appModel.isInputWindowOpen {
+                        openWindow(id: WindowIDs.inputAddressWindowID)
+                    }
                     // The button does not handle a local toggle; its selected state depends on the connection.
                 } label: {
                     Image("connect2D")
                         .renderingMode(.template)
-                        .foregroundStyle(appModelServer.isConnected ? Color.background : Color.white)
+                        .foregroundStyle(appModel.videoEntityHolder != nil ? Color.background : Color.white)
                 }
                 .help("Connect window")
-                .buttonStyle(VisionOSButtonStyle(isSelected: appModelServer.isConnected))
+                .buttonStyle(VisionOSButtonStyle(isSelected: appModel.videoEntityHolder != nil))
                 
                 // Toggle X-Ray ("Lock2D")
                 Button {
-                    appModel.hideBar.toggle()
+                    appModel.enableVideoGestures.toggle()
                 } label: {
                     Image("lock2d")
                         .renderingMode(.template)
-                        .foregroundStyle(appModel.hideBar ? Color.background : Color.white)
+                        .foregroundStyle(!appModel.enableVideoGestures ? Color.background : Color.white)
                 }
                 .help("Lock Window")
-                .buttonStyle(VisionOSButtonStyle(isSelected: appModel.hideBar))
+                .buttonStyle(VisionOSButtonStyle(isSelected: !appModel.enableVideoGestures))
                 // Disables the button if there is no 2D connection.
-                .disabled(!appModelServer.isConnected)
+                .disabled(appModel.videoEntityHolder == nil)
                 
                 // Lock model to window ("Lock2Dto3D")
                 Button {
@@ -86,7 +89,7 @@ struct ControlPanel: View {
                 .help("Lock to Model")
                 .buttonStyle(VisionOSButtonStyle(isSelected: false))
                 // Disables the button if there is no 2D connection.
-                .disabled(!appModelServer.isConnected)
+                .disabled(appModel.videoEntityHolder == nil)
             }
             .buttonBorderShape(.circle) // Standard circular border shape for buttons.
         }

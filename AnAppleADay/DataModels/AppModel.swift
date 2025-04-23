@@ -42,12 +42,15 @@ final class AppModel {
     var windowPosition: AffineTransform3D? = nil
     
     /// To enable the scaling of entities
-    private var scale: Bool = false
+    
+    var scale: Bool = false
+    
+    var realityContent: RealityViewContent? = nil
     
     /// Finds the center of the bones to be subtracted manually in order to center the entity
     /// The same applies for the artieries.
-    private var bonesCenter: SIMD3<Float> = .zero
-    private var arteriesCenter: SIMD3<Float> = .zero
+    var bonesCenter: SIMD3<Float> = .zero
+    var arteriesCenter: SIMD3<Float> = .zero
     
     /// Enables the custom gestures to be perfomed on the entity
     var enableGestures: Bool = true

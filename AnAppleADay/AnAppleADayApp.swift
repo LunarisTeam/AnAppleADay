@@ -79,7 +79,7 @@ struct AnAppleADayApp: App {
                     .environment(appModelServer)
             }
             .windowResizability(.contentSize)
-            .windowStyle(.plain)
+            .windowStyle(.volumetric)
             
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 

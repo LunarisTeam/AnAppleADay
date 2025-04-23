@@ -17,7 +17,6 @@ struct AnAppleADayApp: App {
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
     @State private var appModel: AppModel = .init()
-    @State private var appModelServer: AppModelServer = .init()
     
     /// Represents the current operational mode of the application.
     ///
@@ -70,17 +69,6 @@ struct AnAppleADayApp: App {
             .windowResizability(.contentSize)
             .environment(onboarding)
             
-            WindowGroup(id: WindowIDs.xRayFeedWindowID) {
-                VideoPlayerView()
-                    .frame(width: 676, height: 550)
-                    .fixedSize()
-//                    .background(Color.background.opacity(0.3))
-                    .environment(appModel)
-                    .environment(appModelServer)
-            }
-            .windowResizability(.contentSize)
-            .windowStyle(.volumetric)
-            
             WindowGroup(id: WindowIDs.generateModelWindowID, for: DicomDataSet?.self) { dataSet in
                 
                 if let firstUnwrap = dataSet.wrappedValue,
@@ -99,7 +87,6 @@ struct AnAppleADayApp: App {
             WindowGroup(id: WindowIDs.inputAddressWindowID) {
                 InputAddressView()
                     .environment(appModel)
-                    .environment(appModelServer)
                     .frame(width: 381, height: 449)
                     .fixedSize()
             }
@@ -125,7 +112,7 @@ struct AnAppleADayApp: App {
                 
                 HStack {
                     BackToMain()
-                    ControlPanel().environment(appModelServer)
+                    ControlPanel()
                         .background(Capsule().fill(.background.opacity(0.3)))
                 }
                 .frame(width: 550, height: 68)
@@ -179,7 +166,7 @@ struct AnAppleADayApp: App {
             
             if newMode.shouldStopImmersion {
                 
-                if appModelServer.isConnected { dismissWindow(id: WindowIDs.xRayFeedWindowID) }
+                appModel.videoEntityHolder = nil
                 dismissWindow(id: WindowIDs.controlPanelWindowID)
                 await dismissImmersiveSpace()
                 immersiveSpacePresented = false

@@ -15,6 +15,7 @@ struct ModelView: View {
     @Environment(\.setMode) private var setMode
         
     let headAnchorRoot: Entity = Entity()
+    let headPositionedEntitiesRoot: Entity = Entity()
     
     var body: some View {
         
@@ -34,9 +35,12 @@ struct ModelView: View {
             arteries.name = "arteries"
             
             appModel.headAnchorPositionHolder = headAnchorRoot
+            appModel.headPositionedEntitiesHolder = headPositionedEntitiesRoot
             
             content.add(bones)
             content.add(arteries)
+            content.add(headAnchorRoot)
+            content.add(headPositionedEntitiesRoot)
         } update: { content in
             if appModel.mustShowBox { appModel.showBoundingBox() }
         }

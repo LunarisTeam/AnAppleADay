@@ -26,6 +26,8 @@ final class AppModel {
     /// Holds the position of the head of the user.
     var headAnchorPositionHolder: Entity? = nil
     
+    var headPositionedEntitiesHolder: Entity? = nil
+    
     /// Indicates whether the model position should be reset.
     var mustResetPosition: Bool = false
     
@@ -266,6 +268,11 @@ final class AppModel {
             return
         }
         
+        guard let headPositionedEntitiesRoot = headPositionedEntitiesHolder else {
+            print("Could not find head anchor")
+            return
+        }
+        
         let position = SIMD3<Float>(-0.2, 0, -1.2)
         
         let headAnchor = AnchorEntity(.head)
@@ -274,11 +281,10 @@ final class AppModel {
         
         headAnchorRoot.addChild(headAnchor)
         
-        let headPositionedEntitiesRoot = Entity()
-        
         headPositionedEntitiesRoot.addChild(bonesEntity)
         
-        bonesEntity.setPosition(position, relativeTo: headPositionedEntitiesRoot)     
+        bonesEntity.setPosition(position, relativeTo: headPositionedEntitiesRoot)
+        print("Bones entity, positioned: \(bonesEntity.position)")
         
         headAnchor.addChild(headPositionedEntitiesRoot)
         headPositionedEntitiesRoot.setPosition(position, relativeTo: headAnchor)

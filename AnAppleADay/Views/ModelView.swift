@@ -33,6 +33,8 @@ struct ModelView: View {
             bones.name = "bones"
             arteries.name = "arteries"
             
+            appModel.headAnchorPositionHolder = headAnchorRoot
+            
             content.add(bones)
             content.add(arteries)
         } update: { content in

@@ -51,19 +51,9 @@ struct ControlPanel: View {
 //                .help("Restore Size")
 //                .buttonStyle(VisionOSButtonStyle())
                 
-                // Reset model's position
-//                Button {
-//                    appModel.mustResetPosition = true
-//                } label: {
-//                    Image(systemName: "camera.metering.center.weighted")
-//                        .renderingMode(.template)
-//                        .foregroundStyle(Color.white)
-//                }
-//                .help("Restore Size")
-//                .buttonStyle(VisionOSButtonStyle())
-                
+//                 Reset model's position
                 Button {
-                    appModel.toggleBoundingBox()
+                    appModel.mustResetPosition = true
                 } label: {
                     Image(systemName: "camera.metering.center.weighted")
                         .renderingMode(.template)
@@ -71,6 +61,16 @@ struct ControlPanel: View {
                 }
                 .help("Restore Size")
                 .buttonStyle(VisionOSButtonStyle())
+                
+//                Button {
+//                    appModel.toggleBoundingBox()
+//                } label: {
+//                    Image(systemName: "camera.metering.center.weighted")
+//                        .renderingMode(.template)
+//                        .foregroundStyle(Color.white)
+//                }
+//                .help("Restore Size")
+//                .buttonStyle(VisionOSButtonStyle())
                 
                 // Toggle 3D gestures ("Lock")
                 Button {

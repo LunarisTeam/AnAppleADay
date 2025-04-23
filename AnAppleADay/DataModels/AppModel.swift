@@ -266,7 +266,7 @@ final class AppModel {
             return
         }
         
-        let position = SIMD3<Float>(-0.35, 0, -2)
+        let position = SIMD3<Float>(-0.2, 0, -1.2)
         
         let headAnchor = AnchorEntity(.head)
         headAnchor.anchoring.trackingMode = .once
@@ -276,14 +276,12 @@ final class AppModel {
         
         let headPositionedEntitiesRoot = Entity()
         
-        headAnchor.addChild(bonesEntity)
+        headPositionedEntitiesRoot.addChild(bonesEntity)
         
-        // AB segment, therefore distance is B - A (where position is B)
-        // There is a problem with the bonesEntity I believe regarding the real center of the entity.
-        // That is why when this code is run, there is a random teleportation
-        let transformPosition = Transform(translation: position - bonesEntity.position)
+        bonesEntity.setPosition(position, relativeTo: headPositionedEntitiesRoot)     
         
-        headAnchor.move(to: transformPosition, relativeTo: headAnchor, duration: 2.5, timingFunction: .easeInOut)
+        headAnchor.addChild(headPositionedEntitiesRoot)
+        headPositionedEntitiesRoot.setPosition(position, relativeTo: headAnchor)
         
         self.mustResetPosition = false
     }

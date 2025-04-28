@@ -21,15 +21,31 @@ struct ControlPanel: View {
             
             HStack(spacing: 20) {
 
+                // Show bounding box
+                Button {
+                    appModel.toggleBoundingBox()
+                } label: {
+                    Image("showBoundingBox")
+                        .resizable()
+                        .foregroundStyle(Color.white)
+                        .frame(width: 36, height: 36)
+                }
+                .help("Show bounds")
+                .buttonStyle(VisionOSButtonStyle())
+                .frame(width: 36, height: 36)
+                
+                // Reset position
                 Button {
                     appModel.mustResetPosition = true
                 } label: {
-                    Image(systemName: "camera.metering.center.weighted")
-                        .renderingMode(.template)
+                    Image("fieldOfView")
+                        .resizable()
                         .foregroundStyle(Color.white)
+                        .frame(width: 36, height: 36)
                 }
-                .help("Restore Size")
+                .help("Reset Position")
                 .buttonStyle(VisionOSButtonStyle())
+                .frame(width: 36, height: 36)
                 
                 // Toggle 3D gestures ("Lock")
                 Button {

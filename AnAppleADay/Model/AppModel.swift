@@ -203,10 +203,7 @@ final class AppModel {
             createBoundingBox()
         }
 
-        guard let box = bonesBoundingBox else { return }
-
-//        if !bonesEntity.children.contains(box) { bonesEntity.addChild(box, preservingWorldTransform: true) }
-        
+        guard let box = bonesBoundingBox else { return }        
         box.isEnabled = mustShowBox        
     }
     

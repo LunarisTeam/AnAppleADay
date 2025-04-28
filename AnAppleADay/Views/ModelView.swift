@@ -13,7 +13,10 @@ struct ModelView: View {
     
     @Environment(AppModel.self) private var appModel
     @Environment(\.setMode) private var setMode
-            
+        
+    let headAnchorRoot: Entity = Entity()
+    let headPositionedEntitiesRoot: Entity = Entity()
+    
     var body: some View {
         
         RealityView { content in
@@ -24,7 +27,13 @@ struct ModelView: View {
             }
 
             bones.name = "bones"
+            
+            appModel.headAnchorPositionHolder = headAnchorRoot
+            appModel.headPositionedEntitiesHolder = headPositionedEntitiesRoot
+            
             content.add(bones)
+            content.add(headAnchorRoot)
+            content.add(headPositionedEntitiesRoot)
         
         } update: { content in
             

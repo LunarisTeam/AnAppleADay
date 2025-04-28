@@ -1,5 +1,5 @@
 //
-//  ModeEnum.swift
+//  Mode.swift
 //  AnAppleADay
 //
 //  Created by Davide Castaldi on 25/02/25.

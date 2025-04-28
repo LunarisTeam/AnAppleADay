@@ -1,5 +1,5 @@
 //
-//  ViewExtension.swift
+//  View.swift
 //  AnAppleADay
 //
 //  Created by Davide Castaldi on 27/02/25.

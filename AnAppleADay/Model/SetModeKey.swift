@@ -29,13 +29,3 @@ struct SetModeKey: EnvironmentKey {
     /// and runs asynchronously.
     typealias Value = (Mode, DicomDataSet?) async -> Void
 }
-
-/// Extends the SwiftUI EnvironmentValues to include a `setMode` property.
-///
-/// This allows any SwiftUI view to access or assign a mode-changing function via the environment.
-extension EnvironmentValues {
-    var setMode: SetModeKey.Value {
-        get { self[SetModeKey.self] }
-        set { self[SetModeKey.self] = newValue }
-    }
-}

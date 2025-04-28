@@ -32,8 +32,8 @@ final class AppModel {
     }
     
     /// Holds the position of the head of the user.
+    /// These are useful so that when children are added, they get rendered in the reality view
     var headAnchorPositionHolder: Entity? = nil
-    
     var headPositionedEntitiesHolder: Entity? = nil
     
     /// Indicates whether the model position should be reset.
@@ -60,6 +60,7 @@ final class AppModel {
         didSet { bonesEntityHolder?.setDirectGestures(enabled: enableBonesGestures) }
     }
     
+    /// Enables the custom gestures to be perfomed on the entity
     var enableVideoGestures: Bool = true {
         didSet { videoEntityHolder?.setDirectGestures(enabled: enableVideoGestures) }
     }
@@ -148,6 +149,11 @@ final class AppModel {
         completion()
     }
     
+    /// Resets the position of the model in regard of the user's head position
+    ///
+    /// Reparenting of entities ahead, thread carefully since
+    /// reparenting can easily break the system in unknown ways if
+    /// not done with a very clear picture in mind
     func resetModelPosition() {
         
         guard self.mustResetPosition else { return }
@@ -171,13 +177,11 @@ final class AppModel {
         
         let headAnchor = AnchorEntity(.head)
         headAnchor.anchoring.trackingMode = .once
-        headAnchor.name = "headAnchor"
         
         headAnchorRoot.addChild(headAnchor)
         headPositionedEntitiesRoot.addChild(bonesEntity)
         
         bonesEntity.setPosition(position, relativeTo: headPositionedEntitiesRoot)
-        print("Bones entity, positioned: \(bonesEntity.position)")
         
         headAnchor.addChild(headPositionedEntitiesRoot)
         headPositionedEntitiesRoot.setPosition(position, relativeTo: headAnchor)
@@ -222,12 +226,9 @@ final class AppModel {
         let center = bounds.center
         
         let boundingBox = createWireframeBoundingBox(center: center, size: size)
-        boundingBox.name = "BoundingBox"
         
         bonesEntity.addChild(boundingBox, preservingWorldTransform: true)
-                
         bonesBoundingBox = boundingBox
-        
     }
     
     /// Creates a wireframe bounding box entity given a center, size, and optional line thickness.
@@ -243,7 +244,7 @@ final class AppModel {
         thickness: Float = 0.0025
     ) -> Entity {
         
-        // some maths here, move along if not interested...
+        // some math here, move along if not interested...
         let hx = size.x / 2
         let hy = size.y / 2
         let hz = size.z / 2
@@ -284,7 +285,7 @@ final class AppModel {
         thickness: Float
     ) -> ModelEntity {
         
-        //still more maths...
+        //still more math...
         let vector = end - start
         let length = simd_length(vector)
         
@@ -303,6 +304,11 @@ final class AppModel {
         return cylinderEntity
     }
     
+    /// Fetches a video from a server and is shown in the reality view, as an entity.
+    ///
+    /// - Parameters:
+    ///   - address: The IP address of the server
+    ///   - port: The port of the server
     func createVideoEntity(address: String, port: String) async {
         
         let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!

@@ -313,6 +313,10 @@ final class AppModel {
         
         let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!
         let player = AVPlayer(url: url)
+        
+        let videoWidth = player.currentItem?.preferredMaximumResolutionForExpensiveNetworks.width
+        let videoHeight = player.currentItem?.preferredMaximumResolutionForExpensiveNetworks.height
+        
         player.play()
 
         let material = VideoMaterial(avPlayer: player)
@@ -327,7 +331,7 @@ final class AppModel {
             modelComponent.materials = [material]
             cube.components[ModelComponent.self] = modelComponent
             cube.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.5]
-            
+            cube.transform.scale = SIMD3<Float>(x: 640.0 * 0.005, y: 480.0 * 0.005, z: 0)
             videoEntityHolder = cube
         }
     }

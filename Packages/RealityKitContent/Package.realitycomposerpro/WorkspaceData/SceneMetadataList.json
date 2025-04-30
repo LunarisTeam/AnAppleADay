@@ -48,14 +48,6 @@
     "objectMetadataList" : [
       [
         "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
         "Root",
         "Sphere"
       ],
@@ -75,6 +67,14 @@
       },
       [
         "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
         "Root",
         "Capsule"
       ],
@@ -86,6 +86,16 @@
   },
   "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD" : {
     "objectMetadataList" : [
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "SkyDome"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : true,
+        "isLocked" : false
+      },
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root"
@@ -103,16 +113,6 @@
       {
         "disallowsFraming" : false,
         "isExpanded" : false,
-        "isLocked" : false
-      },
-      [
-        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root",
-        "SkyDome"
-      ],
-      {
-        "disallowsFraming" : true,
-        "isExpanded" : true,
         "isLocked" : false
       }
     ]

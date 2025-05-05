@@ -313,6 +313,7 @@ final class AppModel {
         
         let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!
         let player = AVPlayer(url: url)
+        
         player.play()
 
         let material = VideoMaterial(avPlayer: player)
@@ -322,12 +323,19 @@ final class AppModel {
             in: realityKitContentBundle
         ) else { return }
         
+        let scaleFactor: Float = 0.0075
+        let videoWidth: Float = 640.0
+        let videoHeight: Float = 480.0
+        
+        let scaledWidth = videoWidth * scaleFactor
+        let scaledHeight = videoHeight * scaleFactor
+        
         if let cube = imageEntity.findEntity(named: "Cube"),
            var modelComponent = cube.components[ModelComponent.self] {
             modelComponent.materials = [material]
             cube.components[ModelComponent.self] = modelComponent
             cube.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.5]
-            
+            cube.transform.scale = SIMD3<Float>(x: scaledWidth, y: scaledHeight, z: 0)
             videoEntityHolder = cube
         }
     }

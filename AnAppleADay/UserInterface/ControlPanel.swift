@@ -25,21 +25,24 @@ struct ControlPanel: View {
                 Button {
                     appModel.toggleBoundingBox()
                 } label: {
-                    Image("showBoundingBox")
+                    Image("BoundingBox")
                         .resizable()
-                        .foregroundStyle(Color.white)
+                        .renderingMode(.template)
+                        .foregroundStyle(appModel.mustShowBox ? Color.background : Color.white)
                         .frame(width: 36, height: 36)
                 }
                 .help("Show bounds")
                 .buttonStyle(VisionOSButtonStyle())
                 .frame(width: 36, height: 36)
+                .padding(.trailing)
                 
                 // Reset position
                 Button {
                     appModel.mustResetPosition = true
                 } label: {
-                    Image("fieldOfView")
+                    Image("FieldOfView")
                         .resizable()
+                        .renderingMode(.template)
                         .foregroundStyle(Color.white)
                         .frame(width: 36, height: 36)
                 }

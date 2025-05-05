@@ -58,8 +58,7 @@
       },
       [
         "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
-        "Root",
-        "Capsule"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -76,7 +75,8 @@
       },
       [
         "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
-        "Root"
+        "Root",
+        "Capsule"
       ],
       {
         "isExpanded" : true,

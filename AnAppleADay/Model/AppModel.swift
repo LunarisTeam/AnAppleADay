@@ -311,18 +311,6 @@ final class AppModel {
     ///   - port: The port of the server
     func createVideoEntity(address: String, port: String) async {
         
-        let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!
-        let player = AVPlayer(url: url)
-        
-        player.play()
-
-        let material = VideoMaterial(avPlayer: player)
-        
-        guard let imageEntity = try? await Entity(
-            named: "Image",
-            in: realityKitContentBundle
-        ) else { return }
-        
         let scaleFactor: Float = 0.0075
         let videoWidth: Float = 640.0
         let videoHeight: Float = 480.0
@@ -330,13 +318,46 @@ final class AppModel {
         let scaledWidth = videoWidth * scaleFactor
         let scaledHeight = videoHeight * scaleFactor
         
-        if let cube = imageEntity.findEntity(named: "Cube"),
-           var modelComponent = cube.components[ModelComponent.self] {
+        let framePlane = ModelEntity(mesh: .generatePlane(width: 0.2, height: 0.2))
+        
+        if let textureResource = try? await TextureResource(named: "ImageFrame"),
+           var modelComponent = framePlane.components[ModelComponent.self] {
+            
+            var material = UnlitMaterial()
+            material.color = .init(texture: .init(textureResource))
+            material.blending = .transparent(opacity: 1.0)
+            
             modelComponent.materials = [material]
-            cube.components[ModelComponent.self] = modelComponent
-            cube.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.5]
-            cube.transform.scale = SIMD3<Float>(x: scaledWidth, y: scaledHeight, z: 0)
-            videoEntityHolder = cube
+            framePlane.components[ModelComponent.self] = modelComponent
         }
+        
+        framePlane.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.501]
+        framePlane.transform.scale = SIMD3<Float>(x: scaledWidth + 1, y: scaledHeight + 1, z: 0)
+        framePlane.generateCollisionShapes(recursive: true)
+        
+        let imagePlane = ModelEntity(mesh: .generatePlane(width: 0.2, height: 0.2))
+        
+        let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!
+        let player = AVPlayer(url: url); player.play()
+        let material = VideoMaterial(avPlayer: player)
+        
+        if var modelComponent = imagePlane.components[ModelComponent.self] {
+            modelComponent.materials = [material]
+            imagePlane.components[ModelComponent.self] = modelComponent
+        }
+        
+        imagePlane.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.5]
+        imagePlane.transform.scale = SIMD3<Float>(x: scaledWidth, y: scaledHeight, z: 0)
+        
+        let containerEntity = Entity()
+        
+        containerEntity.addChild(framePlane)
+        containerEntity.addChild(imagePlane)
+        
+        containerEntity.components.set(InputTargetComponent(allowedInputTypes: .indirect))
+        containerEntity.generateCollisionShapes(recursive: true)
+        containerEntity.components.set(ObjComponent())
+
+        videoEntityHolder = containerEntity
     }
 }

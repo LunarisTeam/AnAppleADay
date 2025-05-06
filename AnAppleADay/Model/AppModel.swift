@@ -311,53 +311,75 @@ final class AppModel {
     ///   - port: The port of the server
     func createVideoEntity(address: String, port: String) async {
         
-        let scaleFactor: Float = 0.0075
-        let videoWidth: Float = 640.0
-        let videoHeight: Float = 480.0
-        
-        let scaledWidth = videoWidth * scaleFactor
-        let scaledHeight = videoHeight * scaleFactor
-        
-        let framePlane = ModelEntity(mesh: .generatePlane(width: 0.2, height: 0.2))
-        
-        if let textureResource = try? await TextureResource(named: "ImageFrame"),
-           var modelComponent = framePlane.components[ModelComponent.self] {
-            
-            var material = UnlitMaterial()
-            material.color = .init(texture: .init(textureResource))
-            material.blending = .transparent(opacity: 1.0)
-            
-            modelComponent.materials = [material]
-            framePlane.components[ModelComponent.self] = modelComponent
-        }
-        
-        framePlane.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.501]
-        framePlane.transform.scale = SIMD3<Float>(x: scaledWidth + 1, y: scaledHeight + 1, z: 0)
-        framePlane.generateCollisionShapes(recursive: true)
-        
-        let imagePlane = ModelEntity(mesh: .generatePlane(width: 0.2, height: 0.2))
-        
         let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!
-        let player = AVPlayer(url: url); player.play()
-        let material = VideoMaterial(avPlayer: player)
+        let player = AVPlayer(url: url)
+        player.play()
+        let videoMaterial = VideoMaterial(avPlayer: player)
         
-        if var modelComponent = imagePlane.components[ModelComponent.self] {
-            modelComponent.materials = [material]
-            imagePlane.components[ModelComponent.self] = modelComponent
+        let videoModelEntity = await videoAsModelEntity(videoMaterial)
+        if let video = videoModelEntity {
+            let container = prepareVideo(video)
+            videoEntityHolder = container
         }
+    }
+    
+    /// Generates the model entities to attach to the video material.
+    ///
+    /// - Parameter videoMaterial: The video to convert to an entity that will be later displayed
+    /// - Returns: The video as a model entity
+    private func videoAsModelEntity(_ videoMaterial: VideoMaterial) async -> ModelEntity? {
+        let (width, height) = ModelEntity.scaleValuesForEntities()
         
-        imagePlane.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.5]
-        imagePlane.transform.scale = SIMD3<Float>(x: scaledWidth, y: scaledHeight, z: 0)
-        
-        let containerEntity = Entity()
-        
-        containerEntity.addChild(framePlane)
-        containerEntity.addChild(imagePlane)
-        
-        containerEntity.components.set(InputTargetComponent(allowedInputTypes: .indirect))
-        containerEntity.generateCollisionShapes(recursive: true)
-        containerEntity.components.set(ObjComponent())
+        let videoMesh = MeshResource.generatePlane(width: width, height: height)
+        let videoEntity = ModelEntity(mesh: videoMesh, materials: [videoMaterial])
+        videoEntity.position = [0, 0, 0.005]
 
-        videoEntityHolder = containerEntity
+        guard let frameTexture = try? await TextureResource(named: "ImageFrame") else {
+            return nil
+        }
+        var frameMaterial = UnlitMaterial(texture: frameTexture)
+        frameMaterial.blending = .transparent(opacity: 1.0)
+
+        let frameMesh = MeshResource.generateBox(width: width * 1.25, height: height * 1.25, depth: 0.001)
+        let frameEntity = ModelEntity(mesh: frameMesh, materials: [frameMaterial])
+        frameEntity.position = [0, 0, 0]
+
+        let parentEntity = ModelEntity()
+        parentEntity.addChild(frameEntity)
+        parentEntity.addChild(videoEntity)
+
+        return parentEntity
+    }
+    
+    /// Creates the components to attach to the video entity to be manipulated and properly displayed.
+    /// - Parameter videoModelEntity: The model entity that must be displayed with the properties
+    /// - Returns: The entity that can be added to the `RealityView`
+    private func prepareVideo(_ videoModelEntity: ModelEntity) -> Entity {
+        
+        let (width, height) = ModelEntity.scaleValuesForEntities()
+
+        let container = Entity()
+        container.addChild(videoModelEntity)
+
+        container.position = [
+            -bonesCenter.x,
+            -bonesCenter.y + 1.5,
+            -bonesCenter.z - 1.5
+        ]
+        
+        container.components.set(InputTargetComponent(allowedInputTypes: .indirect))
+        container.components.set(ObjComponent())
+        container.components.set(CollisionComponent(
+            shapes: [
+                .generateBox(
+                    width: width * 1.25,
+                    height: height * 1.25,
+                    depth: 0.001
+                )
+            ]
+        ))
+
+        return container
     }
 }
+

@@ -27,9 +27,7 @@ final class AppModel {
     }
     
     /// The variable holding the bones entity in the immersive space
-    var videoEntityHolder: Entity? {
-        didSet { enableVideoGestures = true }
-    }
+    var videoEntityHolder: VideoEntity?
     
     /// Holds the position of the head of the user.
     /// These are useful so that when children are added, they get rendered in the reality view
@@ -58,11 +56,6 @@ final class AppModel {
     /// Enables the custom gestures to be perfomed on the entity
     var enableBonesGestures: Bool = true {
         didSet { bonesEntityHolder?.setDirectGestures(enabled: enableBonesGestures) }
-    }
-    
-    /// Enables the custom gestures to be perfomed on the entity
-    var enableVideoGestures: Bool = true {
-        didSet { videoEntityHolder?.setDirectGestures(enabled: enableVideoGestures) }
     }
     
     /// Generates a 3D model entity from the DICOM dataset.
@@ -311,75 +304,19 @@ final class AppModel {
     ///   - port: The port of the server
     func createVideoEntity(address: String, port: String) async {
         
-        let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!
-        let player = AVPlayer(url: url)
-        player.play()
-        let videoMaterial = VideoMaterial(avPlayer: player)
-        
-        let videoModelEntity = await videoAsModelEntity(videoMaterial)
-        if let video = videoModelEntity {
-            let container = prepareVideo(video)
-            videoEntityHolder = container
+        guard let entity = try? VideoEntity(address: address,
+                                            port: port,
+                                            fileName: "xrayVideo.m3u8") else {
+            return
         }
-    }
-    
-    /// Generates the model entities to attach to the video material.
-    ///
-    /// - Parameter videoMaterial: The video to convert to an entity that will be later displayed
-    /// - Returns: The video as a model entity
-    private func videoAsModelEntity(_ videoMaterial: VideoMaterial) async -> ModelEntity? {
-        let (width, height) = ModelEntity.scaleValuesForEntities()
         
-        let videoMesh = MeshResource.generatePlane(width: width, height: height)
-        let videoEntity = ModelEntity(mesh: videoMesh, materials: [videoMaterial])
-        videoEntity.position = [0, 0, 0.005]
-
-        guard let frameTexture = try? await TextureResource(named: "ImageFrame") else {
-            return nil
-        }
-        var frameMaterial = UnlitMaterial(texture: frameTexture)
-        frameMaterial.blending = .transparent(opacity: 1.0)
-
-        let frameMesh = MeshResource.generateBox(width: width * 1.25, height: height * 1.25, depth: 0.001)
-        let frameEntity = ModelEntity(mesh: frameMesh, materials: [frameMaterial])
-        frameEntity.position = [0, 0, 0]
-
-        let parentEntity = ModelEntity()
-        parentEntity.addChild(frameEntity)
-        parentEntity.addChild(videoEntity)
-
-        return parentEntity
-    }
-    
-    /// Creates the components to attach to the video entity to be manipulated and properly displayed.
-    /// - Parameter videoModelEntity: The model entity that must be displayed with the properties
-    /// - Returns: The entity that can be added to the `RealityView`
-    private func prepareVideo(_ videoModelEntity: ModelEntity) -> Entity {
-        
-        let (width, height) = ModelEntity.scaleValuesForEntities()
-
-        let container = Entity()
-        container.addChild(videoModelEntity)
-
-        container.position = [
-            -bonesCenter.x,
-            -bonesCenter.y + 1.5,
-            -bonesCenter.z - 1.5
-        ]
-        
-        container.components.set(InputTargetComponent(allowedInputTypes: .indirect))
-        container.components.set(ObjComponent())
-        container.components.set(CollisionComponent(
-            shapes: [
-                .generateBox(
-                    width: width * 1.25,
-                    height: height * 1.25,
-                    depth: 0.001
-                )
-            ]
+        try? await entity.setup(position: .init(
+            x: -bonesCenter.x,
+            y: -bonesCenter.y + 1.5,
+            z: -bonesCenter.z - 1.5
         ))
-
-        return container
+        
+        self.videoEntityHolder = entity
     }
 }
 

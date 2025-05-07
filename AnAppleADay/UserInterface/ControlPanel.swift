@@ -25,21 +25,24 @@ struct ControlPanel: View {
                 Button {
                     appModel.toggleBoundingBox()
                 } label: {
-                    Image("showBoundingBox")
+                    Image("BoundingBox")
                         .resizable()
-                        .foregroundStyle(Color.white)
+                        .renderingMode(.template)
+                        .foregroundStyle(appModel.mustShowBox ? Color.background : Color.white)
                         .frame(width: 36, height: 36)
                 }
                 .help("Show bounds")
                 .buttonStyle(VisionOSButtonStyle())
                 .frame(width: 36, height: 36)
+                .padding(.trailing)
                 
                 // Reset position
                 Button {
                     appModel.mustResetPosition = true
                 } label: {
-                    Image("fieldOfView")
+                    Image("FieldOfView")
                         .resizable()
+                        .renderingMode(.template)
                         .foregroundStyle(Color.white)
                         .frame(width: 36, height: 36)
                 }
@@ -83,14 +86,16 @@ struct ControlPanel: View {
                 
                 // Toggle X-Ray ("Lock2D")
                 Button {
-                    appModel.enableVideoGestures.toggle()
+                    Task(priority: .userInitiated) { @MainActor in
+                        try? await appModel.videoEntityHolder?.toggleLockState()
+                    }
                 } label: {
                     Image("lock2d")
                         .renderingMode(.template)
-                        .foregroundStyle(!appModel.enableVideoGestures ? Color.background : Color.white)
+                        .foregroundStyle(appModel.videoEntityHolder?.isLocked ?? false ? Color.background : Color.white)
                 }
                 .help("Lock Window")
-                .buttonStyle(VisionOSButtonStyle(isSelected: !appModel.enableVideoGestures))
+                .buttonStyle(VisionOSButtonStyle(isSelected: appModel.videoEntityHolder?.isLocked ?? false))
                 // Disables the button if there is no 2D connection.
                 .disabled(appModel.videoEntityHolder == nil)
                 

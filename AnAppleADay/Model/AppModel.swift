@@ -27,9 +27,7 @@ final class AppModel {
     }
     
     /// The variable holding the bones entity in the immersive space
-    var videoEntityHolder: Entity? {
-        didSet { enableVideoGestures = true }
-    }
+    var videoEntityHolder: VideoEntity?
     
     /// Holds the position of the head of the user.
     /// These are useful so that when children are added, they get rendered in the reality view
@@ -58,11 +56,6 @@ final class AppModel {
     /// Enables the custom gestures to be perfomed on the entity
     var enableBonesGestures: Bool = true {
         didSet { bonesEntityHolder?.setDirectGestures(enabled: enableBonesGestures) }
-    }
-    
-    /// Enables the custom gestures to be perfomed on the entity
-    var enableVideoGestures: Bool = true {
-        didSet { videoEntityHolder?.setDirectGestures(enabled: enableVideoGestures) }
     }
     
     /// Generates a 3D model entity from the DICOM dataset.
@@ -311,32 +304,19 @@ final class AppModel {
     ///   - port: The port of the server
     func createVideoEntity(address: String, port: String) async {
         
-        let url = URL(string: "http://\(address):\(port)/xrayVideo.m3u8")!
-        let player = AVPlayer(url: url)
-        
-        player.play()
-
-        let material = VideoMaterial(avPlayer: player)
-        
-        guard let imageEntity = try? await Entity(
-            named: "Image",
-            in: realityKitContentBundle
-        ) else { return }
-        
-        let scaleFactor: Float = 0.0075
-        let videoWidth: Float = 640.0
-        let videoHeight: Float = 480.0
-        
-        let scaledWidth = videoWidth * scaleFactor
-        let scaledHeight = videoHeight * scaleFactor
-        
-        if let cube = imageEntity.findEntity(named: "Cube"),
-           var modelComponent = cube.components[ModelComponent.self] {
-            modelComponent.materials = [material]
-            cube.components[ModelComponent.self] = modelComponent
-            cube.position = [-bonesCenter.x, -bonesCenter.y + 1.5, -bonesCenter.z - 1.5]
-            cube.transform.scale = SIMD3<Float>(x: scaledWidth, y: scaledHeight, z: 0)
-            videoEntityHolder = cube
+        guard let entity = try? VideoEntity(address: address,
+                                            port: port,
+                                            fileName: "xrayVideo.m3u8") else {
+            return
         }
+        
+        try? await entity.setup(position: .init(
+            x: -bonesCenter.x,
+            y: -bonesCenter.y + 1.5,
+            z: -bonesCenter.z - 1.5
+        ))
+        
+        self.videoEntityHolder = entity
     }
 }
+

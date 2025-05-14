@@ -20,7 +20,9 @@ struct ModelView: View {
     var body: some View {
         
         RealityView { content in
-                        
+            
+            appModel.contentReference = content
+            
             guard let bones = appModel.bonesEntityHolder else {
                 print("Bones failed to load")
                 return

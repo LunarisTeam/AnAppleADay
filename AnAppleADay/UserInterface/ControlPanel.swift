@@ -101,16 +101,17 @@ struct ControlPanel: View {
                 
                 // Lock model to window ("Lock2Dto3D")
                 Button {
-                    
+                    appModel.entitiesLockedTogether.toggle()
                 } label: {
                     Image("LOCKINTO3D2")
                         .renderingMode(.template)
-                        .foregroundStyle(false ? Color.background : Color.white)
+                        .foregroundStyle(appModel.entitiesLockedTogether ? Color.background : Color.white)
                 }
                 .help("Lock to Model")
-                .buttonStyle(VisionOSButtonStyle(isSelected: false))
+                .buttonStyle(VisionOSButtonStyle(isSelected: appModel.entitiesLockedTogether))
                 // Disables the button if there is no 2D connection.
-                .disabled(appModel.videoEntityHolder == nil)
+                .disabled(appModel.videoEntityHolder == nil ||
+                          !appModel.enableBonesGestures)
             }
             .buttonBorderShape(.circle) // Standard circular border shape for buttons.
         }

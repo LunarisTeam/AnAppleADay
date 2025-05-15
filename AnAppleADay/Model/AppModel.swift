@@ -18,6 +18,8 @@ import AVFoundation
 @MainActor @Observable
 final class AppModel {
         
+    var contentReference: RealityViewContent?
+    
     /// The variable holding the DICOM dataset
     var dataSetHolder: DicomDataSet? = nil
     
@@ -52,6 +54,25 @@ final class AppModel {
     /// Finds the center of the bones to be subtracted manually in order to center the entity
     /// The same applies for the artieries.
     var bonesCenter: SIMD3<Float> = .zero
+    
+    var entitiesLockedTogether: Bool = false {
+        didSet {
+            guard let videoEntityHolder,
+                  let bonesEntityHolder,
+                  let contentReference else { return }
+            
+            if entitiesLockedTogether {
+                bonesEntityHolder.setDirectGestures(enabled: false)
+                videoEntityHolder.addChild(bonesEntityHolder, preservingWorldTransform: true)
+                
+            } else {
+                videoEntityHolder.removeChild(bonesEntityHolder)
+                bonesEntityHolder.setDirectGestures(enabled: true)
+                
+                contentReference.add(bonesEntityHolder)
+            }
+        }
+    }
     
     /// Enables the custom gestures to be perfomed on the entity
     var enableBonesGestures: Bool = true {

@@ -32,7 +32,7 @@ struct ControlPanel: View {
                         .frame(width: 36, height: 36)
                 }
                 .help("Show bounds")
-                .buttonStyle(VisionOSButtonStyle())
+                .buttonStyle(VisionOSButtonStyle(isSelected: appModel.mustShowBox))
                 .frame(width: 36, height: 36)
                 .padding(.trailing)
                 
@@ -60,6 +60,7 @@ struct ControlPanel: View {
                 }
                 .help("Lock position")
                 .buttonStyle(VisionOSButtonStyle(isSelected: !appModel.enableBonesGestures))
+                .disabled(appModel.entitiesLockedTogether)
                 
                 // Divider between button groups
                 Divider()

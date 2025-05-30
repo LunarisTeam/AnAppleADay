@@ -7,44 +7,57 @@
 
 import SwiftUI
 
+/// A SwiftUI view that displays a tutorial step as part of an onboarding or help flow.
+///
+/// The component shows a step number, an image (based on the step), and a descriptive message.
+/// It's designed to be reused for multiple tutorial steps, each distinguished by a `stepNumber`.
 struct TutorialComponent: View {
     
+    /// The current step number in the tutorial sequence.
+    ///
+    /// Used to determine which image and body text to display.
     let stepNumber: Int
-    
+
+    /// Returns the name of the image asset associated with the current step.
+    ///
+    /// - Returns: A `String` corresponding to a local asset name.
     var imageName: String {
         switch stepNumber {
-        case 1: return "dicomIcon"
-        case 2: return "Sphere"
-        case 3: return "Window"
-        default: return "unexpected"
+        case 1:  "dicomIcon"
+        case 2:  "Sphere"
+        case 3:  "Window"
+        default: "unexpected"
         }
     }
-    
+
+    /// Returns the instructional text associated with the current step.
+    ///
+    /// - Returns: A `String` containing step-specific help content.
     var bodyText: String {
         switch stepNumber {
-        case 1: return "Import the dicom dataset form your local folder into the system"
-        case 2: return "The system will generate a 3D model from the imported DICOM dataset"
-        case 3: return "The system allows connection to a fluoroscope for real-time streaming of live 2D X-ray images"
-        default: return "unexpected"
+        case 1:  "Import the DICOM dataset from your local folder into the system."
+        case 2:  "The system will generate a 3D model from the imported DICOM dataset."
+        case 3:  "The system allows connection to a fluoroscope for real-time streaming of live 2D X-ray images."
+        default: "Unexpected tutorial step."
         }
     }
-    
+
     var body: some View {
-        
         VStack {
-            Text("Step \(stepNumber)").font(.title)
+            Text("Step \(stepNumber)")
+                .font(.title)
             
             Spacer()
             
-            Image(imageName).resizable()
-                
-            //This is a fix until design side doesn't provide the correct asset
+            Image(imageName)
+                .resizable()
                 .if(imageName == "dicomIcon") {
                     $0.offset(x: -11.5)
                 }
                 .if(imageName == "Window") {
                     $0.background {
-                        Image(systemName: "app.connected.to.app.below.fill").resizable()
+                        Image(systemName: "app.connected.to.app.below.fill")
+                            .resizable()
                             .frame(width: 45, height: 55)
                             .foregroundStyle(.green)
                             .offset(x: 15, y: 95)
@@ -54,13 +67,14 @@ struct TutorialComponent: View {
                     $0.frame(width: 230, height: 150)
                 }
                 .frame(width: 160, height: 160)
-            
+
             Spacer()
             
             Text(bodyText)
                 .frame(width: stepNumber == 3 ? 220 : 200)
                 .multilineTextAlignment(.center)
                 .fontWeight(.medium)
+            
             Spacer()
         }
         .padding()

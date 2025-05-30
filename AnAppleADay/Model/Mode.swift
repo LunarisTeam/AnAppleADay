@@ -7,39 +7,38 @@
 
 /// Represents the current state or "mode" of the application.
 ///
-/// Each mode corresponds to a specific user-facing feature or interface, such as
-/// importing DICOM files, generating a model, or viewing a 3D volume.
+/// Each mode corresponds to a specific feature or interface shown to the user,
+/// such as importing DICOM files, generating 3D models, or working in an immersive space.
 ///
 /// The enum conforms to `Equatable` and is annotated with `@MainActor`,
-/// meaning all interactions with `Mode` should occur on the main thread.
-/// This ensures safe usage when switching modes in a SwiftUI environment.
+/// ensuring that all interactions with `Mode` occur on the main thread.
+/// This is essential when updating state in a SwiftUI environment.
 @MainActor enum Mode: Equatable {
-    
-    /// The mode for importing DICOM datasets.
+
+    /// Mode for importing DICOM datasets.
     case importDicoms
-    
-    /// The mode for generating 3D models from DICOM data.
+
+    /// Mode for generating 3D models from DICOM data.
     case generate
-    
-    /// The mode for displaying the generated 3D volume.    
+
+    /// Mode for displaying the generated 3D volume in an immersive space.
     case immersiveSpace
-    
-    /// The window handling the server connection
+
+    /// Mode for entering server address information.
     case inputAddress
-    
-    /// The mode for displaying the window with feed from fluoroscope.
+
+    /// Mode for viewing the live fluoroscope feed.
     case xRayFeed
 
-    /// The mode serving in the immersive space as a panel for controls.
+    /// Mode for displaying control panels within the immersive space.
     case controlPanel
-    
-    /// The window during the loading of the model
+
+    /// Mode for showing a loading or progress indicator.
     case progress
-    
-    /// The identifier associated with the mode's corresponding window or scene.
+
+    /// A unique identifier for the window or scene associated with the current mode.
     ///
-    /// This value is used to reference the correct `WindowGroup` or `ImmersiveSpace`
-    /// based on the active mode.
+    /// Used to map a `Mode` to its corresponding `WindowGroup` or `ImmersiveSpace` identifier.
     var windowId: String {
         switch self {
         case .importDicoms: return WindowIDs.importDicomsWindowID
@@ -51,35 +50,48 @@
         case .progress: return WindowIDs.progressWindowID
         }
     }
-    
-    /// Indicates whether the mode supports receiving a `DicomDataSet`.
+
+    /// Indicates whether the current mode is capable of accepting a `DicomDataSet`.
     ///
-    /// Use this flag to determine if transitioning to a given mode should include
-    /// a dataset (e.g., during navigation or processing steps).
+    /// This is useful for controlling navigation flow and data passing logic.
     var acceptsDataSet: Bool {
         switch self {
-        case .generate: return true
-        case .progress: return true
-        default: return false
+        case .generate, .progress:
+            return true
+        default:
+            return false
         }
     }
-    
+
+    /// Indicates whether the current mode requires launching an immersive space.
+    ///
+    /// Used to trigger immersive session logic in the app lifecycle.
     var needsImmersiveSpace: Bool {
         return self == .immersiveSpace
     }
-    
+
+    /// Indicates whether transitioning to this mode should close the last opened window.
+    ///
+    /// Some modes (like `.immersiveSpace` and `.controlPanel`) can coexist with others.
     var needsLastWindowClosed: Bool {
         switch self {
-        case .immersiveSpace: return false
-        case .controlPanel: return false
-        default: return true
+        case .immersiveSpace, .controlPanel:
+            return false
+        default:
+            return true
         }
     }
-    
+
+    /// Indicates whether the current mode overlays or shares space with the immersive space.
+    ///
+    /// Used to handle UI layering and window behavior when immersive content is active.
     var overlapsImmersiveSpace: Bool {
         return self == .xRayFeed
     }
-    
+
+    /// Indicates whether transitioning to this mode should terminate the current immersion session.
+    ///
+    /// For example, returning to `.importDicoms` stops immersive content.
     var shouldStopImmersion: Bool {
         return self == .importDicoms
     }

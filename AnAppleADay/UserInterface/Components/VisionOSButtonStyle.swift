@@ -7,35 +7,47 @@
 
 import SwiftUI
 
-/// Custom ButtonStyle for visionOS buttons,
-/// handling different states (idle, pressed, selected, disabled)
+/// A custom `ButtonStyle` designed for visionOS buttons, supporting multiple visual states.
+///
+/// This style adjusts the button's appearance based on its interaction state:
+/// - Selected: Appears solid white.
+/// - Pressed: Shows a blue outline and slightly shrinks.
+/// - Disabled: Reduces opacity to indicate inactivity.
+///
+/// This style helps ensure consistency with the visionOS UI aesthetic.
 struct VisionOSButtonStyle: ButtonStyle {
-    // Indicates if the button is in a toggled/selected state.
+
+    /// Indicates whether the button is in a selected (toggled-on) state.
     var isSelected: Bool = false
+
+    /// Environment property that reflects whether the button is enabled.
     @Environment(\.isEnabled) private var isEnabled
 
+    /// Creates the visual representation of the button.
+    ///
+    /// - Parameter configuration: The current configuration of the button, including its label and pressed state.
+    /// - Returns: A view that reflects the current button state.
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(8)
             .background(
-                // If the button is selected or pressed, the background remains white,
-                 // otherwise the background color with reduced opacity is applied.
+                // Use solid white background when selected or pressed.
                 Circle().fill(
                     (isSelected || configuration.isPressed)
-                    ? Color.white
-                    : Color.background.opacity(0.5)
+                        ? Color.white
+                        : Color.background.opacity(0.5)
                 )
             )
             .overlay(
-                // Shows a blue border when the button is pressed.
+                // Apply a blue stroke border when pressed.
                 Circle().stroke(
                     configuration.isPressed ? Color.blue : Color.clear,
                     lineWidth: 1
                 )
             )
-            // Reduces opacity if the button is disabled.
+            // Dim the button if it is disabled.
             .opacity(isEnabled ? 1.0 : 0.4)
-            // Slight shrink effect when button is pressed for visual feedback.
+            // Apply a shrink animation while pressed.
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
             .hoverEffect(.highlight)
     }

@@ -9,19 +9,30 @@ import Foundation
 import SwiftUI
 import RealityKit
 
+/// A floating control panel view providing UI buttons for manipulating the 3D and 2D surgical environment.
+///
+/// This view allows the user to toggle bounding boxes, reset model positions, enable or disable gesture interaction,
+/// connect to a 2D X-ray feed, lock the X-ray display, and link the 2D/3D entities together.
+/// It is intended to be displayed in an immersive space as a persistent overlay.
 struct ControlPanel: View {
     
+    /// Access to the main application model, injected from the environment.
     @Environment(AppModel.self) private var appModel
+    
+    /// Function to change the current application mode.
     @Environment(\.setMode) private var setMode
+    
+    /// Function to programmatically open new SwiftUI windows.
     @Environment(\.openWindow) private var openWindow
     
     var body: some View {
         ZStack {
+            // Semi-transparent background for panel visibility
             Color.background.opacity(0.3)
             
             HStack(spacing: 20) {
 
-                // Show bounding box
+                // MARK: Show bounding box
                 Button {
                     appModel.toggleBoundingBox()
                 } label: {
@@ -35,8 +46,8 @@ struct ControlPanel: View {
                 .buttonStyle(VisionOSButtonStyle(isSelected: appModel.mustShowBox))
                 .frame(width: 36, height: 36)
                 .padding(.trailing)
-                
-                // Reset position
+
+                // MARK: Reset position
                 Button {
                     appModel.mustResetPosition = true
                 } label: {
@@ -49,8 +60,8 @@ struct ControlPanel: View {
                 .help("Reset Position")
                 .buttonStyle(VisionOSButtonStyle())
                 .frame(width: 36, height: 36)
-                
-                // Toggle 3D gestures ("Lock")
+
+                // MARK: Toggle 3D gestures ("Lock")
                 Button {
                     appModel.enableBonesGestures.toggle()
                 } label: {
@@ -61,22 +72,20 @@ struct ControlPanel: View {
                 .help("Lock position")
                 .buttonStyle(VisionOSButtonStyle(isSelected: !appModel.enableBonesGestures))
                 .disabled(appModel.entitiesLockedTogether)
-                
-                // Divider between button groups
+
+                // MARK: Divider between groups
                 Divider()
                     .frame(width: 10, height: 50)
                     .foregroundStyle(Color.gray)
                     .bold()
-                
-                // 2D Connection ("Connect")
+
+                // MARK: 2D Connection ("Connect")
                 Button {
                     if appModel.videoEntityHolder != nil {
                         appModel.videoEntityHolder = nil
-                        
                     } else if !appModel.isInputWindowOpen {
                         openWindow(id: WindowIDs.inputAddressWindowID)
                     }
-                    // The button does not handle a local toggle; its selected state depends on the connection.
                 } label: {
                     Image("connect2D")
                         .renderingMode(.template)
@@ -84,8 +93,8 @@ struct ControlPanel: View {
                 }
                 .help("Connect window")
                 .buttonStyle(VisionOSButtonStyle(isSelected: appModel.videoEntityHolder != nil))
-                
-                // Toggle X-Ray ("Lock2D")
+
+                // MARK: Toggle X-Ray Lock ("Lock2D")
                 Button {
                     Task(priority: .userInitiated) { @MainActor in
                         try? await appModel.videoEntityHolder?.toggleLockState()
@@ -97,10 +106,9 @@ struct ControlPanel: View {
                 }
                 .help("Lock Window")
                 .buttonStyle(VisionOSButtonStyle(isSelected: appModel.videoEntityHolder?.isLocked ?? false))
-                // Disables the button if there is no 2D connection.
                 .disabled(appModel.videoEntityHolder == nil)
-                
-                // Lock model to window ("Lock2Dto3D")
+
+                // MARK: Lock model to window ("Lock2Dto3D")
                 Button {
                     appModel.entitiesLockedTogether.toggle()
                 } label: {
@@ -110,11 +118,9 @@ struct ControlPanel: View {
                 }
                 .help("Lock to Model")
                 .buttonStyle(VisionOSButtonStyle(isSelected: appModel.entitiesLockedTogether))
-                // Disables the button if there is no 2D connection.
-                .disabled(appModel.videoEntityHolder == nil ||
-                          !appModel.enableBonesGestures)
+                .disabled(appModel.videoEntityHolder == nil || !appModel.enableBonesGestures)
             }
-            .buttonBorderShape(.circle) // Standard circular border shape for buttons.
+            .buttonBorderShape(.circle)
         }
         .frame(height: 80)
         .glassBackgroundEffect()

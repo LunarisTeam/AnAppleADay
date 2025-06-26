@@ -67,7 +67,7 @@
       [
         "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
         "Root",
-        "Capsule"
+        "Sphere"
       ],
       {
         "isExpanded" : true,
@@ -76,7 +76,7 @@
       [
         "A3E7ED19-7022-497D-B5E0-C8DBFA915733",
         "Root",
-        "Sphere"
+        "Capsule"
       ],
       {
         "isExpanded" : true,
@@ -88,11 +88,10 @@
     "objectMetadataList" : [
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root",
-        "SkyDome"
+        "Root"
       ],
       {
-        "disallowsFraming" : true,
+        "disallowsFraming" : false,
         "isExpanded" : true,
         "isLocked" : false
       },
@@ -108,10 +107,11 @@
       },
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root"
+        "Root",
+        "SkyDome"
       ],
       {
-        "disallowsFraming" : false,
+        "disallowsFraming" : true,
         "isExpanded" : true,
         "isLocked" : false
       }
@@ -121,76 +121,7 @@
     "objectMetadataList" : [
       [
         "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
-        "Root",
-        "Room"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
         "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
-        "Root",
-        "Room",
-        "Medical_Examination_Room",
-        "Meshes",
-        "Sketchfab_model"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
-        "Root",
-        "Room",
-        "Medical_Examination_Room",
-        "Meshes",
-        "Sketchfab_model",
-        "c8e4533349d843409139930039f259e1_fbx"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
-        "Root",
-        "Room",
-        "Medical_Examination_Room",
-        "Meshes"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
-        "Root",
-        "Room",
-        "Medical_Examination_Room",
-        "Meshes",
-        "Sketchfab_model",
-        "c8e4533349d843409139930039f259e1_fbx",
-        "RootNode"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "F2277F49-9A6F-484C-8B23-8FF75B77A92B",
-        "Root",
-        "Room",
-        "Medical_Examination_Room"
       ],
       {
         "isExpanded" : true,

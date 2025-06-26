@@ -9,12 +9,20 @@
 /* Begin PBXBuildFile section */
 		2ED79E0C2D6DD74B005B4948 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 2ED79E0B2D6DD74B005B4948 /* RealityKitContent */; };
 		E368F8082D8DB7E700270279 /* VisualizationToolkit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E368F8072D8DB7E700270279 /* VisualizationToolkit.xcframework */; };
+		E3ED7F5D2E0D353B00B507BF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E3ED7F582E0D353B00B507BF /* README.md */; };
+		E3ED7F5E2E0D353B00B507BF /* setup-vtk.sh in Resources */ = {isa = PBXBuildFile; fileRef = E3ED7F5A2E0D353B00B507BF /* setup-vtk.sh */; };
+		E3ED7F5F2E0D353B00B507BF /* setup-vtk-compiletools.sh in Resources */ = {isa = PBXBuildFile; fileRef = E3ED7F5B2E0D353B00B507BF /* setup-vtk-compiletools.sh */; };
+		E3ED7F602E0D353B00B507BF /* setup-dependencies.sh in Resources */ = {isa = PBXBuildFile; fileRef = E3ED7F592E0D353B00B507BF /* setup-dependencies.sh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2ED79E062D6DD74B005B4948 /* AnAppleADay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnAppleADay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ED79E0A2D6DD74B005B4948 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		E368F8072D8DB7E700270279 /* VisualizationToolkit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = VisualizationToolkit.xcframework; path = Frameworks/VisualizationToolkit.xcframework; sourceTree = "<group>"; };
+		E3ED7F582E0D353B00B507BF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E3ED7F592E0D353B00B507BF /* setup-dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "setup-dependencies.sh"; sourceTree = "<group>"; };
+		E3ED7F5A2E0D353B00B507BF /* setup-vtk.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "setup-vtk.sh"; sourceTree = "<group>"; };
+		E3ED7F5B2E0D353B00B507BF /* setup-vtk-compiletools.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "setup-vtk-compiletools.sh"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -58,6 +66,7 @@
 				2ED79E092D6DD74B005B4948 /* Packages */,
 				E368F8062D8DB7E700270279 /* Frameworks */,
 				2ED79E072D6DD74B005B4948 /* Products */,
+				E3ED7F5C2E0D353B00B507BF /* Scripts */,
 			);
 			sourceTree = "<group>";
 		};
@@ -83,6 +92,17 @@
 				E368F8072D8DB7E700270279 /* VisualizationToolkit.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E3ED7F5C2E0D353B00B507BF /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				E3ED7F582E0D353B00B507BF /* README.md */,
+				E3ED7F592E0D353B00B507BF /* setup-dependencies.sh */,
+				E3ED7F5A2E0D353B00B507BF /* setup-vtk.sh */,
+				E3ED7F5B2E0D353B00B507BF /* setup-vtk-compiletools.sh */,
+			);
+			path = Scripts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +139,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					2ED79E052D6DD74B005B4948 = {
 						CreatedOnToolsVersion = 16.0;
@@ -150,6 +170,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3ED7F5D2E0D353B00B507BF /* README.md in Resources */,
+				E3ED7F5E2E0D353B00B507BF /* setup-vtk.sh in Resources */,
+				E3ED7F5F2E0D353B00B507BF /* setup-vtk-compiletools.sh in Resources */,
+				E3ED7F602E0D353B00B507BF /* setup-dependencies.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,6 +203,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Intrart;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -210,6 +235,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Intrart;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

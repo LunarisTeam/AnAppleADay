@@ -32,4 +32,4 @@ Intrart allows to simply input the folder that holds all the DICOM files, and gi
 
 ### Additional Resources
 
-To know more about the "SetMode" utility used in this project, refere to [this Medium article](https://medium.com/@davide.castaldi31/mastering-windows-immersive-spaces-cycle-management-in-visionos-d6d98877f71a) by Davide Castaldi
+To know more about the "SetMode" utility used in this project, refere to [this Medium article](https://medium.com/@davide.castaldi31/mastering-windows-immersive-spaces-cycle-management-in-visionos-d6d98877f71a) by Davide Castaldi. For any information about how to compile/integrate the Visualization Toolkit framework, please refere to [Scripts/README.md](./Scripts/README.md)

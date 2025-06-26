@@ -68,7 +68,7 @@ A **cross build** compiles code on one platform (your Mac) that will run on a di
 
 We ship a **pre‑built `VisualizationToolkit.xcframework` (visionOS 2.2+)** containing slices for both **device** and **simulator**. You’ll find it under `Frameworks/`. Using it is the fastest route:
 
-1. **Unzip** `VisualizationToolkit.xcframework.zip` into *your* Xcode project’s *Frameworks* folder.
+1. **Decompress** `VisualizationToolkit.xcframework.tar.zst` into *your* Xcode project’s *Frameworks* folder.
 2. **Drag‑and‑drop** `VTK-visionOS.xcframework` into *your* Xcode project’s *Frameworks, Libraries & Embedded Content* section.
 3. Set the framework to **“Embed & Sign”.**
 4. Clean → Build. Done.

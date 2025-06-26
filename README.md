@@ -14,7 +14,8 @@ Features
 - Annotation & Measurement: Add markers, measure distances, and export reports.
 - Caching Options: Allows to cache the model inside the application, so that once the model has been generated the first time, it is possible to quickly reopen it by selecting the same files.
 
-> [!NOTE] Additional Resources
+> [!NOTE] 
+> *Additional Resources*
 > To know more about the "SetMode" utility used in this project, refere to [this Medium article](https://medium.com/@davide.castaldi31/mastering-windows-immersive-spaces-cycle-management-in-visionos-d6d98877f71a) by Davide Castaldi. 
 > For any information about how to compile/integrate the Visualization Toolkit framework, please refer to [Scripts/README.md](./Scripts/README.md)
 
